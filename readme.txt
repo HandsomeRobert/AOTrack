@@ -145,7 +145,7 @@
 	为啥这个可以使用....xSemaphoreTake(OnLoadParametersFromPC, 1000) == pdTRUE
 	通信成功，串口助手发送字符'1'会重启板卡。
 目前参数加载，对象探测，跟踪，通信，接收到的数据处理，动作执行基本功能已走通
-	
+	Test Robert
 	
 Bug Report：
 	1. 2019.3.14：
