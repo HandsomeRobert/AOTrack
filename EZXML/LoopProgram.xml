@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LoopProgram mode="1">
+	<Program name="program1" is_inter-cut="0">
+		<XYWH>0,0,512,32</XYWH>
+		<Border type='1'>
+			<Which>65</Which>
+			<Effect>1</Effect>
+			<Speed>5</Speed>
+			<Border_Clr>00FF00</Border_Clr>
+		</Border>
+		<Date_Scope>2014/11/01-2014/11/28</Date_Scope>
+		<Time_Scope>00:00-10:45</Time_Scope>
+		<Week_Scope>1,3,5,7</Week_Scope>
+		<GPS_StartTime>10:00</GPS_StartTime>
+		<GPS_TimeUnit>15</GPS_TimeUnit>
+		<Window name="window1" type="0">
+			<XYWH>0,0,512,32</XYWH>
+			<Border type="1">
+				<Which>65</Which>
+				<Effect>1</Effect>
+				<Speed>5</Speed>
+				<Border_Clr>00FF00</Border_Clr>
+			</Border>
+			<File type="1">
+				<path>0:/program/Loop/kitty.avi</path>
+			</File>
+			<File type="2">
+				<path>0:/program/Loop/beauty.png</path>
+				<Enter_Effect>5</Enter_Effect>
+				<Enter_Time>5</Enter_Time>
+				<StayTime>50</StayTime>
+			</File>
+		</Window>
+		<Window name="window2" type="1">
+			<XYWH>0,0,512,32</XYWH>
+			<Border type="1">
+				<Which>65</Which>
+				<Effect>1</Effect>
+				<Speed>5</Speed>
+				<Border_Clr>00FF00</Border_Clr>
+			</Border>
+			<ClkType>1</ClkType>
+			<DigitalFixedContent>curr time:</DigitalFixedContent>
+			<DigitalFixedContentSize>16</DigitalFixedContentSize>
+			<DigitalFixedContentClr>FF0000</DigitalFixedContentClr>
+			<ShowDate>1</ShowDate>
+			<DigitalDateSize>16</DigitalDateSize>
+			<DigitalDateClr>FF0000</DigitalDateClr>
+			<DigitalDateType>0</DigitalDateType>
+			<ShowTime>0</ShowTime>
+			<DigitalTimeSize>16</DigitalTimeSize>
+			<DigitalTimeClr>FF0000</DigitalTimeClr>
+			<DigitalTimeType>2</DigitalTimeType>
+			<ShowWeek>1</ShowWeek>
+			<DigitalWeekSize>16</DigitalWeekSize>
+			<DigitalWeekClr>FF0000</DigitalWeekClr>
+			<DigitalWeekType>0</DigitalWeekType>
+			<ShowLunar>1</ShowLunar>
+			<DigitalLunarSize>16</DigitalLunarSize>
+			<DigitalLunarClr>FF0000</DigitalLunarClr>
+			<isAmPm>0</isAmPm>
+			<SingleLineShow>1</SingleLineShow>
+		</Window>
+	</Program>
+</LoopProgram>
