@@ -90,7 +90,7 @@ static void TrackingThread(void *arg)
 						switch (pActionList->Object.ActionType)
 						{
 							case TypeActionTriggerCamera:		xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerCamera, eSetValueWithOverwrite, NULL);	//发送通知去触发相机
-																							TCPSendDataBase(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionTriggerCamera);//通知PC已经触发了相机
+																							TCPSendDataChar(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionTriggerCamera);//通知PC已经触发了相机
 																							pActionNextTemp = pActionList->next;
 																							vTaskSuspendAll();		//进入临界区防止被打断
 																							ListDeletePointItem(&ObjectInModuleList[Module_i], pActionList);//从跟踪段列表中删除执行了的动作
@@ -98,7 +98,7 @@ static void TrackingThread(void *arg)
 																							break;
 							
 							case TypeActionObjectTakeOver: 				
-																							TCPSendDataBase(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionObjectTakeOver);//通知PC已经传递了对象
+																							TCPSendDataChar(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionObjectTakeOver);//通知PC已经传递了对象
 																							switch (ModuleConfig[ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionObjectTakeOver.DestinationModule].Encoder)
 																							{
 																								case Encoder_1: encoderDelivered = encoder1Number;break;
@@ -118,7 +118,7 @@ static void TrackingThread(void *arg)
 																										
 							case TypeActionSetOutput:							
 																							xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerOutput, eSetValueWithOverwrite, NULL);
-																							TCPSendDataBase(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionSetOutput);//通知PC已经触发了输出
+																							TCPSendDataChar(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionSetOutput);//通知PC已经触发了输出
 																							pActionNextTemp = pActionList->next;
 																							vTaskSuspendAll();		//进入临界区防止被打断
 																							ListDeletePointItem(&ObjectInModuleList[Module_i], pActionList);//从跟踪段列表中删除执行了的动作
@@ -126,36 +126,39 @@ static void TrackingThread(void *arg)
 																							break;//发送通知去触发输出
 																										
 							case TypeActionTriggerSensor:		xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerSensor, eSetValueWithOverwrite, NULL);	
-																							TCPSendDataBase(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionTriggerSensor);//通知PC已经触发了信号采集
+																							TCPSendDataChar(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionTriggerSensor);//通知PC已经触发了信号采集
 																							pActionNextTemp = pActionList->next;
 																							vTaskSuspendAll();		//进入临界区防止被打断
 																							ListDeletePointItem(&ObjectInModuleList[Module_i], pActionList);//从跟踪段列表中删除执行了的动作
 																							xTaskResumeAll();		//退出临界区
 																							break;//发送通知去触发传感器采集
 																										
-							case TypeActionPushOut:					TCPSendDataBase(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionPushOut);//通知PC已经触发了相机
+							case TypeActionPushOut:					TCPSendDataChar(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionPushOut);//通知PC已经触发了相机
 																																												
-																							/******此处亦须释放对应的ObjectBuffer对象，否则无法再创建对象，无法往ObjectBuffer内填充值*****/
+																							/******遍历寻找此对象在缓冲区数组的位置， 此处亦须释放对应的ObjectBuffer对象，否则无法再创建对象，无法往ObjectBuffer内填充值*****/
 																							while(ObjectBuffer[object_i].ObjectID != pActionList->Object.ObjectID)
 																							{
 																								object_i++;
-																								if(object_i > 63) 
+																								if(object_i > (maxTrackingObjects - 1)) 
 																								{
 																									printf("Cannot Find The consistent ObjectID in ObjectBuffer failed. \n");
 																									break;
 																								}	
 																							}
-																							ObjectBuffer[object_i].objectAliveFlag = false;					//释放被占有的对象
-							
-																							xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerPush, 	 eSetValueWithOverwrite, NULL);//发送通知去触发剔除
+																							if(ObjectBuffer[object_i].ProcessedResult == false)	
+																							{
+																								xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerPush, 	 eSetValueWithOverwrite, NULL);//发送通知去触发剔除																							
+																							}
+																							
 																							pActionNextTemp = pActionList->next;
 																							vTaskSuspendAll();		//进入临界区防止被打断
+																							ObjectBuffer[object_i].objectAliveFlag = false;					//释放被占有的对象
 																							ListDeletePointItem(&ObjectInModuleList[Module_i], pActionList);//从跟踪段列表中删除执行了的动作
 																							xTaskResumeAll();		//退出临界区
 																							break;
 																										
 							case TypeActionRequestMachineData:	
-																							TCPSendDataBase(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionRequestMachineData);//通知PC已经请求了机器数据
+																							TCPSendDataChar(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionRequestMachineData);//通知PC已经请求了机器数据
 																							pActionNextTemp = pActionList->next;
 																							vTaskSuspendAll();		//进入临界区防止被打断
 																							ListDeletePointItem(&ObjectInModuleList[Module_i], pActionList);//从跟踪段列表中删除执行了的动作

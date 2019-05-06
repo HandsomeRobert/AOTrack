@@ -146,23 +146,25 @@
 	通信成功，串口助手发送字符'1'会重启板卡。
 目前参数加载，对象探测，跟踪，通信，接收到的数据处理，动作执行基本功能已走通
 	
-	
+2019.5.6 
+	解决Bug1，TCP只能连接5次的问题，原因是使用netconn_close只是关闭了端口，未释放资源导致new netconn（应使用netconn_delete）的时候申请不到空间....，导致内存泄漏！！！
+
 Bug Report：
-	1. 2019.3.14：
-	Client与STM32（TecpServer）多次连接&断开后，无法再次连接STM32了，第6次连接（单个client）时会出现报错：
-		主机192.168.66.10连接上服务器,主机端口号为:49534
-		Assertion "netconn_connect: invalid conn" failed at line 197 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
-		TCP_Server Connect Failed!!!
-		Assertion "netconn_write: invalid conn" failed at line 605 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
-		Send data Failed,Please check it in DataTransferManage.c 
-		
-	第六次连接后断开时也报错，为Assertion "netconn_writAssertion "netconn_close: invalid conn" failed at line 668 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
-	！！！猜测是第六次连接时，Session[i]	的NetConnSend 没有被创建，即访问了不存在的NetConnSend端口导致的错误。	
-	！！至于为什么第6次之后就不能再连上PC的TCP Server了，有待探索。。。。
+XXXX1. 2019.3.14：(2019.5.6 Solved解决了,netconn_close改为netconn_delete即可)
+XXXXClient与STM32（TecpServer）多次连接&断开后，无法再次连接STM32了，第6次连接（单个client）时会出现报错：
+XXXX	主机192.168.66.10连接上服务器,主机端口号为:49534
+XXXX	Assertion "netconn_connect: invalid conn" failed at line 197 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
+XXXX	TCP_Server Connect Failed!!!
+XXXX	Assertion "netconn_write: invalid conn" failed at line 605 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
+XXXX	Send data Failed,Please check it in DataTransferManage.c 
+XXXX	
+XXXX第六次连接后断开时也报错，为Assertion "netconn_writAssertion "netconn_close: invalid conn" failed at line 668 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
+XXXX！！！猜测是第六次连接时，Session[i]	的NetConnSend 没有被创建，即访问了不存在的NetConnSend端口导致的错误。	
+XXXX！！至于为什么第6次之后就不能再连上PC的TCP Server了，有待探索。。。。
 	2. for循环扫描Netconn[]数组会扫描到不存在的NETCONN，但我好像设了一个移位buffer将此问题解决了，yes,我可真棒呀
 	3. emmm....电脑端连接TCP NETCONN使用串口调式软件无法快速发送数据，也就是说无法完整发送数据，得加个Buffer来缓冲...先发到Buffer再由NETCONN去调用函数去发送数据....
 
 	4. 当编码器数值溢出时可能出现BUG，即所有跟踪段的参考设计 可能都会出错.....
-		Solve,直接用两个数相减，得到的就是两者的距离，如0-65534 = 2
+XXXX	Solved,直接用两个数相减，得到的就是两者的距离，如0-65534 = 2
 	5. EncoderNumber>其给定值是可能导致错误，会清零+定时器溢出次数*65536所以会导致错误产生，标记一下。
 	

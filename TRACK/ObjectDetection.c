@@ -38,7 +38,7 @@ static byte CreateObject(byte objectCNT)
 	ObjectBuffer[objectCNT].objectAliveFlag = true;						//激活跟踪过程
 	
 	GlobalObjectID++;
-	TCPSendDataBase(ObjectBuffer[objectCNT].ClientID, strCreateObject);		
+	TCPSendDataChar(ObjectBuffer[objectCNT].ClientID, strCreateObject);		
 	
 	return objectCNT;//返回创建的对象在缓冲数组中的位置
 }
