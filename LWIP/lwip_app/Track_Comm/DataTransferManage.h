@@ -48,6 +48,7 @@ struct Packet
 //bool IsConnected(int clientID);
 
 uint8_t DataTransferManageTask_init(void);
-void TCPSendDataBase(byte clientID, char *pData);
+void TCPSendDataChar(byte clientID, char *pData);
+void TCPSendDataByte(byte clientID, byte *pData, int dataSize);
 
 #endif

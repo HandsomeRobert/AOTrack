@@ -5,8 +5,8 @@
 #include "task.h"
 
 /////////////////////////TCPServer//////////////////////////////////////////////////
-uint16_t PortReceive = 5000;	//PortReceive
-uint16_t PortSend = 5001;
+uint16_t PortReceive = 20200;	//PortReceive
+uint16_t PortSend = 20201;
 
 uint16_t MsIdleTime = 100;
 uint8_t ClientNum = 0;				//定义Client数目
@@ -123,7 +123,7 @@ static void TCPServerListenThread(void *arg)
 				{
 					//创建一个新的Send Socket
 					//即一个检测程序Inspection使用两条socket（NetConnRecv和NetConnSend）分别用于收发...
-					netConnSend=netconn_new(NETCONN_TCP);  //创建一个TCP链接
+					netConnSend=netconn_new(NETCONN_TCP);  //创建一个TCP链接...第六次创建的netConnSend ==NULL,出错在此new函数内部未能分配到内存....
 					err_SendNetConn = netconn_connect(netConnSend,&ipaddr,PortSend);//连接服务器5001端口
 					
 					if (err_SendNetConn == ERR_OK)    //处理新连接的数据
@@ -134,7 +134,7 @@ static void TCPServerListenThread(void *arg)
 					else if(err_SendNetConn != ERR_OK)
 					{
 						netconn_delete(netConnSend); //返回值不等于ERR_OK,删除tcp_clientconn连接
-						printf("TCP_Server Connect Failed!!!\n");
+						printf("TCP_Server Connect Failed!!!==>error code ::[%d]\n", err_SendNetConn);
 					}
 
 					//将client，netConnSend, netConnRecv等加入到Session里
@@ -154,8 +154,8 @@ static void TCPServerListenThread(void *arg)
 				recv_err = netconn_recv(Session[i_cycle].NetConnRecv,&recvnetbuf);
 				if(recv_err == ERR_CLSD)
 				{
-					netconn_close(Session[i_cycle].NetConnRecv);
-					netconn_close(Session[i_cycle].NetConnSend);
+					netconn_delete(Session[i_cycle].NetConnRecv);
+					netconn_delete(Session[i_cycle].NetConnSend);
 					destroyQueue (Session[i_cycle].QueueRecv);
 					destroyQueue (Session[i_cycle].QueueSend);
 					//printf("主机:%d.%d.%d.%d断开与服务器的连接\r\n",remot_addr[0], remot_addr[1],remot_addr[2],remot_addr[3]);
@@ -173,7 +173,7 @@ static void TCPServerListenThread(void *arg)
 	vTaskDelay(100);  	//每隔1000ms秒扫描一次是否有端口接入
 	}
 	
-	netconn_close(conn);//关闭监听端口
+	netconn_delete(conn);//关闭监听端口
 	IsRunning = false;
 }
 

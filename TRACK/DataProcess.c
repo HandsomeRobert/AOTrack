@@ -3,10 +3,13 @@
 ***************************************************************************************************/
 #include "DataProcess.h"
 #include "malloc.h"
+//#include "ObjectDetection.h"
 
 TaskHandle_t DataProcessTask_Handler;
 static void DataProcessThread(void *arg);
-
+static void PCGetConnectedClientIDs(byte clientID, struct PacketServerSession session[], int clientNum);
+static void STM32GetPushResult(int lineID, int objectID, int pushline, int priority);
+static void STM32SetTrackingMode(int lineID, int mode, int interval);
 //创建数据处理
 //返回值:0数据处理任务创建成功
 //		其他 数据处理创建失败
@@ -67,10 +70,10 @@ static void DataProcessThread(void *arg)
 					{	//System
 						case ActionHeartBeat: 	break;
 						case ActionWarmRestart: break;
-						case ActionColdRestart: xSemaphoreGive(OnSysRestart);break;
-						case ActionReconfiguration: break;
+						case ActionColdRestart: 		xSemaphoreGive(OnSysRestart);							break;
+						case ActionReconfiguration: 		break;//xSemaphoreGive(OnLoadParametersFromPC);
 						case ActionStartIOLive: break;
-						case ActionGetConnectedClientID: break;
+						case ActionGetConnectedClientID: PCGetConnectedClientIDs(0, Session, ClientNum);break;
 						case ActionErrorMessage: break;
 						case ActionErrorAcknowledge: break;
 						//Tracking
@@ -80,7 +83,7 @@ static void DataProcessThread(void *arg)
 						case ActionTriggerCamera: break;
 						case ActionTriggerIOSensor: break;
 						case ActionGetMachineData: break;
-						case ActionSetPushResult: break;
+						case ActionSetPushResult: break;//STM32GetPushResult(lineID, objectID, moduleID, encoder);
 						case ActionSetUserResult: break;
 						case ActionStartTracking: break;
 						case ActionObjectFallDown: break;
@@ -88,7 +91,7 @@ static void DataProcessThread(void *arg)
 						case ActionSetPLCVariable: break;
 						case ActionStartControl: break;
 						//Diagnostics
-						case ActionSetTrackingMode: break;
+						case ActionSetTrackingMode: STM32SetTrackingMode(lineID, objectID, moduleID);break;
 						case ActionObjectPosition: break;
 						case ActionObjectWidth: break;
 						case ActionRequestModuleInfo: break;
@@ -97,7 +100,7 @@ static void DataProcessThread(void *arg)
 						
 					}
 				}
-				else printf("Out Queue[%d] failed! \n", i);								
+				else printf("Outueue[%d] failed! \n", i);								
 			}
 		}
 		
@@ -105,3 +108,52 @@ static void DataProcessThread(void *arg)
 	}																					
 }
 
+static void PCGetConnectedClientIDs(byte clientID, struct PacketServerSession session[], int clientNum)
+{
+		byte* pByte;
+//	int clientIDs[clientNum];
+	byte i = 0;
+	for(i=0; i < clientNum; i++)
+	{
+		*pByte = session[i].ClientID;
+		pByte++;
+	}
+	
+	TCPSendDataByte(clientID , pByte, clientNum);		//有多少个客户端就有多少个Client
+}
+
+//static void STM32GetPushResult(int lineID, int objectID, int pushline, int priority)
+//{
+//	byte object_i = 0;
+//	//遍历查找objectID在对象缓冲数组的位置
+//	while(ObjectBuffer[object_i].ObjectID != objectID)
+//	{
+//		object_i++;
+//		if(object_i > (maxTrackingObjects - 1)) //遍历到了末尾仍未找到
+//		{
+//			printf("Cannot Find The consistent ObjectID in ObjectBuffer failed. \n");
+//			break;
+//		}	
+//	}
+//	
+//	ObjectBuffer[object_i].ProcessedResult = false;			//处理的结果为剔除
+//}	
+
+/// <summary>
+/// PC设置STM32跟踪模式
+/// </summary>
+/// <param name="mode"></param>
+/// <param name="interval"></param>
+/// [ObjectID]
+/// 0: 	TrackingNone 			停止跟踪
+///	1: 	TrackingProduction 		标准跟踪模式
+///	2:	TrackingOneObject		诊断跟踪模式，单个诊断跟踪对象
+///	3:	TrackingMultiObject		诊断跟踪模式，一个争端跟踪对象生存期结束后自动产生下一个诊断跟踪对象
+///	4:	TrackingLearning		学习跟踪模式，在整个跟踪过程中，只允许有一个跟踪对象经过检测区域
+///	[ModuleID]
+/// interval: the module position packet will be sent 
+        /// every number of tracking cycles  
+static void STM32SetTrackingMode(int lineID, int mode, int interval)
+{
+	//Reamin to be done!!!
+}

@@ -111,9 +111,9 @@ void tcp_client_thread(void *arg)
 					netbuf_delete(recvbuf);
 				}else if(recv_err == ERR_CLSD)  //关闭连接
 				{
-					netconn_close(tcp_clientconn);
 					netconn_delete(tcp_clientconn);
-					printf("服务器%d.%d.%d.%d断开连接\r\n",lwipdev.remoteip[0],lwipdev.remoteip[1], lwipdev.remoteip[2],lwipdev.remoteip[3]);
+					netconn_delete(tcp_clientconn);
+					printf("服务器%d.%d.%d.%d删除连接\r\n",lwipdev.remoteip[0],lwipdev.remoteip[1], lwipdev.remoteip[2],lwipdev.remoteip[3]);
 					break;
 				}
 			}

@@ -20,7 +20,7 @@ static void DataTransferManage(void *arg);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void TCPSendDataBase(byte clientID, char *pData)
+void TCPSendDataChar(byte clientID, char *pData)
 {
 	err_t err;
 	int i = 0;
@@ -29,7 +29,21 @@ void TCPSendDataBase(byte clientID, char *pData)
 		if(Session[i].ClientID == clientID)
 		{
 			err = netconn_write(Session[i].NetConnSend ,pData,strlen(pData),NETCONN_COPY); //发送数据sizeof(tcp_server_sendbuf)
-			if(err != ERR_OK) printf("Send data Failed,Please check it in DataTransferManage.c \r\n");
+			if(err != ERR_OK) printf("Send data in TCPSendDataChar Failed,Please check it in DataTransferManage.c \r\n");
+		}
+	}		
+}
+
+void TCPSendDataByte(byte clientID, byte *pData, int dataSize)
+{
+	err_t err;
+	int i = 0;
+	for(i = 0;i<ClientNum;i++)
+	{
+		if(Session[i].ClientID == clientID)
+		{
+			err = netconn_write(Session[i].NetConnSend , pData, dataSize, NETCONN_COPY); //发送数据sizeof(tcp_server_sendbuf)
+			if(err != ERR_OK) printf("Send data in TCPSendDataByte Failed,Please check it in DataTransferManage.c \r\n");
 		}
 	}		
 }
