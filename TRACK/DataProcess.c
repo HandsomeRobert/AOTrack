@@ -3,7 +3,7 @@
 ***************************************************************************************************/
 #include "DataProcess.h"
 #include "malloc.h"
-//#include "ObjectDetection.h"
+#include "ObjectDetection.h"
 
 TaskHandle_t DataProcessTask_Handler;
 static void DataProcessThread(void *arg);
@@ -35,11 +35,11 @@ static void DataProcessThread(void *arg)
 	byte err = 0;
 	int* pInt;
 	byte* pByte;
-	static int lineID = 0;
+	static int lineID 	= 0;
 	static int actionID = 0;
 	static int objectID = 0;
 	static int moduleID = 0;
-	static int encoder = 0;
+	static int encoder 	= 0;
 	static int dataSize = 0;
 	
 	int* pRecvData = (int*)mymalloc(SRAMEX, TCP_Queue_MAXBUFSIZE);		//从PC来的完整数据包
@@ -68,35 +68,35 @@ static void DataProcessThread(void *arg)
 					
 					switch(actionID)						//来自PC的控制命令
 					{	//System
-						case ActionHeartBeat: 	break;
-						case ActionWarmRestart: break;
-						case ActionColdRestart: 		xSemaphoreGive(OnSysRestart);							break;
-						case ActionReconfiguration: 		break;//xSemaphoreGive(OnLoadParametersFromPC);
-						case ActionStartIOLive: break;
-						case ActionGetConnectedClientID: PCGetConnectedClientIDs(0, Session, ClientNum);break;
-						case ActionErrorMessage: break;
-						case ActionErrorAcknowledge: break;
+						case PCCmdActionHeartBeat: 		break;
+						case PCCmdActionWarmRestart: 	break;
+						case PCCmdActionColdRestart: 		xSemaphoreGive(OnSysRestart);							break;
+						case PCCmdActionReconfiguration: 		break;//xSemaphoreGive(OnLoadParametersFromPC);
+						case PCCmdActionStartIOLive: 	break;
+						case PCCmdActionGetConnectedClientID: PCGetConnectedClientIDs(0, Session, ClientNum);break;
+						case PCCmdActionErrorMessage: break;
+						case PCCmdActionErrorAcknowledge: break;
 						//Tracking
-						case ActionObjectRunIn: break;
-						case ActionObjectRunOut: break;
-						case ActionObjectDelete: break;
-						case ActionTriggerCamera: break;
-						case ActionTriggerIOSensor: break;
-						case ActionGetMachineData: break;
-						case ActionSetPushResult: break;//STM32GetPushResult(lineID, objectID, moduleID, encoder);
-						case ActionSetUserResult: break;
-						case ActionStartTracking: break;
-						case ActionObjectFallDown: break;
+						case PCCmdActionObjectRunIn: break;
+						case PCCmdActionObjectRunOut: break;
+						case PCCmdActionObjectDelete: break;
+						case PCCmdActionTriggerCamera: break;
+						case PCCmdActionTriggerIOSensor: break;
+						case PCCmdActionGetMachineData: break;
+						case PCCmdActionSetPushResult: STM32GetPushResult(lineID, objectID, moduleID, encoder);break;//
+						case PCCmdActionSetUserResult: break;
+						case PCCmdActionStartTracking: break;
+						case PCCmdActionObjectFallDown: break;
 						//Automation
-						case ActionSetPLCVariable: break;
-						case ActionStartControl: break;
+						case PCCmdActionSetPLCVariable: break;
+						case PCCmdActionStartControl: break;
 						//Diagnostics
-						case ActionSetTrackingMode: STM32SetTrackingMode(lineID, objectID, moduleID);break;
-						case ActionObjectPosition: break;
-						case ActionObjectWidth: break;
-						case ActionRequestModuleInfo: break;
-						case ActionRequestPLCInfo: break;
-						case ActionTrackingDummy: break;
+						case PCCmdActionSetTrackingMode: STM32SetTrackingMode(lineID, objectID, moduleID);break;
+						case PCCmdActionObjectPosition: break;
+						case PCCmdActionObjectWidth: break;
+						case PCCmdActionRequestModuleInfo: break;
+						case PCCmdActionRequestPLCInfo: break;
+						case PCCmdActionTrackingDummy: break;
 						
 					}
 				}
@@ -122,22 +122,22 @@ static void PCGetConnectedClientIDs(byte clientID, struct PacketServerSession se
 	TCPSendDataByte(clientID , pByte, clientNum);		//有多少个客户端就有多少个Client
 }
 
-//static void STM32GetPushResult(int lineID, int objectID, int pushline, int priority)
-//{
-//	byte object_i = 0;
-//	//遍历查找objectID在对象缓冲数组的位置
-//	while(ObjectBuffer[object_i].ObjectID != objectID)
-//	{
-//		object_i++;
-//		if(object_i > (maxTrackingObjects - 1)) //遍历到了末尾仍未找到
-//		{
-//			printf("Cannot Find The consistent ObjectID in ObjectBuffer failed. \n");
-//			break;
-//		}	
-//	}
-//	
-//	ObjectBuffer[object_i].ProcessedResult = false;			//处理的结果为剔除
-//}	
+static void STM32GetPushResult(int lineID, int objectID, int pushline, int priority)
+{
+	byte object_i = 0;
+	//遍历查找objectID在对象缓冲数组的位置
+	while(ObjectBuffer[object_i].ObjectID != objectID)
+	{
+		object_i++;
+		if(object_i > (maxTrackingObjects - 1)) //遍历到了末尾仍未找到
+		{
+			printf("Cannot Find The consistent ObjectID in ObjectBuffer failed. \n");
+			break;
+		}	
+	}
+	
+	ObjectBuffer[object_i].ProcessedResult = false;			//处理的结果为剔除
+}	
 
 /// <summary>
 /// PC设置STM32跟踪模式

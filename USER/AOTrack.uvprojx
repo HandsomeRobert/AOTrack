@@ -469,6 +469,11 @@
               <FileType>1</FileType>
               <FilePath>..\TRACK\DataProcess.c</FilePath>
             </File>
+            <File>
+              <FileName>TCPProtocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TRACK\TCPProtocol.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -13,41 +13,39 @@
 //#include "ObjectDetection.h"				//对象创建进程
 
 //System
-#define ActionHeartBeat 				1
-#define ActionWarmRestart  			2
-#define ActionColdRestart 			3
-#define ActionReconfiguration  	4
+#define PCCmdActionHeartBeat 							1
+#define PCCmdActionWarmRestart  					2
+#define PCCmdActionColdRestart 						3
+#define PCCmdActionReconfiguration  			4
 
-#define ActionStartIOLive  			10
-#define ActionGetConnectedClientID 11
-#define ActionErrorMessage  		20
-#define ActionErrorAcknowledge  21
+#define PCCmdActionStartIOLive  					10
+#define PCCmdActionGetConnectedClientID 	11
+#define PCCmdActionErrorMessage  					20
+#define PCCmdActionErrorAcknowledge  			21
 
 //Tracking
-#define ActionObjectRunIn  			100
-#define ActionObjectRunOut  		101
-#define ActionObjectDelete  		102
-#define ActionTriggerCamera  		103
-#define ActionTriggerIOSensor  	104
-#define ActionGetMachineData  	105
-#define ActionSetPushResult  		106
-#define ActionSetUserResult  		107
-#define ActionStartTracking  		120
-#define ActionObjectFallDown  	130
+#define PCCmdActionObjectRunIn  					100
+#define PCCmdActionObjectRunOut  					101
+#define PCCmdActionObjectDelete  					102
+#define PCCmdActionTriggerCamera  				103
+#define PCCmdActionTriggerIOSensor  			104
+#define PCCmdActionGetMachineData  				105
+#define PCCmdActionSetPushResult  				106
+#define PCCmdActionSetUserResult  				107
+#define PCCmdActionStartTracking  				120
+#define PCCmdActionObjectFallDown  				130
 
 //Automation
-#define ActionSetPLCVariable  	200
-#define ActionStartControl  		201
+#define PCCmdActionSetPLCVariable  				200
+#define PCCmdActionStartControl  					201
 
 //Diagnostics
-#define ActionSetTrackingMode  	301
-#define ActionObjectPosition  	302
-#define ActionObjectWidth  			303
-#define ActionRequestModuleInfo 304
-#define ActionRequestPLCInfo  	305
-#define ActionTrackingDummy  		306
-
-
+#define PCCmdActionSetTrackingMode  			301
+#define PCCmdActionObjectPosition  				302
+#define PCCmdActionObjectWidth  					303
+#define PCCmdActionRequestModuleInfo 			304
+#define PCCmdActionRequestPLCInfo  				305
+#define PCCmdActionTrackingDummy  				306
 
 
 uint8_t DataProcessTask_init(void);

@@ -36,7 +36,7 @@ struct TrackingConfiguration
 };
 ///////动作种类ActionList
 //询问机器数据动作
-struct ActionRequestMachineData
+struct propActionRequestMachineData
 {
 	bool			ActionTriggerFlag;				//用于确认是否从动作列表中开启此动作了。
 	uint32_t ConfigurationID;
@@ -45,7 +45,7 @@ struct ActionRequestMachineData
 	uint16_t HighestTargetValueAdjust;//高速补偿值
 };
 //设置输出动作
-struct ActionSetOutput
+struct propActionSetOutput
 {
 	bool			ActionTriggerFlag;				//用于确认是否从动作列表中开启此动作了。
 	uint32_t ConfigurationID;
@@ -58,7 +58,7 @@ struct ActionSetOutput
 	bool     OutputInvert;					//信号反转，即高低电平翻转是否
 };
 //传递动作
-struct ActionObjectTakeOver
+struct propActionObjectTakeOver
 {
 	bool			ActionTriggerFlag;				//用于确认是否从动作列表中开启此动作了。
 	uint32_t ConfigurationID;
@@ -68,7 +68,7 @@ struct ActionObjectTakeOver
 	uint8_t  DestinationModule;			 //传递对象到哪个跟踪段
 };
 //触发相机动作
-struct ActionTriggerCamera
+struct propActionTriggerCamera
 {
 	bool			ActionTriggerFlag;				//用于确认是否从动作列表中开启此动作了。
 	uint32_t ConfigurationID;
@@ -83,7 +83,7 @@ struct ActionTriggerCamera
 	uint16_t OutputDuration;					//触发信号持续时间
 };
 //触发IO采集动作
-struct ActionTriggerSensor
+struct propActionTriggerSensor
 {
 	bool			ActionTriggerFlag;				//用于确认是否从动作列表中开启此动作了。
 	uint32_t ConfigurationID;
@@ -95,7 +95,7 @@ struct ActionTriggerSensor
 	uint8_t  SensorID;								//传感器ID，使用哪个传感器采集
 };
 //剔除动作
-struct ActionPushOut
+struct propActionPushOut
 {
 	bool			ActionTriggerFlag;				//用于确认是否从动作列表中开启此动作了。
 	uint32_t ConfigurationID;
@@ -114,12 +114,12 @@ struct ActionPushOut
 //////////
 struct ActionInstance
 {
-	struct ActionRequestMachineData Item_ActionRequestMachineData;
-	struct ActionSetOutput Item_ActionSetOutput;
-	struct ActionObjectTakeOver Item_ActionObjectTakeOver;
-	struct ActionTriggerCamera Item_ActionTriggerCamera;
-	struct ActionTriggerSensor Item_ActionTriggerSensor;
-	struct ActionPushOut Item_ActionPushOut;	
+	struct propActionRequestMachineData Item_ActionRequestMachineData;
+	struct propActionSetOutput 					Item_ActionSetOutput;
+	struct propActionObjectTakeOver 		Item_ActionObjectTakeOver;
+	struct propActionTriggerCamera 			Item_ActionTriggerCamera;
+	struct propActionTriggerSensor 			Item_ActionTriggerSensor;
+	struct propActionPushOut 						Item_ActionPushOut;	
 };
 
 //跟踪段具体配置

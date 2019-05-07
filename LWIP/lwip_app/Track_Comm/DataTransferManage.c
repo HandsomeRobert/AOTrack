@@ -118,17 +118,22 @@ static void DataTransferManage(void *arg)
 					}
 					taskEXIT_CRITICAL();  //开中断
 					
+					/*入队操作会导致Xispekvision重复连/段TCP Connection*/
 					if(enQueue(Session[i_cycle].QueueRecv, DataTransferManage_recvbuf, data_len))		//接收到的数据放入缓冲区
 					{
 						printf("Inset Element to ReceiveBuffer[%d] queue successful! \r\n", i_cycle);
 					}
+					
 					data_len=0;  //复制完成后data_len要清零。
 					printf("接到数据来自Client[%d]\n", i_cycle);
-					printf("%s\r\n",DataTransferManage_recvbuf);  //通过串口发送接收到的数据
+					printf("%s\r\n",DataTransferManage_recvbuf);  //通过串口发送接收到的数据		
 					netbuf_delete(recvbuf);//一定要加上这一句!!!!不然会内存泄漏！！！
+					recvbuf = NULL;
 				}
 			}			
 		}
 	vTaskDelay(100);//100ms后再启用
 	}
 }
+
+

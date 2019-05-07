@@ -11,6 +11,7 @@
 "..\obj\tracking.o"
 "..\obj\actionexecute.o"
 "..\obj\dataprocess.o"
+"..\obj\tcpprotocol.o"
 "..\obj\lwip_comm.o"
 "..\obj\tcppacketserver.o"
 "..\obj\tcppacketclient.o"

@@ -148,7 +148,11 @@
 	
 2019.5.6 
 	解决Bug1，TCP只能连接5次的问题，原因是使用netconn_close只是关闭了端口，未释放资源导致new netconn（应使用netconn_delete）的时候申请不到空间....，导致内存泄漏！！！
-
+2019.5.7
+	发现Bug7可能原因是DMA接收速度太慢了，空间满了，阻塞了，因为用电脑软件1S发一次就没啥问题。
+	但是，也就XISPEK软件连会阻塞，我自己的用调试助手不会出现阻塞（1ms周期循环发送）....
+	
+	
 Bug Report：
 XXXX1. 2019.3.14：(2019.5.6 Solved解决了,netconn_close改为netconn_delete即可)
 XXXXClient与STM32（TecpServer）多次连接&断开后，无法再次连接STM32了，第6次连接（单个client）时会出现报错：
@@ -167,4 +171,5 @@ XXXX！！至于为什么第6次之后就不能再连上PC的TCP Server了，有待探索。。。。
 	4. 当编码器数值溢出时可能出现BUG，即所有跟踪段的参考设计 可能都会出错.....
 XXXX	Solved,直接用两个数相减，得到的就是两者的距离，如0-65534 = 2
 	5. EncoderNumber>其给定值是可能导致错误，会清零+定时器溢出次数*65536所以会导致错误产生，标记一下。
+	6. BUG==>数据接收在运行一段时间后会阻塞....阻塞在lan8720.c的152行，fframeLength=((DMARxDesc->Status&ETH_DMARXDESC_FL)>>ETH_DMARXDESC_FRAME_LENGTHSHIFT);
 	
