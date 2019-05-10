@@ -6,6 +6,7 @@
 
 #include "FreeRTOS.h"
 #include "TaskManage.h"
+#include "TCPProtocol.h"
 
 #define LWIP_SEND_DATA			0X80    //定义有数据发送
 #define DATA_RX_BUFSIZE	2000		//定义tcp server最大接收数据长度
@@ -13,22 +14,22 @@
 
 extern uint8_t DataSendFlag;
 
-struct Packet
-{
-	const int HEADER_SIZE ;
-	const int TAILER_SIZE ;
+//struct Packet
+//{
+//	const int HEADER_SIZE ;
+//	const int TAILER_SIZE ;
 
-	int BeginWord;
-	int PacketID;			//used as priority
-	int PacketType;
-	int DataBytes;
-	char* pData;
-	int EndWord;
+//	int BeginWord;
+//	int PacketID;			//used as priority
+//	int PacketType;
+//	int DataBytes;
+//	char* pData;
+//	int EndWord;
 
-//	int GetPacketSize();
-//	//return the packet size, 0 if no complete packet, -1 if format is wrong
-//	int GetPacketFromBuffer(char* pBuffer, int len);
-};
+////	int GetPacketSize();
+////	//return the packet size, 0 if no complete packet, -1 if format is wrong
+////	int GetPacketFromBuffer(char* pBuffer, int len);
+//};
 //struct Command
 //{
 
@@ -50,5 +51,6 @@ struct Packet
 uint8_t DataTransferManageTask_init(void);
 void TCPSendDataChar(byte clientID, char *pData);
 void TCPSendDataByte(byte clientID, byte *pData, int dataSize);
+void TCPSendPacket(byte clientID, Packet* packet);
 
 #endif

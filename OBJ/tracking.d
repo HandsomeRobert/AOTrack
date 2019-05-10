@@ -93,6 +93,7 @@
 ..\obj\tracking.o: ..\HARDWARE\ENCODER\bsp_encoder.h
 ..\obj\tracking.o: ..\CORE\core_cm7.h
 ..\obj\tracking.o: ..\LWIP\lwip_app\Track_Comm\DataTransferManage.h
+..\obj\tracking.o: ..\TRACK\TCPProtocol.h
 ..\obj\tracking.o: ..\LWIP\lwip_app\TcpPacketServer\TcpPacketServer.h
 ..\obj\tracking.o: ..\SYSTEM\sys\sys.h
 ..\obj\tracking.o: ..\CORE\core_cm7.h

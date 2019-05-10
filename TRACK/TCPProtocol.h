@@ -12,9 +12,9 @@
 typedef struct
 {
 	int LineID;
-	int ModuleID;
 	int ActionID;
 	int ObjectID;
+	int ModuleID;
 	int Encoder;
 	int DataSize;
 	
@@ -31,8 +31,18 @@ typedef struct
 	
 	char* pData;
 	int EndWord;
+	int TotalDataSize;
 	
 }Packet;
+
+/*
+**创建各种包
+*******/
+Packet* CreateStartTrackingPacket(int lineID, int objectID);
+Packet* CreateObjectRunInPacket(int lineID, int objectID, int moduleID, int encoder, int flag, int lastTriggerPreviousEncoder,int lastReceivePreviousEncoder);
+Packet* CreateObjectRunOutPacket(int lineID, int objectID, int moduleID, int encoder, int destModuleID);
+Packet* CreateObjectDeletePacket(int lineID, int objectID, int moduleID, int encoder);
+Packet* CreateTriggerCameraPacket(int lineID, int objectID, int moduleID, int encoder, int cameraID, int imageIndex);
 
 #endif
 

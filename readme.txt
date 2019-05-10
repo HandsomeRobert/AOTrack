@@ -172,4 +172,4 @@ XXXX！！至于为什么第6次之后就不能再连上PC的TCP Server了，有待探索。。。。
 XXXX	Solved,直接用两个数相减，得到的就是两者的距离，如0-65534 = 2
 	5. EncoderNumber>其给定值是可能导致错误，会清零+定时器溢出次数*65536所以会导致错误产生，标记一下。
 	6. BUG==>数据接收在运行一段时间后会阻塞....阻塞在lan8720.c的152行，fframeLength=((DMARxDesc->Status&ETH_DMARXDESC_FL)>>ETH_DMARXDESC_FRAME_LENGTHSHIFT);
-	
+	7. BUG==>XispekVision连接STM32，加入入队操作后会往外发112，不正确。去掉入队操作后，接收一段时间的诊断界面发送的数据后会死机。。。

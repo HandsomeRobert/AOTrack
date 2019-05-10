@@ -66,7 +66,7 @@ static void TCPServerListenThread(void *arg)
 	uint8_t i_cycle = 0,j_cycle = 0;
 	struct netconn* netConnRecv;
 	struct netconn* netConnSend;
-	struct netbuf *recvnetbuf;
+	struct netbuf*	recvnetbuf;
 	//uint8_t *dataReceived;//unsigned char==uint8_t
 //	int *pInt;
 	static bool clientRepateFlag = false;
@@ -88,14 +88,14 @@ static void TCPServerListenThread(void *arg)
 	
 	while (!StopServerListen) 				//初始化上面的代码之后，此线程会一直循环执行这部分代码
 	{
-		//接收连接并创建新的Receive Socket
-		err = netconn_accept(conn,&netConnRecv);  //接收连接请求,扫描是否有连接，利用conn监听，
-																												//有连接请求则创建一个新的连接，存到NetConn数组里，用于建立多个Socket通道通信
 		if(ClientNum<8)//最大创建8个
 		{
+			//接收连接并创建新的Receive Socket
+			err = netconn_accept(conn,&netConnRecv);  //接收连接请求,扫描是否有连接，利用conn监听，
+																												//有连接请求则创建一个新的连接，存到NetConn数组里，用于建立多个Socket通道通信
 			if (err == ERR_OK)    //处理新连接的数据
 			{	
-				xSemaphoreGive(xSemaphore[ClientNum]);	//给TcpPacketClient一个信号量,Inspection的Server的IP和端口号。用于连接Inspection
+				//xSemaphoreGive(xSemaphore[ClientNum]);	//给TcpPacketClient一个信号量,Inspection的Server的IP和端口号。用于连接Inspection
 				
 				netConnRecv->recv_timeout = 10;
 				netconn_getaddr(netConnRecv,&ipaddr,&port,0); //获取远端IP地址和端口号
@@ -103,7 +103,7 @@ static void TCPServerListenThread(void *arg)
 				remot_addr[2] = (uint8_t)(ipaddr.addr>> 16);
 				remot_addr[1] = (uint8_t)(ipaddr.addr >> 8);
 				remot_addr[0] = (uint8_t)(ipaddr.addr);
-				printf("主机%d.%d.%d.%d连接上服务器,主机端口号为:%d\r\n",remot_addr[0], remot_addr[1],remot_addr[2],remot_addr[3],port);				
+				printf("主机%d.%d.%d.%d连接上服务器,远程主机客户端端口号为:%d\r\n",remot_addr[0], remot_addr[1],remot_addr[2],remot_addr[3],port);				
 				
 /***
 				//检查是否有重复的client连接
@@ -123,24 +123,24 @@ static void TCPServerListenThread(void *arg)
 				{
 					//创建一个新的Send Socket
 					//即一个检测程序Inspection使用两条socket（NetConnRecv和NetConnSend）分别用于收发...
-					netConnSend=netconn_new(NETCONN_TCP);  //创建一个TCP链接...第六次创建的netConnSend ==NULL,出错在此new函数内部未能分配到内存....
+					netConnSend=netconn_new(NETCONN_TCP);  //创建一个TCP链接
 					err_SendNetConn = netconn_connect(netConnSend,&ipaddr,PortSend);//连接服务器5001端口
 					
 					if (err_SendNetConn == ERR_OK)    //处理新连接的数据
 					{
 						printf("NetConnSend[%d]==>Establish Successful\n", ClientNum);
+						//将client，netConnSend, netConnRecv等加入到Session里
+						addSession(clientID, ClientNum, netConnRecv, netConnSend);					
+						ClientNum++;	//存储下一组Client的Socket	
+						printf("The number of ClientNum==>%d\r\n", ClientNum);//由于从ClientNum从0开始，所以ClientNum++后才是所连接的Client数目
 						
 					}
-					else if(err_SendNetConn != ERR_OK)
+					else
 					{
 						netconn_delete(netConnSend); //返回值不等于ERR_OK,删除tcp_clientconn连接
 						printf("TCP_Server Connect Failed!!!==>error code ::[%d]\n", err_SendNetConn);
 					}
 
-					//将client，netConnSend, netConnRecv等加入到Session里
-					addSession(clientID, ClientNum, netConnRecv, netConnSend);					
-					ClientNum++;	//存储下一组Client的Socket	
-					printf("The number of ClientNum==>%d\r\n", ClientNum);//由于从ClientNum从0开始，所以ClientNum++后才是所连接的Client数目
 				}					
 			}			
 		}			
@@ -154,10 +154,12 @@ static void TCPServerListenThread(void *arg)
 				recv_err = netconn_recv(Session[i_cycle].NetConnRecv,&recvnetbuf);
 				if(recv_err == ERR_CLSD)
 				{
+					netconn_close	(Session[i_cycle].NetConnRecv);
+					netconn_close	(Session[i_cycle].NetConnSend);
 					netconn_delete(Session[i_cycle].NetConnRecv);
 					netconn_delete(Session[i_cycle].NetConnSend);
-					destroyQueue (Session[i_cycle].QueueRecv);
-					destroyQueue (Session[i_cycle].QueueSend);
+					destroyQueue 	(Session[i_cycle].QueueRecv);
+					destroyQueue 	(Session[i_cycle].QueueSend);
 					//printf("主机:%d.%d.%d.%d断开与服务器的连接\r\n",remot_addr[0], remot_addr[1],remot_addr[2],remot_addr[3]);
 					printf("主机断开XXX的连接：======>%d", Session[i_cycle].ClientID);
 					
@@ -168,6 +170,7 @@ static void TCPServerListenThread(void *arg)
 					ClientNum--;//删除一组session
 				}
 				netbuf_delete(recvnetbuf);//一定要加上这一句!!!!不然会内存泄漏！！！
+				recvnetbuf = NULL;
 			}
 		}	
 	vTaskDelay(100);  	//每隔1000ms秒扫描一次是否有端口接入

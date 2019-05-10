@@ -52,11 +52,6 @@ extern TaskHandle_t ObjectDetectionThread_Handler;
 #define TRACKING_STK_SIZE									256
 extern TaskHandle_t TrackingThread_Handler;
 
-//发送数据	tcp_client_flag |= LWIP_SEND_DATA;
-#define      DataAcquisition_TASK_PRIO      3
-#define      DataAcquisition_STK_SIZE     128
-extern TaskHandle_t DataAcquisitionTask_Handler;
-
 
 //lwip DHCP任务
 //设置任务优先级
@@ -64,13 +59,6 @@ extern TaskHandle_t DataAcquisitionTask_Handler;
 #define LWIP_DHCP_STK_SIZE  		    			256
 
 
-//TCP Client任务
-#define   TCPCLIENT_TASK_PRIO      					2
-#define   TCPCLIENT_STK_SIZE      	 			256
-
-//UDP任务
-#define UDP_PRIO			 											2
-#define UDP_STK_SIZE											300
 
 /******
 //编码器数值查询任务

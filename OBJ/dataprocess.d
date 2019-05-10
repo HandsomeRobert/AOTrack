@@ -91,6 +91,7 @@
 ..\obj\dataprocess.o: ..\FreeRTOS\include\semphr.h
 ..\obj\dataprocess.o: ..\FreeRTOS\include\queue.h
 ..\obj\dataprocess.o: ..\LWIP\lwip_app\Track_Comm\DataTransferManage.h
+..\obj\dataprocess.o: ..\TRACK\TCPProtocol.h
 ..\obj\dataprocess.o: ..\LWIP\lwip_app\TcpPacketServer\TcpPacketServer.h
 ..\obj\dataprocess.o: ..\SYSTEM\sys\sys.h
 ..\obj\dataprocess.o: ..\CORE\core_cm7.h

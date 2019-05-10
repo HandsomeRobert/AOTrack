@@ -8,15 +8,31 @@
  *******************************************************************/
 #include "TCPProtocol.h"
 #include "DataProcess.h"
+#include "malloc.h"
 
-#define COMMAND_HEADER_SIZE 20
-#define PACKET_HEADER_SIZE 	20
+#define COMMAND_HEADER_SIZE 24
+#define PACKET_HEADER_SIZE 	16
+#define IntBeginWord				0x47424B50
+#define IntEndWord					0x44454B50
 
-void CreateStartTrackingPacket(Packet* pPacket, int lineID, int objectID)
+
+void SetValueOffset(char* pDestination, int offset, int value)
 {
+	pDestination = pDestination + offset;
+	*(int*)pDestination = value;
+}
+
+//STM32 <---> PC, twoway
+//StartTracking: [objectID]
+//	0:  Start
+//	1:  Stop
+Packet* CreateStartTrackingPacket(int lineID, int objectID)
+{
+	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
+	int offset = 0;
 	
-	pPacket->BeginWord 	= 0x47424B50;
+	pPacket->BeginWord 	= IntBeginWord;
 	pPacket->PacketID 	= 0;
 	pPacket->PacketType	= 1;
 	pPacket->DataSize	= COMMAND_HEADER_SIZE;
@@ -29,119 +45,137 @@ void CreateStartTrackingPacket(Packet* pPacket, int lineID, int objectID)
 	pCommand->ObjectID = objectID;
 	pCommand->DataSize = 0;
 	
-	pPacket->EndWord = 0x44454B50;
+	offset = PACKET_HEADER_SIZE + COMMAND_HEADER_SIZE;
+	SetValueOffset((char*)pPacket, offset, IntEndWord);	
+	
+	pPacket->TotalDataSize = offset + 4;			//加上EndWord的大小
+	return pPacket;
+}
+
+//PLC ---> PC
+//flag: Create flag
+//	0: object that is taken over
+//	1: object that is normal created
+//	2: object that is created in diagnostics mode
+Packet* CreateObjectRunInPacket(int lineID, int objectID, int moduleID, int encoder, int flag, int lastTriggerPreviousEncoder,int lastReceivePreviousEncoder)
+{
+	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+	Command* pCommand;
+	int offset = 0;
+
+	pPacket->BeginWord = IntBeginWord;
+	pPacket->PacketID = 10;
+	pPacket->PacketType = 1;
+	pPacket->DataSize = COMMAND_HEADER_SIZE + 12;
+	
+	pPacket->pData = (char*)pPacket + PACKET_HEADER_SIZE;
+
+	pCommand->ActionID = PCCmdActionObjectRunIn;
+	pCommand->LineID = lineID;
+	pCommand->ObjectID = objectID;
+	pCommand->ModuleID = moduleID;
+	pCommand->Encoder = encoder;
+	pCommand->DataSize = 12;	
+	
+	offset = PACKET_HEADER_SIZE + COMMAND_HEADER_SIZE;
+	SetValueOffset((char*)pPacket, offset, flag);offset += 4;
+	SetValueOffset((char*)pPacket, offset, lastTriggerPreviousEncoder);offset += 4;
+	SetValueOffset((char*)pPacket, offset, lastReceivePreviousEncoder);offset += 4;
+	SetValueOffset((char*)pPacket, offset, IntEndWord);
+	
+	pPacket->TotalDataSize = offset + 4;
+	return pPacket;
 }
 
 
-void CreateObjectRunInPacket(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder, int flag, int lastTriggerPreviousEncoder,int lastReceivePreviousEncoder)
+Packet* CreateObjectRunOutPacket(int lineID, int objectID, int moduleID, int encoder, int destModuleID)
 {
-		Command* pCommand; 
-		int offset = COMMAND_HEADER_SIZE;
-	
-		pPacket->BeginWord = 0x47424B50;
-		pPacket->PacketID = 10;
-		pPacket->PacketType = 1;
-		pPacket->DataSize = COMMAND_HEADER_SIZE + 12;
-		
-		pPacket->pData = (char*)pPacket + PACKET_HEADER_SIZE;
- 
-		pCommand = (Command*)pPacket->pData;
-		
-		pCommand->ActionID = PCCmdActionObjectRunIn;
-		pCommand->LineID = lineID;
-		pCommand->ObjectID = objectID;
-		pCommand->ModuleID = moduleID;
-		pCommand->Encoder = encoder;
-	
+	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+	Command* pCommand;
+	int offset = 0;
 
-
-		pCommand->DataSize = 12;	
-//		pCommand->SetValue(offset, flag); offset += 4;
-//		pCommand->SetValue(offset, lastTriggerPreviousEncoder); offset += 4;
-//		pCommand->SetValue(offset, lastReceivePreviousEncoder); offset += 4;
+	pPacket->BeginWord = IntBeginWord;
+	pPacket->PacketID = 10;
+	pPacket->PacketType = 1;
+	pPacket->DataSize = COMMAND_HEADER_SIZE + 4;
 		
-		pPacket->EndWord = 0x44454B50;
+	pPacket->pData = (char*)pPacket + PACKET_HEADER_SIZE;
 		
+	pCommand = (Command*)pPacket->pData;
+		
+	pCommand->ActionID = PCCmdActionObjectRunIn;
+	pCommand->LineID = lineID;
+	pCommand->ObjectID = objectID;
+	pCommand->ModuleID = moduleID;
+	pCommand->Encoder = encoder;			
+	pCommand->DataSize = 4;
+	
+	offset = COMMAND_HEADER_SIZE + PACKET_HEADER_SIZE;
+	SetValueOffset((char*)pPacket, offset, destModuleID);offset += 4;
+	SetValueOffset((char*)pPacket, offset, IntEndWord);
+	
+	pPacket->TotalDataSize = offset + 4;
+	return pPacket;
 }
 
-void CreateObjectRunOutPacket(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder, int destModuleID)
+Packet* CreateObjectDeletePacket(int lineID, int objectID, int moduleID, int encoder)
 {
-		Command* pCommand;
-		int offset = COMMAND_HEADER_SIZE;
-	
-		pPacket->BeginWord = 0x47424B50;
-		pPacket->PacketID = 10;
-		pPacket->PacketType = 1;
-		pPacket->DataSize = COMMAND_HEADER_SIZE + 4;
-			
-		pPacket->pData = (char*)pPacket + PACKET_HEADER_SIZE;
-		  
-		pCommand = (Command*)pPacket->pData;
-			
-		pCommand->ActionID = PCCmdActionObjectRunIn;
-		pCommand->LineID = lineID;
-		pCommand->ObjectID = objectID;
-		pCommand->ModuleID = moduleID;
-		pCommand->Encoder = encoder;
-			
-		
-		pCommand->DataSize = 4;
-//		pCommand->SetValue(offset, destModuleID); offset += 4;
-			
-		pPacket->EndWord = 0x44454B50;
-	}
+	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+	Command* pCommand;
+	int offset = 0;
 
-void CreateObjectDeletePacket(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder)
+	pPacket->BeginWord = IntBeginWord;
+	pPacket->PacketID = 10;
+	pPacket->PacketType = 1;
+	pPacket->DataSize = COMMAND_HEADER_SIZE;
+			
+	pPacket->pData = (char*)pPacket + PACKET_HEADER_SIZE;
+
+	pCommand = (Command*)pPacket->pData;
+			
+	pCommand->ActionID = PCCmdActionObjectRunIn;
+	pCommand->LineID = lineID;
+	pCommand->ObjectID = objectID;
+	pCommand->ModuleID = moduleID;
+	pCommand->Encoder = encoder;
+	pCommand->DataSize = 0;
+	
+	offset = COMMAND_HEADER_SIZE + PACKET_HEADER_SIZE;
+	SetValueOffset((char*)pPacket, offset, IntEndWord);
+	
+	pPacket->TotalDataSize = offset + 4;
+	return pPacket;
+}
+	
+
+Packet* CreateTriggerCameraPacket(int lineID, int objectID, int moduleID, int encoder, int cameraID, int imageIndex)
 {
-		Command* pCommand; 
-	
-		pPacket->BeginWord = 0x47424B50;
-		pPacket->PacketID = 10;
-		pPacket->PacketType = 1;
-		pPacket->DataSize = COMMAND_HEADER_SIZE;
-				
-		pPacket->pData = (char*)pPacket + PACKET_HEADER_SIZE;
+	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+	Command* pCommand;
+	int offset = 0;
 
-		pCommand = (Command*)pPacket->pData;
-				
-		pCommand->ActionID = PCCmdActionObjectRunIn;
-		pCommand->LineID = lineID;
-		pCommand->ObjectID = objectID;
-		pCommand->ModuleID = moduleID;
-		pCommand->Encoder = encoder;
-		pCommand->DataSize = 0;
-		
-//		pCommand->SetValue(Command::HEADER_SIZE, (int)0x44454B50);
-		pPacket->EndWord = 0x44454B50;		
+	pPacket->BeginWord = IntBeginWord;
+	pPacket->PacketID = 20;
+	pPacket->PacketType = 1;
+	pPacket->DataSize = COMMAND_HEADER_SIZE + 8;
+			
+	pPacket->pData = (char*)pPacket + PACKET_HEADER_SIZE;
 
-	}
-	
+	pCommand = (Command*)pPacket->pData;
+			
+	pCommand->ActionID = PCCmdActionObjectRunIn;
+	pCommand->LineID = lineID;
+	pCommand->ObjectID = objectID;
+	pCommand->ModuleID = moduleID;
+	pCommand->Encoder = encoder;
+	pCommand->DataSize = 8;
 
-void CreateTriggerCameraPacket(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder, int cameraID, int imageIndex)
-{
-		Command* pCommand;  
-		int offset = COMMAND_HEADER_SIZE;
-	
-		pPacket->BeginWord = 0x47424B50;
-		pPacket->PacketID = 20;
-		pPacket->PacketType = 1;
-		pPacket->DataSize = COMMAND_HEADER_SIZE + 8;
-				
-		pPacket->pData = (char*)pPacket + PACKET_HEADER_SIZE;
+	offset = COMMAND_HEADER_SIZE + PACKET_HEADER_SIZE;
+	SetValueOffset((char*)pPacket, offset, cameraID);offset += 4;
+	SetValueOffset((char*)pPacket, offset, imageIndex);offset += 4;
+	SetValueOffset((char*)pPacket, offset, IntEndWord);
 
-		pCommand = (Command*)pPacket->pData;
-				
-		pCommand->ActionID = PCCmdActionObjectRunIn;
-		pCommand->LineID = lineID;
-		pCommand->ObjectID = objectID;
-		pCommand->ModuleID = moduleID;
-		pCommand->Encoder = encoder;
-				
-		
-		pCommand->DataSize = 8;
-//		pCommand->SetValue(offset, cameraID); offset += 4;
-//		pCommand->SetValue(offset, imageIndex); offset += 4;
-		pPacket->EndWord = 0x44454B50;
-				
-	}
+	pPacket->TotalDataSize = offset + 4;
+	return pPacket;
+}
 	

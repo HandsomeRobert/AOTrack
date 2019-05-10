@@ -116,7 +116,7 @@ static void PCGetConnectedClientIDs(byte clientID, struct PacketServerSession se
 	for(i=0; i < clientNum; i++)
 	{
 		*pByte = session[i].ClientID;
-		pByte++;
+		 pByte++;
 	}
 	
 	TCPSendDataByte(clientID , pByte, clientNum);		//有多少个客户端就有多少个Client

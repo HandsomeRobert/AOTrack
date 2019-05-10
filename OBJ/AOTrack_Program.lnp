@@ -14,8 +14,6 @@
 "..\obj\tcpprotocol.o"
 "..\obj\lwip_comm.o"
 "..\obj\tcppacketserver.o"
-"..\obj\tcppacketclient.o"
-"..\obj\udppacket.o"
 "..\obj\datatransfermanage.o"
 "..\obj\sys_arch.o"
 "..\obj\led.o"

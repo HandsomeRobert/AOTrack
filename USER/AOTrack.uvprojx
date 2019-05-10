@@ -495,16 +495,6 @@
               <FilePath>..\LWIP\lwip_app\TcpPacketServer\TcpPacketServer.c</FilePath>
             </File>
             <File>
-              <FileName>TcpPacketClient.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\LWIP\lwip_app\TcpPacketClient\TcpPacketClient.c</FilePath>
-            </File>
-            <File>
-              <FileName>UdpPacket.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\LWIP\lwip_app\UdpPacket\UdpPacket.c</FilePath>
-            </File>
-            <File>
               <FileName>DataTransferManage.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\LWIP\lwip_app\Track_Comm\DataTransferManage.c</FilePath>

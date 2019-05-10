@@ -4,6 +4,7 @@
 #include "ObjectDetection.h"
 #include <math.h>
 #include "MyList.h"									//跟踪段对象列表
+#include "TCPProtocol.h"
 
 TaskHandle_t ObjectDetectionThread_Handler;
 QueueHandle_t	ModuleQueue[maxTrackingModule];				//创建信息队列用于接收信息	
@@ -17,8 +18,9 @@ __IO	uint32_t GlobalObjectID;																	//定义一个全局对象ID，__IO表示直接
 static void ObjectDetectionThread(void);
 
 
-static byte CreateObject(byte objectCNT)
+static byte CreateObject(byte objectCNT, int moduleID, int encoder, int flag, int lastTriggerPreviousEncoder,int lastReceivePreviousEncoder)
 {
+	Packet* pPacket;
 	while(ObjectBuffer[objectCNT].objectAliveFlag != false)		//防止覆盖跟踪尚未结束的对象
 	{
 		objectCNT++;
@@ -38,8 +40,15 @@ static byte CreateObject(byte objectCNT)
 	ObjectBuffer[objectCNT].objectAliveFlag = true;						//激活跟踪过程
 	
 	GlobalObjectID++;
-	TCPSendDataChar(ObjectBuffer[objectCNT].ClientID, strCreateObject);		
+	//TCPSendDataChar(ObjectBuffer[objectCNT].ClientID, strCreateObject);		
+	//Packet* CreateObjectRunInPacket(int lineID, int objectID, int moduleID, int encoder, int flag, 
+	//	int lastTriggerPreviousEncoder,int lastReceivePreviousEncoder);
+	pPacket = CreateObjectRunInPacket(1, ObjectBuffer[objectCNT].ObjectID, moduleID, encoder, flag, lastTriggerPreviousEncoder, lastReceivePreviousEncoder);
+	TCPSendPacket(ObjectBuffer[objectCNT].ClientID, pPacket);
 	
+	pPacket = CreateStartTrackingPacket(1, GlobalObjectID);
+	printf("%s\r\n",(char*)pPacket);
+	TCPSendPacket(ObjectBuffer[objectCNT].ClientID, pPacket);
 	return objectCNT;//返回创建的对象在缓冲数组中的位置
 }
 
@@ -246,7 +255,7 @@ static void ObjectDetectionThread(void)
 									{
 										printf("Create A New Object, Delivered Object not comming in time. \n");
 										if(GlobalObjectCount > maxTrackingObjects - 1) GlobalObjectCount = 0;//缓冲大小为64，Count必须小于64，否则赋值给CreateObject会出错
-										GlobalObjectCount = CreateObject(GlobalObjectCount);
+										GlobalObjectCount = CreateObject(GlobalObjectCount, Module_i, ModuleConfig[Module_i].Encoder, 1, encoderNumber, encoderNumber);
 										GlobalObjectCount++;
 										
 										for(Action_i = 0;Action_i < ModuleConfig[Module_i].NumberOfActions;Action_i++)
@@ -549,7 +558,7 @@ static void ObjectDetectionThread(void)
 							   triggerInterval > ModuleConfig[Module_i].DoubleTrigger)	//信号防抖和双触发保护
 							{
 								if(GlobalObjectCount > maxTrackingObjects - 1) GlobalObjectCount = 0;//缓冲大小为64，Count必须小于64，否则赋值给CreateObject会出错
-								GlobalObjectCount = CreateObject(GlobalObjectCount);		//创建对象并返还创建的对象在buffer里的位置，因为可能出现想创建的位置上的对象尚未处理完成，则由函数搜索找到空闲的位置创建对象并返回位置
+								GlobalObjectCount = CreateObject(GlobalObjectCount, Module_i, ModuleConfig[Module_i].Encoder, 1, encoderNumber, encoderNumber);
 								GlobalObjectCount++;
 								
 								
