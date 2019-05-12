@@ -151,7 +151,10 @@
 2019.5.7
 	发现Bug7可能原因是DMA接收速度太慢了，空间满了，阻塞了，因为用电脑软件1S发一次就没啥问题。
 	但是，也就XISPEK软件连会阻塞，我自己的用调试助手不会出现阻塞（1ms周期循环发送）....
-	
+
+2019.5.12
+	添加的TCPProtocol数据包生成，然后使用DataTransoferManage内的数据发送可以发送给PC，测试通信成功。PC软件界面会（跟踪控制启动，在ObjectDetection函数内用CreateStartTrackingPacket发送数据）
+界面会出现《控制器跟踪启动》字样。测试通过。接下来就是完善通信和改用数组来实现跟踪，动态链表速度慢，不稳定。。。
 	
 Bug Report：
 XXXX1. 2019.3.14：(2019.5.6 Solved解决了,netconn_close改为netconn_delete即可)
