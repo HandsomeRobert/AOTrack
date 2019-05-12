@@ -27,8 +27,8 @@ void TCPSendPacket(byte clientID, Packet* packet)
 	for(i = 0;i<ClientNum;i++)
 	{
 		if(Session[i].ClientID == clientID)
-		{
-			err = netconn_write(Session[i].NetConnSend ,packet,packet->TotalDataSize,NETCONN_COPY); //!!!发送数据sizeof(tcp_server_sendbuf)
+		{																											//包头大小        +   包数据大小     + 包尾
+			err = netconn_write(Session[i].NetConnSend ,packet,(PACKET_HEADER_SIZE + packet->DataSize + 4),NETCONN_COPY); //!!!发送数据sizeof(tcp_server_sendbuf)
 			if(err != ERR_OK) printf("Send data in TCPSendDataChar Failed,Please check it in DataTransferManage.c \r\n");
 			myfree(SRAMEX, packet);
 		}

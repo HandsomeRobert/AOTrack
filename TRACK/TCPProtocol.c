@@ -10,11 +10,6 @@
 #include "DataProcess.h"
 #include "malloc.h"
 
-#define COMMAND_HEADER_SIZE 24
-#define PACKET_HEADER_SIZE 	16
-#define IntBeginWord				0x47424B50
-#define IntEndWord					0x44454B50
-
 
 void SetValueOffset(char* pDestination, int offset, int value)
 {
@@ -47,8 +42,7 @@ Packet* CreateStartTrackingPacket(int lineID, int objectID)
 	
 	offset = PACKET_HEADER_SIZE + COMMAND_HEADER_SIZE;
 	SetValueOffset((char*)pPacket, offset, IntEndWord);	
-	
-	pPacket->TotalDataSize = offset + 4;			//加上EndWord的大小
+
 	return pPacket;
 }
 
@@ -69,7 +63,8 @@ Packet* CreateObjectRunInPacket(int lineID, int objectID, int moduleID, int enco
 	pPacket->DataSize = COMMAND_HEADER_SIZE + 12;
 	
 	pPacket->pData = (char*)pPacket + PACKET_HEADER_SIZE;
-
+	
+	pCommand = (Command*)pPacket->pData;
 	pCommand->ActionID = PCCmdActionObjectRunIn;
 	pCommand->LineID = lineID;
 	pCommand->ObjectID = objectID;
@@ -81,9 +76,8 @@ Packet* CreateObjectRunInPacket(int lineID, int objectID, int moduleID, int enco
 	SetValueOffset((char*)pPacket, offset, flag);offset += 4;
 	SetValueOffset((char*)pPacket, offset, lastTriggerPreviousEncoder);offset += 4;
 	SetValueOffset((char*)pPacket, offset, lastReceivePreviousEncoder);offset += 4;
-	SetValueOffset((char*)pPacket, offset, IntEndWord);
+	SetValueOffset((char*)pPacket, offset, IntEndWord);	
 	
-	pPacket->TotalDataSize = offset + 4;
 	return pPacket;
 }
 
@@ -113,8 +107,7 @@ Packet* CreateObjectRunOutPacket(int lineID, int objectID, int moduleID, int enc
 	offset = COMMAND_HEADER_SIZE + PACKET_HEADER_SIZE;
 	SetValueOffset((char*)pPacket, offset, destModuleID);offset += 4;
 	SetValueOffset((char*)pPacket, offset, IntEndWord);
-	
-	pPacket->TotalDataSize = offset + 4;
+
 	return pPacket;
 }
 
@@ -143,7 +136,6 @@ Packet* CreateObjectDeletePacket(int lineID, int objectID, int moduleID, int enc
 	offset = COMMAND_HEADER_SIZE + PACKET_HEADER_SIZE;
 	SetValueOffset((char*)pPacket, offset, IntEndWord);
 	
-	pPacket->TotalDataSize = offset + 4;
 	return pPacket;
 }
 	
@@ -175,7 +167,6 @@ Packet* CreateTriggerCameraPacket(int lineID, int objectID, int moduleID, int en
 	SetValueOffset((char*)pPacket, offset, imageIndex);offset += 4;
 	SetValueOffset((char*)pPacket, offset, IntEndWord);
 
-	pPacket->TotalDataSize = offset + 4;
 	return pPacket;
 }
 	

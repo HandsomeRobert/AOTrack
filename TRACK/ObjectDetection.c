@@ -43,8 +43,8 @@ static byte CreateObject(byte objectCNT, int moduleID, int encoder, int flag, in
 	//TCPSendDataChar(ObjectBuffer[objectCNT].ClientID, strCreateObject);		
 	//Packet* CreateObjectRunInPacket(int lineID, int objectID, int moduleID, int encoder, int flag, 
 	//	int lastTriggerPreviousEncoder,int lastReceivePreviousEncoder);
-	pPacket = CreateObjectRunInPacket(1, ObjectBuffer[objectCNT].ObjectID, moduleID, encoder, flag, lastTriggerPreviousEncoder, lastReceivePreviousEncoder);
-	TCPSendPacket(ObjectBuffer[objectCNT].ClientID, pPacket);
+//	pPacket = CreateObjectRunInPacket(1, ObjectBuffer[objectCNT].ObjectID, moduleID, encoder, flag, lastTriggerPreviousEncoder, lastReceivePreviousEncoder);
+//	TCPSendPacket(ObjectBuffer[objectCNT].ClientID, pPacket);
 	
 	pPacket = CreateStartTrackingPacket(1, GlobalObjectID);
 	printf("%s\r\n",(char*)pPacket);

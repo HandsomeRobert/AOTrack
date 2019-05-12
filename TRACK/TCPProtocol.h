@@ -9,6 +9,11 @@
 #ifndef __TCPPROTOCOL_H
 #define __TCPPROTOCOL_H
 
+#define COMMAND_HEADER_SIZE 24
+#define PACKET_HEADER_SIZE 	16
+#define IntBeginWord				0x47424B50
+#define IntEndWord					0x44454B50
+
 typedef struct
 {
 	int LineID;
@@ -29,9 +34,9 @@ typedef struct
 	int PacketType;
 	int DataSize;
 	
-	char* pData;
-	int EndWord;
-	int TotalDataSize;
+	void* pData;
+//	int EndWord;
+//	int TotalDataSize;
 	
 }Packet;
 
