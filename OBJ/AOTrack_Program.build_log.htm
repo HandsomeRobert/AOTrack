@@ -22,22 +22,36 @@ Dialog DLL:      TCM.DLL V1.14.14.0
  
 <h2>Project:</h2>
 E:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\AOTrack.uvprojx
-Project File Date:  05/08/2019
+Project File Date:  05/12/2019
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 3 (build 300)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'AOTrack'
+compiling ActionExecute.c...
+compiling ParametersLoad.c...
+compiling main.c...
+compiling Tracking.c...
 compiling ObjectDetection.c...
+compiling DataTransferManage.c...
+compiling TCPProtocol.c...
+compiling lwip_comm.c...
+compiling TcpPacketServer.c...
+compiling DataProcess.c...
+..\TRACK\DataProcess.c(35): warning:  #177-D: variable "err" was declared but never referenced
+  	byte err = 0;
+..\TRACK\DataProcess.c(43): warning:  #550-D: variable "dataSize" was set but never used
+  	static int dataSize = 0;
+..\TRACK\DataProcess.c: 2 warnings, 0 errors
 linking...
 Program Size: Code=132566 RO-data=177906 RW-data=828 ZI-data=31819236  
-"..\OBJ\AOTrack_Program.axf" - 0 Error(s), 0 Warning(s).
+"..\OBJ\AOTrack_Program.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE
   C:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:05
+Build Time Elapsed:  00:00:16
 </pre>
 </body>
 </html>
