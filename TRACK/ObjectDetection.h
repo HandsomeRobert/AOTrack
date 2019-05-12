@@ -22,6 +22,7 @@
 typedef struct 
 {
 	byte 	ClientID;
+	byte	ModuleID;
 	__IO 	uint32_t ObjectID;
 	__IO 	int64_t BornEncoderNum;			//64Bit来存储可溢出的编码器值
 	char 	*pData;

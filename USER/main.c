@@ -26,9 +26,7 @@
 
 #include "ParametersLoad.h"					//参数读取管理
 #include "TaskManage.h"							//统一管理优先级和堆栈大小
-#include "TcpPacketClient.h" 				//Client端程序
 #include "TcpPacketServer.h"				// Server端程序
-#include "UdpPacket.h"							//UDP端程序
 
 #include "DataTransferManage.h"			//多SOCKET数据传输统一管理
 #include "SemaphoreManage.h"				//统一管理所有信号量的定义和创建
@@ -181,24 +179,7 @@ void Start_task(void *pvParameters)
 	}
 	printf("ActionExecuteThread Initialing Successfully\n");
 	
-/*	
-//	//TCP客户端初始化及线程创建	
-//	taskENTER_CRITICAL();
-//	while(!tcp_client_init())
-//	{
-//		vTaskDelay(500);
-//		printf("TCP_Client Initialing Failed\n");
-//	}
-//	printf("TCP_Client Initialing Successfully\n");
 
-////UDP线程初始化	
-//	while(!udp_demo_init())
-//	{
-//		delay_ms(500);
-//		printf("UDP_Demo Initialing Failed\n");
-//	}
-//	printf("UDP_Demo Initialing Successfully\n");
-*/	
 	xTaskCreate((TaskFunction_t)StatusIndicate_task,
 							(const char*  )"StatusIndicate_task",
 							(uint16_t     )StatusIndicate_STK_SIZE,
@@ -213,13 +194,7 @@ void Start_task(void *pvParameters)
 							(UBaseType_t  )EncoderValue_TASK_PRIO,
 							(TaskHandle_t*)&EncoderValueTask_Handler);						
 ******/							
-	xTaskCreate((TaskFunction_t)DataAcquisition_task,
-							(const char*  )"DataAcquisiton_task",
-							(uint16_t     )DataAcquisition_STK_SIZE,
-							(void*        )NULL,
-							(UBaseType_t  )DataAcquisition_TASK_PRIO,
-							(TaskHandle_t*)&DataAcquisitionTask_Handler);
-		
+							
 	xTaskCreate((TaskFunction_t)SimaulationTimer_task,
 							(const char*  )"SimaulationTimer_task",
 							(uint16_t     )SimulationTimer_STK_SIZE,
@@ -242,34 +217,6 @@ void StatusIndicate_task(void *p_arg)
 		LED1_Toggle;
 		//printf("EncoderNum==>%llu\n", EncoderNumber);
 //printf("Test Status Indicate\n");
-		vTaskDelay(1000);
-	}
-}
-/******
-//编码器查询任务
-void EncoderValue_task()
-{
-	while(1)
-	{
-		EncoderNumber = (OverflowCount*CNT_MAX) + __HAL_TIM_GET_COUNTER(&htimx_Encoder);
-		vTaskDelay(1);
-	}
-}
-******/
-
-void DataAcquisition_task(void * p_arg)
-{
-
-	while(1)
-	{
-    DataSendFlag |= LWIP_SEND_DATA;
-		//tcp_client_flag |= LWIP_SEND_DATA;
-		//udp_flag |= LWIP_SEND_DATA;
-		
-//		//PWM波生成
-//		TIM_SetTIM3Compare4(TIM_GetTIM3Capture4()+1); 
-//		if(TIM_GetTIM3Capture4()==300)
-//		TIM_SetTIM3Compare4(0);
 		vTaskDelay(1000);
 	}
 }

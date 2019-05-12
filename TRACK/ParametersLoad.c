@@ -65,7 +65,7 @@ static void ParametersLoadThread(void *arg)
 																									//跟踪段数量，追踪
 	uint8_t j_cycle = 0;	
 	//跟踪段动作数量，追踪
-	char str_ActionRequestMachineData[]  	= "ActionRequestMachineData";//动作类型
+	char str_ActionRequestMachineData[]  	= "propActionRequestMachineData";//动作类型
 	char str_ActionSetOutput[] 				   	= "ActionSetOutput";
 	char str_ActionObjectTakeOver[] 			= "ActionObjectTakeOver";
 	char str_ActionTriggerCamera[] 				= "ActionTriggerCamera";

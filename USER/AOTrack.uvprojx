@@ -469,6 +469,11 @@
               <FileType>1</FileType>
               <FilePath>..\TRACK\DataProcess.c</FilePath>
             </File>
+            <File>
+              <FileName>TCPProtocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\TRACK\TCPProtocol.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -488,16 +493,6 @@
               <FileName>TcpPacketServer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\LWIP\lwip_app\TcpPacketServer\TcpPacketServer.c</FilePath>
-            </File>
-            <File>
-              <FileName>TcpPacketClient.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\LWIP\lwip_app\TcpPacketClient\TcpPacketClient.c</FilePath>
-            </File>
-            <File>
-              <FileName>UdpPacket.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\LWIP\lwip_app\UdpPacket\UdpPacket.c</FilePath>
             </File>
             <File>
               <FileName>DataTransferManage.c</FileName>
