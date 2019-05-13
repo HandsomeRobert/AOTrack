@@ -2,7 +2,6 @@
 "..\obj\main.o"
 "..\obj\stm32f7xx_it.o"
 "..\obj\system_stm32f7xx.o"
-"..\obj\mylist.o"
 "..\obj\semaphoremanage.o"
 "..\obj\scanio.o"
 "..\obj\tcpqueue.o"

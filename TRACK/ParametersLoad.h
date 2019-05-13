@@ -12,7 +12,6 @@
 #include "sdmmc_sdcard.h"						//SD卡驱动
 #include "sdram.h"									//SDRAM驱动
 #include "ezxml.h"
-#include "MyList.h"									//用于创建跟踪段列表
 
 #define maxTrackingModule  8 				//定义允许的最大跟踪段数量
 #define maxActionSingleModule  15 				//定义允许的最大动作数量
@@ -110,10 +109,23 @@ struct propActionPushOut
 	uint8_t  MinResultNum;						//最少结果数
 };
 
+enum enumActionType
+{
+	ActRequestMachineData,
+	ActSetOutput,
+	ActObjectTakeOver,
+	ActTriggerCamera,
+	ActTriggerSensor,
+	ActPushOut
+};
+
+
 //执行动作
 //////////
 struct ActionInstance
 {
+	enum enumActionType ActionType;
+	
 	struct propActionRequestMachineData Item_ActionRequestMachineData;
 	struct propActionSetOutput 					Item_ActionSetOutput;
 	struct propActionObjectTakeOver 		Item_ActionObjectTakeOver;
@@ -149,6 +161,7 @@ struct ModuleConfiguration				//跟踪段设置
 	uint16_t ObjectWidth;						//对象宽度，一般默认为45
 	uint16_t ObjectInterval;				//对象间隔，一般默认为60
 	uint16_t NumberOfActions;				//动作个数	
+	
 	struct ActionInstance ActionInstanceConfig[maxActionSingleModule];		//定义此段跟踪段的对象
 };
 

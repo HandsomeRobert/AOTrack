@@ -131,7 +131,7 @@ static void STM32GetPushResult(int lineID, int objectID, int pushline, int prior
 		object_i++;
 		if(object_i > (maxTrackingObjects - 1)) //遍历到了末尾仍未找到
 		{
-			printf("Cannot Find The consistent ObjectID in ObjectBuffer failed. \n");
+			printf("Cannot Find The consistent ObjectID in ObjectBuffer failed. In DataProcess \n");
 			break;
 		}	
 	}

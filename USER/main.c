@@ -32,7 +32,6 @@
 #include "SemaphoreManage.h"				//统一管理所有信号量的定义和创建
 #include "Tracking.h"								//跟踪线程
 #include "ObjectDetection.h"				//跟踪对象管理线程
-#include "MyList.h"
 #include "ScanIO.h"
 #include "DataProcess.h"						//数据处理线程
 

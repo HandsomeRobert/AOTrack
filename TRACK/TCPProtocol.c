@@ -10,7 +10,6 @@
 #include "DataProcess.h"
 #include "malloc.h"
 
-
 void SetValueOffset(char* pDestination, int offset, int value)
 {
 	pDestination = pDestination + offset;
@@ -30,15 +29,15 @@ Packet* CreateStartTrackingPacket(int lineID, int objectID)
 	pPacket->BeginWord 	= IntBeginWord;
 	pPacket->PacketID 	= 0;
 	pPacket->PacketType	= 1;
-	pPacket->DataSize	= COMMAND_HEADER_SIZE;
+	pPacket->DataSize		= COMMAND_HEADER_SIZE;
 	
 	pPacket->pData = (char*)pPacket + PACKET_HEADER_SIZE;
 
 	pCommand = (Command*)pPacket->pData;
-	pCommand->LineID = lineID;
-	pCommand->ActionID = PCCmdActionStartTracking;
-	pCommand->ObjectID = objectID;
-	pCommand->DataSize = 0;
+	pCommand->LineID 		= lineID;
+	pCommand->ActionID 	= PCCmdActionStartTracking;
+	pCommand->ObjectID 	= objectID;
+	pCommand->DataSize 	= 0;
 	
 	offset = PACKET_HEADER_SIZE + COMMAND_HEADER_SIZE;
 	SetValueOffset((char*)pPacket, offset, IntEndWord);	
@@ -57,20 +56,20 @@ Packet* CreateObjectRunInPacket(int lineID, int objectID, int moduleID, int enco
 	Command* pCommand;
 	int offset = 0;
 
-	pPacket->BeginWord = IntBeginWord;
-	pPacket->PacketID = 10;
+	pPacket->BeginWord 	= IntBeginWord;
+	pPacket->PacketID 	= 10;
 	pPacket->PacketType = 1;
-	pPacket->DataSize = COMMAND_HEADER_SIZE + 12;
+	pPacket->DataSize 	= COMMAND_HEADER_SIZE + 12;
 	
 	pPacket->pData = (char*)pPacket + PACKET_HEADER_SIZE;
 	
 	pCommand = (Command*)pPacket->pData;
-	pCommand->ActionID = PCCmdActionObjectRunIn;
-	pCommand->LineID = lineID;
-	pCommand->ObjectID = objectID;
-	pCommand->ModuleID = moduleID;
-	pCommand->Encoder = encoder;
-	pCommand->DataSize = 12;	
+	pCommand->ActionID 	= PCCmdActionObjectRunIn;
+	pCommand->LineID 		= lineID;
+	pCommand->ObjectID 	= objectID;
+	pCommand->ModuleID 	= moduleID;
+	pCommand->Encoder 	= encoder;
+	pCommand->DataSize 	= 12;	
 	
 	offset = PACKET_HEADER_SIZE + COMMAND_HEADER_SIZE;
 	SetValueOffset((char*)pPacket, offset, flag);offset += 4;
@@ -88,21 +87,21 @@ Packet* CreateObjectRunOutPacket(int lineID, int objectID, int moduleID, int enc
 	Command* pCommand;
 	int offset = 0;
 
-	pPacket->BeginWord = IntBeginWord;
-	pPacket->PacketID = 10;
+	pPacket->BeginWord 	= IntBeginWord;
+	pPacket->PacketID 	= 10;
 	pPacket->PacketType = 1;
-	pPacket->DataSize = COMMAND_HEADER_SIZE + 4;
+	pPacket->DataSize 	= COMMAND_HEADER_SIZE + 4;
 		
 	pPacket->pData = (char*)pPacket + PACKET_HEADER_SIZE;
 		
 	pCommand = (Command*)pPacket->pData;
 		
-	pCommand->ActionID = PCCmdActionObjectRunIn;
-	pCommand->LineID = lineID;
-	pCommand->ObjectID = objectID;
-	pCommand->ModuleID = moduleID;
-	pCommand->Encoder = encoder;			
-	pCommand->DataSize = 4;
+	pCommand->ActionID 	= PCCmdActionObjectRunIn;
+	pCommand->LineID 		= lineID;
+	pCommand->ObjectID 	= objectID;
+	pCommand->ModuleID 	= moduleID;
+	pCommand->Encoder 	= encoder;			
+	pCommand->DataSize 	= 4;
 	
 	offset = COMMAND_HEADER_SIZE + PACKET_HEADER_SIZE;
 	SetValueOffset((char*)pPacket, offset, destModuleID);offset += 4;
@@ -117,21 +116,21 @@ Packet* CreateObjectDeletePacket(int lineID, int objectID, int moduleID, int enc
 	Command* pCommand;
 	int offset = 0;
 
-	pPacket->BeginWord = IntBeginWord;
-	pPacket->PacketID = 10;
+	pPacket->BeginWord 	= IntBeginWord;
+	pPacket->PacketID 	= 10;
 	pPacket->PacketType = 1;
-	pPacket->DataSize = COMMAND_HEADER_SIZE;
+	pPacket->DataSize 	= COMMAND_HEADER_SIZE;
 			
 	pPacket->pData = (char*)pPacket + PACKET_HEADER_SIZE;
 
 	pCommand = (Command*)pPacket->pData;
 			
-	pCommand->ActionID = PCCmdActionObjectRunIn;
-	pCommand->LineID = lineID;
-	pCommand->ObjectID = objectID;
-	pCommand->ModuleID = moduleID;
-	pCommand->Encoder = encoder;
-	pCommand->DataSize = 0;
+	pCommand->ActionID 	= PCCmdActionObjectRunIn;
+	pCommand->LineID 		= lineID;
+	pCommand->ObjectID 	= objectID;
+	pCommand->ModuleID 	= moduleID;
+	pCommand->Encoder 	= encoder;
+	pCommand->DataSize 	= 0;
 	
 	offset = COMMAND_HEADER_SIZE + PACKET_HEADER_SIZE;
 	SetValueOffset((char*)pPacket, offset, IntEndWord);
@@ -146,21 +145,21 @@ Packet* CreateTriggerCameraPacket(int lineID, int objectID, int moduleID, int en
 	Command* pCommand;
 	int offset = 0;
 
-	pPacket->BeginWord = IntBeginWord;
-	pPacket->PacketID = 20;
+	pPacket->BeginWord 	= IntBeginWord;
+	pPacket->PacketID 	= 20;
 	pPacket->PacketType = 1;
-	pPacket->DataSize = COMMAND_HEADER_SIZE + 8;
+	pPacket->DataSize 	= COMMAND_HEADER_SIZE + 8;
 			
 	pPacket->pData = (char*)pPacket + PACKET_HEADER_SIZE;
 
 	pCommand = (Command*)pPacket->pData;
 			
-	pCommand->ActionID = PCCmdActionObjectRunIn;
-	pCommand->LineID = lineID;
-	pCommand->ObjectID = objectID;
-	pCommand->ModuleID = moduleID;
-	pCommand->Encoder = encoder;
-	pCommand->DataSize = 8;
+	pCommand->ActionID 	= PCCmdActionObjectRunIn;
+	pCommand->LineID 		= lineID;
+	pCommand->ObjectID 	= objectID;
+	pCommand->ModuleID 	= moduleID;
+	pCommand->Encoder 	= encoder;
+	pCommand->DataSize 	= 8;
 
 	offset = COMMAND_HEADER_SIZE + PACKET_HEADER_SIZE;
 	SetValueOffset((char*)pPacket, offset, cameraID);offset += 4;

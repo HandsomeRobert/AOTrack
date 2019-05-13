@@ -126,7 +126,6 @@
 ..\obj\main.o: ..\EZXML\ezxml.h
 ..\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 ..\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
-..\obj\main.o: ..\COMMON\MyList.h
 ..\obj\main.o: ..\LWIP\lwip_app\TcpPacketServer\TcpPacketServer.h
 ..\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
