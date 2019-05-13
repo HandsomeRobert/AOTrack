@@ -129,7 +129,6 @@
 ..\obj\tracking.o: ..\HARDWARE\SDMMC\sdmmc_sdcard.h
 ..\obj\tracking.o: ..\HARDWARE\SDRAM\sdram.h
 ..\obj\tracking.o: ..\EZXML\ezxml.h
-..\obj\tracking.o: ..\COMMON\MyList.h
 ..\obj\tracking.o: ..\TRACK\ObjectDetection.h
 ..\obj\tracking.o: ..\COMMON\HardwareList.h
 ..\obj\tracking.o: ..\HARDWARE\LightSignal\LightSignal.h

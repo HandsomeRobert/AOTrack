@@ -405,16 +405,6 @@
               <FilePath>..\COMMON\HardwareList.h</FilePath>
             </File>
             <File>
-              <FileName>MyList.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\COMMON\MyList.c</FilePath>
-            </File>
-            <File>
-              <FileName>MyList.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\COMMON\MyList.h</FilePath>
-            </File>
-            <File>
               <FileName>SemaphoreManage.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\COMMON\SemaphoreManage.c</FilePath>

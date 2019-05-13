@@ -155,6 +155,12 @@
 2019.5.12
 	Ìí¼ÓµÄTCPProtocolÊý¾Ý°üÉú³É£¬È»ºóÊ¹ÓÃDataTransoferManageÄÚµÄÊý¾Ý·¢ËÍ¿ÉÒÔ·¢ËÍ¸øPC£¬²âÊÔÍ¨ÐÅ³É¹¦¡£PCÈí¼þ½çÃæ»á£¨¸ú×Ù¿ØÖÆÆô¶¯£¬ÔÚObjectDetectionº¯ÊýÄÚÓÃCreateStartTrackingPacket·¢ËÍÊý¾Ý£©
 ½çÃæ»á³öÏÖ¡¶¿ØÖÆÆ÷¸ú×ÙÆô¶¯¡·×ÖÑù¡£²âÊÔÍ¨¹ý¡£½ÓÏÂÀ´¾ÍÊÇÍêÉÆÍ¨ÐÅºÍ¸ÄÓÃÊý×éÀ´ÊµÏÖ¸ú×Ù£¬¶¯Ì¬Á´±íËÙ¶ÈÂý£¬²»ÎÈ¶¨¡£¡£¡£
+
+2019.5.13
+	Ê¹ÓÃÊý×éÀ´ÊµÏÖTracking£¬¸ÄµôÁËÁ´±í£¬Á´±íËÙ¶ÈÂý¡££¨TrackingÖÜÆÚËÙ¶È4-15ms, ObjectDetectionÖÜÆÚÔÚ12-14ms×óÓÒ£©
+	ObjectTakeOver ¶¯×÷ºÄÊ±£º9ms,  ÆäËü¶¯×÷4ms¡£¡£¡£
+	×¢£ºÊ¹ÓÃ¶ÓÁÐµÄÊ±ºòÒ»¶¨Òª³õÊ¼»¯£¬¼´xQueueCreate,²»È»»á±¨´í£<AssetError:..\FreeRTOS\queue.c,1245£¬1244
+	
 	
 Bug Report£º
 XXXX1. 2019.3.14£º(2019.5.6 Solved½â¾öÁË,netconn_close¸ÄÎªnetconn_delete¼´¿É)

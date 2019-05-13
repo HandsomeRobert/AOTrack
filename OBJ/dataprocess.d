@@ -132,4 +132,3 @@
 ..\obj\dataprocess.o: ..\HARDWARE\SDMMC\sdmmc_sdcard.h
 ..\obj\dataprocess.o: ..\HARDWARE\SDRAM\sdram.h
 ..\obj\dataprocess.o: ..\EZXML\ezxml.h
-..\obj\dataprocess.o: ..\COMMON\MyList.h

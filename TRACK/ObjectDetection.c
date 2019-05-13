@@ -3,16 +3,19 @@
 ***************************************************************************************************/
 #include "ObjectDetection.h"
 #include <math.h>
-#include "MyList.h"									//跟踪段对象列表
 #include "TCPProtocol.h"
 
 TaskHandle_t ObjectDetectionThread_Handler;
-QueueHandle_t	ModuleQueue[maxTrackingModule];				//创建信息队列用于接收信息	
+QueueHandle_t	ModuleQueue[maxTrackingModule];				//创建信息队列用于接收信息
+#define moduleQueueDepth	10
 
 static char* strCreateObject = "<=================Detect someting Create Objectr===================>";
  
 __IO ObjectInfo ObjectBuffer[maxTrackingObjects];										//创建最大只能保存maxTrackingObjects个对象的数组 
-ObjectList ObjectInModuleList[maxTrackingModule];								//定义一个跟踪段指针列表数组
+//ObjectList ObjectInModuleList[maxTrackingModule];								//定义一个跟踪段指针列表数组
+
+StctActionListItem ObjectInModuleList[maxTrackingModule][maxTrackingObjects];//二维数组用于存储所有动作列表
+
 __IO	uint32_t GlobalObjectID;																	//定义一个全局对象ID，__IO表示直接从地址处取值，取得最新值，允许所有软件硬件修改此值
 
 static void ObjectDetectionThread(void);
@@ -52,6 +55,28 @@ static byte CreateObject(byte objectCNT, int moduleID, int encoder, int flag, in
 	return objectCNT;//返回创建的对象在缓冲数组中的位置
 }
 
+static void AddActionToList(byte i, int objectID, int targetValue, enum enumActionType actionType, byte actionNumber, byte outputType, byte outputChannel)
+{
+	int j =0;
+
+	for(j = 0; j<maxTrackingObjects; j++)
+	{
+		if(!ObjectInModuleList[i][j].IsActionAlive)		//判断此动作是否Alive，是则不能覆盖，否则可以覆盖
+		{
+			ObjectInModuleList[i][j].ObjectID				= objectID;
+			ObjectInModuleList[i][j].TargetValue		=	targetValue;
+			ObjectInModuleList[i][j].ActionType			= actionType;
+			ObjectInModuleList[i][j].ActionNumber 	= actionNumber;			//单个Module 里的动作编号，是parametersLoad内需要的。
+			ObjectInModuleList[i][j].OutputType			=	outputType;
+			ObjectInModuleList[i][j].OutputChannel	=	outputChannel;
+			ObjectInModuleList[i][j].IsActionAlive	=	true;						//标记此动作已加入列表，占据了一个位置
+			break;
+		}
+		else if(j == maxTrackingObjects - 1) printf("The ActionList[%d] is full Please check it \n", i);
+	}
+}
+
+
 //创建对象探测任务
 //返回值:0 探测任务创建成功
 //		其他 探测任务创建失败
@@ -79,7 +104,7 @@ static void ObjectDetectionThread(void)
 	uint32_t TimeCountStart = 0;											//用于计算线程运行时间
 	uint16_t timeCount = 0;
 	static bool AddActiveFlag = false;	
-	static ObjectTrack objectTrackTemp ;				//跟踪数据暂存值
+	static StctActionListItem objectTrackTemp ;				//跟踪数据暂存值
 	static ModuleQueueItem* moduleQueueTemp;					//定义一个从队列中暂取数据的暂存值指针
 	static __IO int64_t encoderNumber = 0;     				// 编码器计数值
 	static __IO int64_t encoder1Number = 0;
@@ -97,17 +122,22 @@ static void ObjectDetectionThread(void)
 		/*对象属性初始化*/
 		ObjectBuffer[Object_i].objectAliveFlag 	= false;				//初始化对象标记为未激活跟踪状态
 	}
-	/***创建Module列表和信息队列并初始化表头***/
-	for(Module_i = 0; Module_i <Module_Count;Module_i++)
+	
+	for(Module_i = 0; Module_i < maxTrackingModule; Module_i++)							
 	{
-		InitList(&ObjectInModuleList[Module_i]);																							//创建列表
-		ModuleQueue[Module_i] = xQueueCreate(ModuleQueueLength, sizeof(ModuleQueueItem));		//创建信息队列
-		printf("ModuleQueueItem size = %d \n", sizeof(ModuleQueueItem));
-		printf("Address of ObjectInModuleList[%d] = %p \n", Module_i, ObjectInModuleList[Module_i]);
-		printf("Address of ObjectInModuleList[%d]->next = %p \n", Module_i, ObjectInModuleList[Module_i]->next);
+		/*对象属性初始化*/
+		for(Action_i = 0;Action_i	<	maxTrackingObjects;Action_i++)
+			ObjectInModuleList[Object_i][Action_i].IsActionAlive 	= false;				//初始化跟踪段动作列表中的动作为未激活状态
 	}
 	
+	//创建队列：
+	for(Module_i = 0;Module_i < maxTrackingModule;Module_i++)
+	{
+		ModuleQueue[Module_i] = xQueueCreate(moduleQueueDepth, sizeof(ModuleQueueItem));
+		
+	}
 	moduleQueueTemp = mymalloc(SRAMEX, sizeof(ModuleQueueItem));//初始化指针
+	
 /************************************************************************************************************************************************************			
 *****************************************************************跟踪过程监控区*********************************************************************************				
 *************************************************************************************************************************************************************/				
@@ -129,7 +159,6 @@ static void ObjectDetectionThread(void)
 					case Encoder_2: encoderNumber = encoder2Number;break;
 				}
 
-				
 				if(xQueueReceive(ModuleQueue[Module_i], moduleQueueTemp, 0) == pdTRUE)	//队列中有数据，有动作传递，值传递过来了
 				{
 					/*******传递动作的检测实现****/
@@ -177,78 +206,42 @@ static void ObjectDetectionThread(void)
 									{
 										for(Action_i = 0;Action_i < ModuleConfig[Module_i].NumberOfActions;Action_i++)
 										{
-											objectTrackTemp.ObjectID 				= moduleQueueTemp->DelieverdObjectID;
-											//objectTrackTemp.RefEncoderNum 	= encoderNumber;
 											/*判断是哪种类型的动作(由于定位到了某个跟踪段的某个动作，所以是确定当前动作的种类)*/
-											if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.ActionTriggerFlag == true)
+											switch (ModuleConfig[Module_i].ActionInstanceConfig[Action_i].ActionType)
 											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionTriggerCamera;
-												objectTrackTemp.OutputType 		= TypeOutputDigital;
-												objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput;									
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区											
-												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionObjectTakeOver;
-												objectTrackTemp.OutputType 		= NoOutput;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionSetOutput;
-												objectTrackTemp.OutputType 		= TypeOutputDigital;
-												objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.DigitalOutput;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionTriggerSensor;
-												objectTrackTemp.OutputType 		= TypeOutputDigital;
-												objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionPushOut;
-												objectTrackTemp.OutputType 		= TypeOutputResult;
-												objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionRequestMachineData;
-												objectTrackTemp.OutputType 		= NoOutput;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
+												case ActRequestMachineData:
+													//AddActionToList(byte i, int objectID, int targetValue, enum enumActionType actionType, byte actionNumber, byte outputType, byte outputChannel)
+														 AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue, 
+																						 ActRequestMachineData, Action_i, NoOutput, 0);																				
+												break;
+												
+												case ActSetOutput					: 
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue, 
+																							ActSetOutput, Action_i, TypeOutputDigital, 0);		
+												break;
+												
+												case ActObjectTakeOver		: 
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue, 
+																							ActObjectTakeOver, Action_i, NoOutput, 0);
+												break;
+												
+												case ActTriggerCamera			: 
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue, 
+																							ActTriggerCamera, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput);													
+												break;
+												
+												case ActTriggerSensor			: 
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue, 
+																							ActTriggerSensor, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID);													
+												break;
+												
+												case ActPushOut						: 
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue, 
+																							ActPushOut, Action_i, TypeOutputResult, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput);													
+												break;
+												
+												default:break;
+											}																			
 										}
 									}
 									else		//认为是一个全新的对象了，创建对象，并将目前对象所在跟踪段的动作加入对应的跟踪段列表（无论是否为第一个跟踪段都可以使用）
@@ -257,83 +250,42 @@ static void ObjectDetectionThread(void)
 										if(GlobalObjectCount > maxTrackingObjects - 1) GlobalObjectCount = 0;//缓冲大小为64，Count必须小于64，否则赋值给CreateObject会出错
 										GlobalObjectCount = CreateObject(GlobalObjectCount, Module_i, ModuleConfig[Module_i].Encoder, 1, encoderNumber, encoderNumber);
 										GlobalObjectCount++;
-										
-										for(Action_i = 0;Action_i < ModuleConfig[Module_i].NumberOfActions;Action_i++)
+																				
+										/*判断是哪种类型的动作(由于定位到了某个跟踪段的某个动作，所以是确定当前动作的种类)*/
+										switch (ModuleConfig[Module_i].ActionInstanceConfig[Action_i].ActionType)
 										{
-											objectTrackTemp.ObjectID 				= ObjectBuffer[GlobalObjectCount - 1].ObjectID;
-											//objectTrackTemp.RefEncoderNum 	= encoderNumber;
-											/*判断是哪种类型的动作(由于定位到了某个跟踪段的某个动作，所以是确定当前动作的种类)*/
-											if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionTriggerCamera;
-												objectTrackTemp.OutputType 		= TypeOutputDigital;
-												objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput;									
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionObjectTakeOver;
-												objectTrackTemp.OutputType 		= NoOutput;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionSetOutput;
-												objectTrackTemp.OutputType 		= TypeOutputDigital;
-												objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.DigitalOutput;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionTriggerSensor;
-												objectTrackTemp.OutputType 		= TypeOutputDigital;
-												objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionPushOut;
-												objectTrackTemp.OutputType 		= TypeOutputResult;
-												objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionRequestMachineData;
-												objectTrackTemp.OutputType 		= NoOutput;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
-										}
+											case ActRequestMachineData:
+													 AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue, 
+																					 ActRequestMachineData, Action_i, NoOutput, 0);																				
+											break;
+											
+											case ActSetOutput					: 
+														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue, 
+																						ActSetOutput, Action_i, TypeOutputDigital, 0);		
+											break;
+											
+											case ActObjectTakeOver		: 
+														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue, 
+																						ActObjectTakeOver, Action_i, NoOutput, 0);
+											break;
+											
+											case ActTriggerCamera			: 
+														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue, 
+																						ActTriggerCamera, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput);													
+											break;
+											
+											case ActTriggerSensor			: 
+														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue, 
+																						ActTriggerSensor, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID);													
+											break;
+											
+											case ActPushOut						: 
+														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue, 
+																						ActPushOut, Action_i, TypeOutputResult, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput);													
+											break;
+											
+											default:break;
+										}																			
 									}												
 								}
 								else if(ModuleConfig[Module_i].CreateObjectFlag != true)//此跟踪段不允许创建对象
@@ -342,81 +294,44 @@ static void ObjectDetectionThread(void)
 									//系统初次启动编码器为0，可能无法创建兑现得转过一定编码器才会开始创建对象...
 									if(encoderNumber - moduleQueueTemp->DelieverdEncoderNum < ModuleConfig[Module_i].TrackingWindow)					//为传递过来的对象，仅将对象在此段的动作加入列表
 									{
+
 										for(Action_i = 0;Action_i < ModuleConfig[Module_i].NumberOfActions;Action_i++)
 										{
-											objectTrackTemp.ObjectID 				= moduleQueueTemp->DelieverdObjectID;
-											//objectTrackTemp.RefEncoderNum 	= encoderNumber;
 											/*判断是哪种类型的动作(由于定位到了某个跟踪段的某个动作，所以是确定当前动作的种类)*/
-											if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.ActionTriggerFlag == true)
+											switch (ModuleConfig[Module_i].ActionInstanceConfig[Action_i].ActionType)
 											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionTriggerCamera;
-												objectTrackTemp.OutputType 		= TypeOutputDigital;
-												objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput;									
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionObjectTakeOver;
-												objectTrackTemp.OutputType 		= NoOutput;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionSetOutput;
-												objectTrackTemp.OutputType 		= TypeOutputDigital;
-												objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.DigitalOutput;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionTriggerSensor;
-												objectTrackTemp.OutputType 		= TypeOutputDigital;
-												objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionPushOut;
-												objectTrackTemp.OutputType 		= TypeOutputResult;
-												objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
-											else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.ActionTriggerFlag == true)
-											{
-												objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue;
-												objectTrackTemp.ActionType 		= TypeActionRequestMachineData;
-												objectTrackTemp.OutputType 		= NoOutput;
-												objectTrackTemp.ActionNumber	= Action_i;
-												vTaskSuspendAll();		//进入临界区防止被打断
-												ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-												xTaskResumeAll();		//退出临界区	
-												continue;
-											}
+												case ActRequestMachineData:
+														 AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue, 
+																						 ActRequestMachineData, Action_i, NoOutput, 0);																				
+												break;
+												
+												case ActSetOutput					: 
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue, 
+																							ActSetOutput, Action_i, TypeOutputDigital, 0);		
+												break;
+												
+												case ActObjectTakeOver		: 
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue, 
+																							ActObjectTakeOver, Action_i, NoOutput, 0);
+												break;
+												
+												case ActTriggerCamera			: 
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue, 
+																							ActTriggerCamera, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput);													
+												break;
+												
+												case ActTriggerSensor			: 
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue, 
+																							ActTriggerSensor, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID);													
+												break;
+												
+												case ActPushOut						: 
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue, 
+																							ActPushOut, Action_i, TypeOutputResult, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput);													
+												break;
+												
+												default:break;
+											}																			
 										}
 									}
 								}
@@ -432,85 +347,46 @@ static void ObjectDetectionThread(void)
 						{
 							for(Action_i = 0;Action_i < ModuleConfig[Module_i].NumberOfActions;Action_i++)
 							{
-								objectTrackTemp.ObjectID 				= moduleQueueTemp->DelieverdObjectID;
-								//objectTrackTemp.RefEncoderNum 	= encoderNumber;
 								/*判断是哪种类型的动作(由于定位到了某个跟踪段的某个动作，所以是确定当前动作的种类)*/
-								if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.ActionTriggerFlag == true)
+								switch (ModuleConfig[Module_i].ActionInstanceConfig[Action_i].ActionType)
 								{
-									objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue;
-									objectTrackTemp.ActionType 		= TypeActionTriggerCamera;
-									objectTrackTemp.OutputType 		= TypeOutputDigital;
-									objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput;									
-									objectTrackTemp.ActionNumber	= Action_i;
-									vTaskSuspendAll();		//进入临界区防止被打断
-									ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-									xTaskResumeAll();		//退出临界区	
-									continue;
-								}
-								else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.ActionTriggerFlag == true)
-								{
-									objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue;
-									objectTrackTemp.ActionType 		= TypeActionObjectTakeOver;
-									objectTrackTemp.OutputType 		= NoOutput;
-									objectTrackTemp.ActionNumber	= Action_i;
-									vTaskSuspendAll();		//进入临界区防止被打断
-									ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-									xTaskResumeAll();		//退出临界区	
-									continue;
-								}
-								else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.ActionTriggerFlag == true)
-								{
-									objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue;
-									objectTrackTemp.ActionType 		= TypeActionSetOutput;
-									objectTrackTemp.OutputType 		= TypeOutputDigital;
-									objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.DigitalOutput;
-									objectTrackTemp.ActionNumber	= Action_i;
-									vTaskSuspendAll();		//进入临界区防止被打断
-									ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-									xTaskResumeAll();		//退出临界区	
-									continue;
-								}
-								else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.ActionTriggerFlag == true)
-								{
-									objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue;
-									objectTrackTemp.ActionType 		= TypeActionTriggerSensor;
-									objectTrackTemp.OutputType 		= TypeOutputDigital;
-									objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID;
-									objectTrackTemp.ActionNumber	= Action_i;
-									vTaskSuspendAll();		//进入临界区防止被打断
-									ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-									xTaskResumeAll();		//退出临界区	
-									continue;
-								}
-								else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.ActionTriggerFlag == true)
-								{
-									objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue;
-									objectTrackTemp.ActionType 		= TypeActionPushOut;
-									objectTrackTemp.OutputType 		= TypeOutputResult;
-									objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput;
-									objectTrackTemp.ActionNumber	= Action_i;
-									vTaskSuspendAll();		//进入临界区防止被打断
-									ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-									xTaskResumeAll();		//退出临界区	
-									continue;
-								}
-								else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.ActionTriggerFlag == true)
-								{
-									objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue;
-									objectTrackTemp.ActionType 		= TypeActionRequestMachineData;
-									objectTrackTemp.OutputType 		= NoOutput;
-									objectTrackTemp.ActionNumber	= Action_i;
-									vTaskSuspendAll();		//进入临界区防止被打断
-									ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-									xTaskResumeAll();		//退出临界区	
-									continue;
-								}
+									case ActRequestMachineData:
+											 AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue, 
+																			 ActRequestMachineData, Action_i, NoOutput, 0);																				
+									break;
+									
+									case ActSetOutput					: 
+												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue, 
+																				ActSetOutput, Action_i, TypeOutputDigital, 0);		
+									break;
+									
+									case ActObjectTakeOver		: 
+												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue, 
+																				ActObjectTakeOver, Action_i, NoOutput, 0);
+									break;
+									
+									case ActTriggerCamera			: 
+												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue, 
+																				ActTriggerCamera, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput);													
+									break;
+									
+									case ActTriggerSensor			: 
+												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue, 
+																				ActTriggerSensor, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID);													
+									break;
+									
+									case ActPushOut						: 
+												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue, 
+																				ActPushOut, Action_i, TypeOutputResult, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput);													
+									break;
+									
+									default:break;
+								}																			
 							}
 						}
 					}
 				}
-				
-
+			
 				
 				else			//非传递而来待测物体对象的创建...消息队列中没有对象传递，但是光电仍感应到了信号
 				{
@@ -538,7 +414,7 @@ static void ObjectDetectionThread(void)
 						{						
 							if(ModuleConfig[Module_i].CreateObjectFlag == true)	//跟踪段允许创建对象
 							{
-								printf("==>Module[%d] Catch the Light222 Signals. \n", Module_i);
+								printf("==>Module[%d] Catch the Light222 Signals Signals Not by Delivered Object Pretty New. \n", Module_i);
 								temp=TIM5CH1_CAPTURE_STA&0X3F;							//溢出次数
 								temp*=0XFFFFFFFF;		 	    									//溢出时间总和  ******应该可以去掉
 								temp+=TIM5CH1_CAPTURE_VAL;      						//得到总的高电平时间	
@@ -560,84 +436,45 @@ static void ObjectDetectionThread(void)
 								if(GlobalObjectCount > maxTrackingObjects - 1) GlobalObjectCount = 0;//缓冲大小为64，Count必须小于64，否则赋值给CreateObject会出错
 								GlobalObjectCount = CreateObject(GlobalObjectCount, Module_i, ModuleConfig[Module_i].Encoder, 1, encoderNumber, encoderNumber);
 								GlobalObjectCount++;
-								
-								
+																
 								/*往跟踪段列表加入对应的动作*/
 								for(Action_i = 0;Action_i < ModuleConfig[Module_i].NumberOfActions;Action_i++)
 								{
-									objectTrackTemp.ObjectID 				= ObjectBuffer[GlobalObjectCount - 1].ObjectID;
-									//objectTrackTemp.RefEncoderNum 	= encoderNumber;
 									/*判断是哪种类型的动作(由于定位到了某个跟踪段的某个动作，所以是确定当前动作的种类)*/
-									if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.ActionTriggerFlag == true)
+									switch (ModuleConfig[Module_i].ActionInstanceConfig[Action_i].ActionType)
 									{
-										objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue;
-										objectTrackTemp.ActionType 		= TypeActionTriggerCamera;
-										objectTrackTemp.OutputType 		= TypeOutputDigital;
-										objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput;									
-										objectTrackTemp.ActionNumber	= Action_i;
-										vTaskSuspendAll();		//进入临界区防止被打断
-										ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-										xTaskResumeAll();		//退出临界区	
-										continue;
-									}
-									else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.ActionTriggerFlag == true)
-									{
-										objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue;
-										objectTrackTemp.ActionType 		= TypeActionObjectTakeOver;
-										objectTrackTemp.OutputType 		= NoOutput;
-										objectTrackTemp.ActionNumber	= Action_i;
-										vTaskSuspendAll();		//进入临界区防止被打断
-										ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-										xTaskResumeAll();		//退出临界区	
-										continue;
-									}
-									else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.ActionTriggerFlag == true)
-									{
-										objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue;
-										objectTrackTemp.ActionType 		= TypeActionSetOutput;
-										objectTrackTemp.OutputType 		= TypeOutputDigital;
-										objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.DigitalOutput;
-										objectTrackTemp.ActionNumber	= Action_i;
-										vTaskSuspendAll();		//进入临界区防止被打断
-										ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-										xTaskResumeAll();		//退出临界区	
-										continue;
-									}
-									else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.ActionTriggerFlag == true)
-									{
-										objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue;
-										objectTrackTemp.ActionType 		= TypeActionTriggerSensor;
-										objectTrackTemp.OutputType 		= TypeOutputDigital;
-										objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID;
-										objectTrackTemp.ActionNumber	= Action_i;
-										vTaskSuspendAll();		//进入临界区防止被打断
-										ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-										xTaskResumeAll();		//退出临界区	
-										continue;
-									}
-									else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.ActionTriggerFlag == true)
-									{
-										objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue;
-										objectTrackTemp.ActionType 		= TypeActionPushOut;
-										objectTrackTemp.OutputType 		= TypeOutputResult;
-										objectTrackTemp.OutputChannel = ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput;
-										objectTrackTemp.ActionNumber	= Action_i;//此处与下面的代码会被编译器优化，不知道为啥》。。。
-										vTaskSuspendAll();		//进入临界区防止被打断
-										ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-										xTaskResumeAll();		//退出临界区	
-										continue;
-									}
-									else if(ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.ActionTriggerFlag == true)
-									{
-										objectTrackTemp.TargetValue 	= encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue;
-										objectTrackTemp.ActionType 		= TypeActionRequestMachineData;
-										objectTrackTemp.OutputType 		= NoOutput;
-										objectTrackTemp.ActionNumber	= Action_i;
-										vTaskSuspendAll();		//进入临界区防止被打断
-										ListAppend(&ObjectInModuleList[Module_i], objectTrackTemp);			//往列表中加入动作
-										xTaskResumeAll();		//退出临界区	
-										continue;
-									}
+										case ActRequestMachineData:
+												 AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue, 
+																				 ActRequestMachineData, Action_i, NoOutput, 0);																				
+										break;
+										
+										case ActSetOutput					: 
+													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue, 
+																					ActSetOutput, Action_i, TypeOutputDigital, 0);		
+										break;
+										
+										case ActObjectTakeOver		: 
+													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue, 
+																					ActObjectTakeOver, Action_i, NoOutput, 0);
+										break;
+										
+										case ActTriggerCamera			: 
+													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue, 
+																					ActTriggerCamera, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput);													
+										break;
+										
+										case ActTriggerSensor			: 
+													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue, 
+																					ActTriggerSensor, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID);													
+										break;
+										
+										case ActPushOut						: 
+													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue, 
+																					ActPushOut, Action_i, TypeOutputResult, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput);													
+										break;
+										
+										default:break;
+									}												
 								}								
 								AddActiveFlag = false;
 							}

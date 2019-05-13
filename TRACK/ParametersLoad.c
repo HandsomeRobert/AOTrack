@@ -142,6 +142,7 @@ printf("{TestFlag7}: Checking whether into ActionRequestMachineData \n");
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionRequestMachineData.TargetValue = pChartoUint32((ezxml_child(action_x, "TargetValue")->txt));
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionRequestMachineData.HighestTargetValueAdjust = pChartoUint32((ezxml_child(action_x, "HighestTargetValueAdjust")->txt));	
 									//加标志位用于确认ActionInstanceConfig触发的到底是哪个动作
+									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].ActionType = ActRequestMachineData;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionRequestMachineData.ActionTriggerFlag = true;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionSetOutput.ActionTriggerFlag = false;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionObjectTakeOver.ActionTriggerFlag = false;
@@ -161,6 +162,7 @@ printf("{TestFlag8}: Checking whether into ActionSetOutput \n");
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionSetOutput.OutputDuration = pChartoUint32((ezxml_child(action_x, "OutputDuration")->txt));
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionSetOutput.OutputInvert = pChartoBool((ezxml_child(action_x, "OutputInvert")->txt));//此处提取false出来
 									//加标志位用于确认ActionInstanceConfig触发的到底是哪个动作
+									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].ActionType = ActSetOutput;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionRequestMachineData.ActionTriggerFlag = false;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionSetOutput.ActionTriggerFlag = true;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionObjectTakeOver.ActionTriggerFlag = false;
@@ -177,6 +179,7 @@ printf("{TestFlag9}: Checking whether into ActionObjectTakeOver \n");
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionObjectTakeOver.HighestTargetValueAdjust = pChartoUint32((ezxml_child(action_x, "HighestTargetValueAdjust")->txt));
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionObjectTakeOver.DestinationModule = pChartoUint32((ezxml_child(action_x, "DestinationModule")->txt));										
 									//加标志位用于确认ActionInstanceConfig触发的到底是哪个动作
+									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].ActionType = ActObjectTakeOver;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionRequestMachineData.ActionTriggerFlag = false;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionSetOutput.ActionTriggerFlag = false;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionObjectTakeOver.ActionTriggerFlag = true;
@@ -197,6 +200,7 @@ printf("{TestFlag10}: Checking whether into ActionTriggerCamera \n");
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionTriggerCamera.DigitalOutput = pChartoUint32((ezxml_child(action_x, "DigitalOutput")->txt));
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionTriggerCamera.OutputDuration = pChartoUint32((ezxml_child(action_x, "OutputDuration")->txt));					
 									//加标志位用于确认ActionInstanceConfig触发的到底是哪个动作
+									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].ActionType = ActTriggerCamera;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionRequestMachineData.ActionTriggerFlag = false;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionSetOutput.ActionTriggerFlag = false;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionObjectTakeOver.ActionTriggerFlag = false;
@@ -214,6 +218,7 @@ printf("{TestFlag11}: Checking whether into ActionTriggerSensor \n");
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionTriggerSensor.ClientID = pChartoUint32((ezxml_child(action_x, "ClientID")->txt));
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionTriggerSensor.SensorID = pChartoUint32((ezxml_child(action_x, "SensorID")->txt));						
 									//加标志位用于确认ActionInstanceConfig配置的到底是哪个动作
+									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].ActionType = ActTriggerSensor;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionRequestMachineData.ActionTriggerFlag = false;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionSetOutput.ActionTriggerFlag = false;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionObjectTakeOver.ActionTriggerFlag = false;
@@ -234,6 +239,7 @@ printf("{TestFlag12}: Checking whether into ActionPushOut \n");
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionPushOut.PushLine = pChartoUint32((ezxml_child(action_x, "PushLine")->txt));
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionPushOut.MinResultNum = pChartoUint32((ezxml_child(action_x, "MinResultNum")->txt));
 									//加标志位用于确认ActionInstanceConfig触发的到底是哪个动作
+									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].ActionType = ActPushOut;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionRequestMachineData.ActionTriggerFlag = false;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionSetOutput.ActionTriggerFlag = false;
 									ModuleConfig[Module_Count].ActionInstanceConfig[j_cycle].Item_ActionObjectTakeOver.ActionTriggerFlag = false;

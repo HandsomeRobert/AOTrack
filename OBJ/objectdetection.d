@@ -131,5 +131,4 @@
 ..\obj\objectdetection.o: ..\HARDWARE\SDMMC\sdmmc_sdcard.h
 ..\obj\objectdetection.o: ..\HARDWARE\SDRAM\sdram.h
 ..\obj\objectdetection.o: ..\EZXML\ezxml.h
-..\obj\objectdetection.o: ..\COMMON\MyList.h
 ..\obj\objectdetection.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

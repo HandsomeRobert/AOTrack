@@ -14,11 +14,13 @@
 #include "DataTransferManage.h"
 #include "TcpPacketServer.h"				//获得ClientNum
 #include "ParametersLoad.h"					//加载配置参数
-#include "MyList.h"									//跟踪段对象列表
 
 #define maxTrackingObjects  64			//最大维护多少个跟踪对象
 #define ModuleQueueLength		20			//每个跟踪模块的信息队列长度
 
+#define	NoOutput												0
+#define	TypeOutputDigital								1
+#define	TypeOutputResult								2
 typedef struct 
 {
 	byte 	ClientID;
@@ -31,6 +33,20 @@ typedef struct
 	bool 	objectAliveFlag;						//用于判断对象是否完成了跟踪过程，是否仍生存
 }ObjectInfo;
 
+
+typedef struct
+{
+	__IO 	uint32_t ObjectID;
+//	__IO 	int64_t RefEncoderNum;			//64Bit来存储可溢出的编码器值
+	__IO 	int64_t TargetValue;				//目标值
+	enum enumActionType	ActionType;									//动作类型
+	byte  ActionNumber;								//此动作是跟踪段上的第几个动作
+	byte	OutputType;									//输出类型
+	byte	OutputChannel;							//输出通道
+	bool	IsActionAlive;
+}StctActionListItem;
+
+
 typedef struct
 {
 	__IO 	uint32_t 	DelieverdObjectID;				
@@ -38,11 +54,11 @@ typedef struct
 	
 }ModuleQueueItem;
 
-extern ObjectList ObjectInModuleList[maxTrackingModule];								//定义一个跟踪段列表指针数组
+//extern ObjectList ObjectInModuleList[maxTrackingModule];								//定义一个跟踪段列表指针数组
 extern __IO ObjectInfo ObjectBuffer[maxTrackingObjects];										//创建最大只能保存maxTrackingObjects个对象的数组
 extern __IO	uint32_t GlobalObjectID;																	//定义一个全局对象ID，__IO表示直接从地址处取值，取得最新值，允许所有软件硬件修改此值
 extern QueueHandle_t	ModuleQueue[maxTrackingModule];				//创建信息队列用于接收信息	
-
+extern StctActionListItem ObjectInModuleList[maxTrackingModule][maxTrackingObjects];//二维数组用于存储所有动作列表
 uint8_t ObjectDetectionTask_init(void);
 
 #endif
