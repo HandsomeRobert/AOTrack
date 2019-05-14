@@ -35,23 +35,18 @@ static byte CreateObject(byte objectCNT, int moduleID, int encoder, int flag, in
 		}
 	}
 	//往对象缓冲数组里填充数据
-	ObjectBuffer[objectCNT].ClientID = 0;											//待传入值，
-	ObjectBuffer[objectCNT].ObjectID = GlobalObjectID;							//待设置，暂时与循环同步
+	ObjectBuffer[objectCNT].ClientID = 0;								//待传入值，
+	ObjectBuffer[objectCNT].ObjectID = GlobalObjectID;					//待设置，暂时与循环同步
 //	ObjectBuffer[objectCNT].BornEncoderNum = CaptureNumber;		//该对象的起始编码器值(出生值)
-	ObjectBuffer[objectCNT].pData = strCreateObject;
-	ObjectBuffer[objectCNT].ProcessedResult = true;						//待传入值，处理结果，暂时设置为好
-	ObjectBuffer[objectCNT].objectAliveFlag = true;						//激活跟踪过程
+	ObjectBuffer[objectCNT].pData 	 = strCreateObject;
+	ObjectBuffer[objectCNT].ProcessedResult = true;							//待传入值，处理结果，暂时设置为好
+	ObjectBuffer[objectCNT].objectAliveFlag = true;							//激活跟踪过程
 	
 	GlobalObjectID++;
-	//TCPSendDataChar(ObjectBuffer[objectCNT].ClientID, strCreateObject);		
-	//Packet* CreateObjectRunInPacket(int lineID, int objectID, int moduleID, int encoder, int flag, 
-	//	int lastTriggerPreviousEncoder,int lastReceivePreviousEncoder);
-//	pPacket = CreateObjectRunInPacket(1, ObjectBuffer[objectCNT].ObjectID, moduleID, encoder, flag, lastTriggerPreviousEncoder, lastReceivePreviousEncoder);
-//	TCPSendPacket(ObjectBuffer[objectCNT].ClientID, pPacket);
-	
+
 	pPacket = CreateStartTrackingPacket(1, GlobalObjectID);
 	printf("%s\r\n",(char*)pPacket);
-	TCPSendPacket(ObjectBuffer[objectCNT].ClientID, pPacket);
+	TCPSendPacket(ClientServer, pPacket);
 	return objectCNT;//返回创建的对象在缓冲数组中的位置
 }
 

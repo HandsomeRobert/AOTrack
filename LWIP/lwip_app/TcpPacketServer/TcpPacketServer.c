@@ -105,32 +105,33 @@ static void TCPServerListenThread(void *arg)
 				remot_addr[0] = (uint8_t)(ipaddr.addr);
 				printf("主机%d.%d.%d.%d连接上服务器,远程主机客户端端口号为:%d\r\n",remot_addr[0], remot_addr[1],remot_addr[2],remot_addr[3],port);				
 				
-/***
+
 				//检查是否有重复的client连接
 				for(j_cycle =0;j_cycle<ClientNum;j_cycle++)
 				{
-					if(Session[ClientNum].ClientID == clientID) 
+					if(Session[ClientNum].ClientID == remot_addr[3]) //检测连接服务器的IP是否为同一个
 					{
 						//释放最新的netConnRecv
-						printf("Create a Repate Session==>ClientID= %d , Please check it\r\n", clientID);
-						netconn_delete(Session[ClientNum].NetConnRecv);
+						printf("Create a Repate Session IP= 192.168.66.%d, ClientID= %d , Please check it\r\n", remot_addr[3], remot_addr[3]);
+						netconn_close(netConnRecv);
+						netconn_delete(netConnRecv);
 						clientRepateFlag = true;
 						break;//使用break要看跳出哪个循环，卵用跳出while后会杀死进程
 					}
 				}
-***/
+
 				if(clientRepateFlag != true)
 				{
 					//创建一个新的Send Socket
 					//即一个检测程序Inspection使用两条socket（NetConnRecv和NetConnSend）分别用于收发...
-					netConnSend=netconn_new(NETCONN_TCP);  //创建一个TCP链接
-					err_SendNetConn = netconn_connect(netConnSend,&ipaddr,PortSend);//连接服务器5001端口
+					netConnSend			=	netconn_new(NETCONN_TCP);  //创建一个TCP链接
+					err_SendNetConn = netconn_connect(netConnSend,&ipaddr,PortSend);//连接服务器20201端口
 					
 					if (err_SendNetConn == ERR_OK)    //处理新连接的数据
 					{
 						printf("NetConnSend[%d]==>Establish Successful\n", ClientNum);
 						//将client，netConnSend, netConnRecv等加入到Session里
-						addSession(clientID, ClientNum, netConnRecv, netConnSend);					
+						addSession(remot_addr[3], ClientNum, netConnRecv, netConnSend);	//clientID取连接服务器的IP地址的最后一段	即192.168.66.11 中的11
 						ClientNum++;	//存储下一组Client的Socket	
 						printf("The number of ClientNum==>%d\r\n", ClientNum);//由于从ClientNum从0开始，所以ClientNum++后才是所连接的Client数目
 						
@@ -140,8 +141,8 @@ static void TCPServerListenThread(void *arg)
 						netconn_delete(netConnSend); //返回值不等于ERR_OK,删除tcp_clientconn连接
 						printf("TCP_Server Connect Failed!!!==>error code ::[%d]\n", err_SendNetConn);
 					}
-
 				}					
+			clientRepateFlag = false;			//清零用于确保下一次能正常建立连接
 			}			
 		}			
 	
