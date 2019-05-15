@@ -49,6 +49,12 @@ static void TrackingThread(void *arg)
 	static __IO int64_t encoder2Number = 0;
 	static __IO int64_t encoderDelivered = 0;
 	
+	static propActionRequestMachineData* 	pTempRequestMachineData = NULL;
+	static propActionSetOutput* 					pTempSetOutput = NULL;
+	static propActionObjectTakeOver* 			pTempObjectTakeOver = NULL;
+	static propActionTriggerCamera* 			pTempTriggerCamera = NULL;
+	static propActionTriggerSensor* 			pTempTriggerSensor = NULL;
+	static propActionPushOut* 						pTempPushOut = NULL;
 
 	static ModuleQueueItem* moduleQueueTemp;						//定义一个往队列中填充数据的暂放指针
 	static Packet* pPacket;															//数据包首地址
@@ -97,26 +103,30 @@ static void TrackingThread(void *arg)
 								break;
 								
 								case ActObjectTakeOver		:								printf("ActObjectTakeOver Triggered, Object[%d], Encoder=[%lld]\n", ObjectInModuleList[Module_i][Action_i].ObjectID, encoderNumber);
-									switch (ModuleConfig[ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].Item_ActionObjectTakeOver.DestinationModule].Encoder)
+									
+									pTempObjectTakeOver = (propActionObjectTakeOver*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
+									switch (ModuleConfig[pTempObjectTakeOver->DestinationModule].Encoder)
 									{
+
 										case Encoder_1: encoderDelivered = encoder1Number;break;
 										case Encoder_2: encoderDelivered = encoder2Number;;break;
 									}
 									moduleQueueTemp->DelieverdEncoderNum 	= encoderDelivered;
 									moduleQueueTemp->DelieverdObjectID		=	ObjectInModuleList[Module_i][Action_i].ObjectID;			
 									
-									err = xQueueSend(ModuleQueue[ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].Item_ActionObjectTakeOver.DestinationModule], moduleQueueTemp, 0);		//?????????????????,???????ID	
+									err = xQueueSend(ModuleQueue[pTempObjectTakeOver->DestinationModule], moduleQueueTemp, 0);		//?????????????????,???????ID	
 									if(err==errQUEUE_FULL) printf("Queue is Full Send Failed!\r\n");
 									
-									printf("ModuleCount==%d,  Module[%d]===>Destination[%d] \n", Module_Count, Module_i, ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].Item_ActionObjectTakeOver.DestinationModule);
+									printf("ModuleCount==%d,  Module[%d]===>Destination[%d] \n", Module_Count, Module_i, pTempObjectTakeOver->DestinationModule);
 									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
 									break;
 								
 								case ActTriggerCamera			: 						printf("ActTriggerCamera Triggered, Object[%d], Encoder=[%lld]\n", ObjectInModuleList[Module_i][Action_i].ObjectID, encoderNumber);
+									pTempTriggerCamera = (propActionTriggerCamera*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
 									xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerCamera, eSetValueWithOverwrite, NULL);	//发送通知去触发相机
 									pPacket = CreateTriggerCameraPacket(1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, ModuleConfig[Module_i].Encoder,
-																											ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].Item_ActionTriggerCamera.CameraID, 1);
-									TCPSendPacket(ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].Item_ActionTriggerCamera.ClientID, pPacket);
+																											pTempTriggerCamera->CameraID, 1);
+									TCPSendPacket(pTempTriggerCamera->ClientID, pPacket);
 									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
 								break;
 								

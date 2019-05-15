@@ -21,7 +21,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////定义各种数据类型结构
 //跟踪段通用配置
-struct TrackingConfiguration
+typedef struct 
 {
 	uint32_t ConfigurationID;				//配置识别ID
 	uint8_t  HostClientID;					//主程序客户端ID
@@ -32,19 +32,19 @@ struct TrackingConfiguration
 	uint8_t  ErrorSignal;						//故障信号，接IO输出
 	uint8_t  MessageSignal;					//信息信号信号，接IO输出
 	uint8_t  WarningSignal;					//警告信号，接IO输出
-};
+}TrackingConfiguration;
 ///////动作种类ActionList
 //询问机器数据动作
-struct propActionRequestMachineData
+typedef struct 
 {
 	bool			ActionTriggerFlag;				//用于确认是否从动作列表中开启此动作了。
 	uint32_t ConfigurationID;
 	char* 	 Name;									//名字
 	uint32_t TargetValue;						//目标值（到编码器的哪个值触发此动作）
 	uint16_t HighestTargetValueAdjust;//高速补偿值
-};
+}propActionRequestMachineData;
 //设置输出动作
-struct propActionSetOutput
+typedef struct 
 {
 	bool			ActionTriggerFlag;				//用于确认是否从动作列表中开启此动作了。
 	uint32_t ConfigurationID;
@@ -55,9 +55,9 @@ struct propActionSetOutput
 	uint16_t DigitalOutput;					//信号输出到哪个IO
 	uint16_t OutputDuration;				//高or低电平信号的持续时间
 	bool     OutputInvert;					//信号反转，即高低电平翻转是否
-};
+}propActionSetOutput;
 //传递动作
-struct propActionObjectTakeOver
+typedef struct 
 {
 	bool			ActionTriggerFlag;				//用于确认是否从动作列表中开启此动作了。
 	uint32_t ConfigurationID;
@@ -65,9 +65,9 @@ struct propActionObjectTakeOver
 	uint32_t TargetValue;
 	uint8_t  HighestTargetValueAdjust;
 	uint8_t  DestinationModule;			 //传递对象到哪个跟踪段
-};
+}propActionObjectTakeOver;
 //触发相机动作
-struct propActionTriggerCamera
+typedef struct 
 {
 	bool			ActionTriggerFlag;				//用于确认是否从动作列表中开启此动作了。
 	uint32_t ConfigurationID;
@@ -80,9 +80,9 @@ struct propActionTriggerCamera
 	uint8_t  ImageIndex;							//图像序号，此相机的第几张图
 	uint16_t DigitalOutput;						//相机触发信号输出到哪个IO
 	uint16_t OutputDuration;					//触发信号持续时间
-};
+}propActionTriggerCamera;
 //触发IO采集动作
-struct propActionTriggerSensor
+typedef struct 
 {
 	bool			ActionTriggerFlag;				//用于确认是否从动作列表中开启此动作了。
 	uint32_t ConfigurationID;
@@ -92,9 +92,9 @@ struct propActionTriggerSensor
 	
 	uint8_t  ClientID;								//检测程序ID，隶属于哪个Inspector程序，eg:192.168.66.11
 	uint8_t  SensorID;								//传感器ID，使用哪个传感器采集
-};
+}propActionTriggerSensor;
 //剔除动作
-struct propActionPushOut
+typedef struct 
 {
 	bool			ActionTriggerFlag;				//用于确认是否从动作列表中开启此动作了。
 	uint32_t ConfigurationID;
@@ -107,7 +107,7 @@ struct propActionPushOut
 	uint16_t PushLength;							//剔除信号长度
 	uint8_t  PushLine;								//隶属于哪条剔除线
 	uint8_t  MinResultNum;						//最少结果数
-};
+}propActionPushOut;
 
 enum enumActionType
 {
@@ -122,20 +122,22 @@ enum enumActionType
 
 //执行动作
 //////////
-struct ActionInstance
+typedef struct 
 {
 	enum enumActionType ActionType;
 	
-	struct propActionRequestMachineData Item_ActionRequestMachineData;
-	struct propActionSetOutput 					Item_ActionSetOutput;
-	struct propActionObjectTakeOver 		Item_ActionObjectTakeOver;
-	struct propActionTriggerCamera 			Item_ActionTriggerCamera;
-	struct propActionTriggerSensor 			Item_ActionTriggerSensor;
-	struct propActionPushOut 						Item_ActionPushOut;	
-};
+	char* pActionConfig;
+	
+//	struct propActionRequestMachineData Item_ActionRequestMachineData;
+//	struct propActionSetOutput 					Item_ActionSetOutput;
+//	struct propActionObjectTakeOver 		Item_ActionObjectTakeOver;
+//	struct propActionTriggerCamera 			Item_ActionTriggerCamera;
+//	struct propActionTriggerSensor 			Item_ActionTriggerSensor;
+//	struct propActionPushOut 						Item_ActionPushOut;	
+}ActionInstance;
 
 //跟踪段具体配置
-struct ModuleConfiguration				//跟踪段设置
+typedef struct 				//跟踪段设置
 {
 	uint32_t ConfigurationID;				//配置识别ID
 	char*    Name;									//跟踪段名字
@@ -162,8 +164,8 @@ struct ModuleConfiguration				//跟踪段设置
 	uint16_t ObjectInterval;				//对象间隔，一般默认为60
 	uint16_t NumberOfActions;				//动作个数	
 	
-	struct ActionInstance ActionInstanceConfig[maxActionSingleModule];		//定义此段跟踪段的对象
-};
+	ActionInstance ActionInstanceConfig[maxActionSingleModule];		//定义此段跟踪段的对象
+}ModuleConfiguration;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////remain to be complement.../////////////////////////////////////
@@ -173,8 +175,8 @@ struct ModuleConfiguration				//跟踪段设置
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////外部使用接口/////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-extern struct TrackingConfiguration TrackingConfig;											//定义一个所用跟踪段共用的设置，包含所有跟踪段的共用数据
-extern struct ModuleConfiguration		ModuleConfig[maxTrackingModule];		//定义跟踪段缓冲数组，每个元素含有一个跟踪段的信息和本跟踪段的所有数据
+extern TrackingConfiguration TrackingConfig;											//定义一个所用跟踪段共用的设置，包含所有跟踪段的共用数据
+extern ModuleConfiguration		ModuleConfig[maxTrackingModule];		//定义跟踪段缓冲数组，每个元素含有一个跟踪段的信息和本跟踪段的所有数据
 //extern struct ActionInstance						ActionInstanceConfig[maxActionSingleModule];	//定义单个跟踪段允许的最大动作数量
 extern uint8_t Module_Count;
 

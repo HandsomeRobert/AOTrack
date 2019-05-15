@@ -159,9 +159,11 @@
 2019.5.13
 	Ê¹ÓÃÊı×éÀ´ÊµÏÖTracking£¬¸ÄµôÁËÁ´±í£¬Á´±íËÙ¶ÈÂı¡££¨TrackingÖÜÆÚËÙ¶È4-15ms, ObjectDetectionÖÜÆÚÔÚ12-14ms×óÓÒ£©
 	ObjectTakeOver ¶¯×÷ºÄÊ±£º9ms,  ÆäËü¶¯×÷4ms¡£¡£¡£
-	×¢£ºÊ¹ÓÃ¶ÓÁĞµÄÊ±ºòÒ»¶¨Òª³õÊ¼»¯£¬¼´xQueueCreate,²»È»»á±¨´í£<AssetError:..\FreeRTOS\queue.c,1245£¬1244
+	×¢£ºÊ¹ÓÃ¶ÓÁĞµÄÊ±ºòÒ»¶¨Òª³õÊ¼»¯£¬¼´xQueueCreate,²»È»»á±¨´í?AssetError:..\FreeRTOS\queue.c,1245£¬1244
 2019.5.14
 	Ìí¼ÓÁËÒ»Ğ©°üÉú³Éº¯ÊıÔÚTCPProtocolÄÚ
+2019.5.15
+	Ê¹ÓÃÖ¸ÕëÀ´·ÃÎÊÃ¿¸öÄ£¿éÀïµÄ¶¯×÷ºÍÏà¹ØÅäÖÃ¡£¡£¡££¨Ö÷ÒªĞŞ¸ÄÁËParametersLoadÄÚµÄÄÚÈİ£©
 	
 Bug Report£º
 XXXX1. 2019.3.14£º(2019.5.6 Solved½â¾öÁË,netconn_close¸ÄÎªnetconn_delete¼´¿É)

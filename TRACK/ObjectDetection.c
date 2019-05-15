@@ -47,6 +47,7 @@ static byte CreateObject(byte objectCNT, int moduleID, int encoder, int flag, in
 	pPacket = CreateStartTrackingPacket(1, GlobalObjectID);
 	printf("%s\r\n",(char*)pPacket);
 	TCPSendPacket(ClientServer, pPacket);
+	
 	return objectCNT;//返回创建的对象在缓冲数组中的位置
 }
 
@@ -101,6 +102,15 @@ static void ObjectDetectionThread(void)
 	static bool AddActiveFlag = false;	
 	static StctActionListItem objectTrackTemp ;				//跟踪数据暂存值
 	static ModuleQueueItem* moduleQueueTemp;					//定义一个从队列中暂取数据的暂存值指针
+	
+//	static propActionRequestMachineData* 	pTempRequestMachineData = NULL;
+//	static propActionSetOutput* 					pTempSetOutput = NULL;
+//	static propActionObjectTakeOver* 			pTempObjectTakeOver = NULL;
+	static propActionTriggerCamera* 			pTempTriggerCamera = NULL;
+	static propActionTriggerSensor* 			pTempTriggerSensor = NULL;
+	static propActionPushOut* 						pTempPushOut = NULL;
+
+	
 	static __IO int64_t encoderNumber = 0;     				// 编码器计数值
 	static __IO int64_t encoder1Number = 0;
 	static __IO int64_t encoder2Number = 0;
@@ -206,33 +216,36 @@ static void ObjectDetectionThread(void)
 											{
 												case ActRequestMachineData:
 													//AddActionToList(byte i, int objectID, int targetValue, enum enumActionType actionType, byte actionNumber, byte outputType, byte outputChannel)
-														 AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue, 
+														 AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ((propActionRequestMachineData*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																						 ActRequestMachineData, Action_i, NoOutput, 0);																				
 												break;
 												
 												case ActSetOutput					: 
-															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue, 
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ((propActionSetOutput*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																							ActSetOutput, Action_i, TypeOutputDigital, 0);		
 												break;
 												
 												case ActObjectTakeOver		: 
-															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue, 
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ((propActionObjectTakeOver*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																							ActObjectTakeOver, Action_i, NoOutput, 0);
 												break;
 												
-												case ActTriggerCamera			: 
-															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue, 
-																							ActTriggerCamera, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput);													
+												case ActTriggerCamera			:
+															pTempTriggerCamera = (propActionTriggerCamera*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + pTempTriggerCamera->TargetValue, 
+																							ActTriggerCamera, Action_i, TypeOutputDigital, pTempTriggerCamera->DigitalOutput);													
 												break;
 												
-												case ActTriggerSensor			: 
-															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue, 
-																							ActTriggerSensor, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID);													
+												case ActTriggerSensor			:
+															pTempTriggerSensor = (propActionTriggerSensor*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + pTempTriggerSensor->TargetValue, 
+																							ActTriggerSensor, Action_i, TypeOutputDigital, pTempTriggerSensor->SensorID);													
 												break;
 												
 												case ActPushOut						: 
-															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue, 
-																							ActPushOut, Action_i, TypeOutputResult, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput);													
+															pTempPushOut = (propActionPushOut*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + pTempPushOut->TargetValue, 
+																							ActPushOut, Action_i, TypeOutputResult, pTempPushOut->DigitalOutput);													
 												break;
 												
 												default:break;
@@ -250,33 +263,37 @@ static void ObjectDetectionThread(void)
 										switch (ModuleConfig[Module_i].ActionInstanceConfig[Action_i].ActionType)
 										{
 											case ActRequestMachineData:
-													 AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue, 
+												//AddActionToList(byte i, int objectID, int targetValue, enum enumActionType actionType, byte actionNumber, byte outputType, byte outputChannel)
+													 AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ((propActionRequestMachineData*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																					 ActRequestMachineData, Action_i, NoOutput, 0);																				
 											break;
 											
 											case ActSetOutput					: 
-														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue, 
+														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ((propActionSetOutput*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																						ActSetOutput, Action_i, TypeOutputDigital, 0);		
 											break;
 											
 											case ActObjectTakeOver		: 
-														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue, 
+														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ((propActionObjectTakeOver*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																						ActObjectTakeOver, Action_i, NoOutput, 0);
 											break;
 											
-											case ActTriggerCamera			: 
-														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue, 
-																						ActTriggerCamera, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput);													
+											case ActTriggerCamera			:
+														pTempTriggerCamera = (propActionTriggerCamera*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + pTempTriggerCamera->TargetValue, 
+																						ActTriggerCamera, Action_i, TypeOutputDigital, pTempTriggerCamera->DigitalOutput);													
 											break;
 											
-											case ActTriggerSensor			: 
-														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue, 
-																						ActTriggerSensor, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID);													
+											case ActTriggerSensor			:
+														pTempTriggerSensor = (propActionTriggerSensor*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + pTempTriggerSensor->TargetValue, 
+																						ActTriggerSensor, Action_i, TypeOutputDigital, pTempTriggerSensor->SensorID);													
 											break;
 											
 											case ActPushOut						: 
-														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue, 
-																						ActPushOut, Action_i, TypeOutputResult, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput);													
+														pTempPushOut = (propActionPushOut*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+														AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + pTempPushOut->TargetValue, 
+																						ActPushOut, Action_i, TypeOutputResult, pTempPushOut->DigitalOutput);													
 											break;
 											
 											default:break;
@@ -296,37 +313,41 @@ static void ObjectDetectionThread(void)
 											switch (ModuleConfig[Module_i].ActionInstanceConfig[Action_i].ActionType)
 											{
 												case ActRequestMachineData:
-														 AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue, 
+													//AddActionToList(byte i, int objectID, int targetValue, enum enumActionType actionType, byte actionNumber, byte outputType, byte outputChannel)
+														 AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ((propActionRequestMachineData*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																						 ActRequestMachineData, Action_i, NoOutput, 0);																				
 												break;
 												
 												case ActSetOutput					: 
-															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue, 
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ((propActionSetOutput*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																							ActSetOutput, Action_i, TypeOutputDigital, 0);		
 												break;
 												
 												case ActObjectTakeOver		: 
-															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue, 
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ((propActionObjectTakeOver*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																							ActObjectTakeOver, Action_i, NoOutput, 0);
 												break;
 												
-												case ActTriggerCamera			: 
-															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue, 
-																							ActTriggerCamera, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput);													
+												case ActTriggerCamera			:
+															pTempTriggerCamera = (propActionTriggerCamera*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + pTempTriggerCamera->TargetValue, 
+																							ActTriggerCamera, Action_i, TypeOutputDigital, pTempTriggerCamera->DigitalOutput);													
 												break;
 												
-												case ActTriggerSensor			: 
-															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue, 
-																							ActTriggerSensor, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID);													
+												case ActTriggerSensor			:
+															pTempTriggerSensor = (propActionTriggerSensor*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + pTempTriggerSensor->TargetValue, 
+																							ActTriggerSensor, Action_i, TypeOutputDigital, pTempTriggerSensor->SensorID);													
 												break;
 												
 												case ActPushOut						: 
-															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue, 
-																							ActPushOut, Action_i, TypeOutputResult, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput);													
+															pTempPushOut = (propActionPushOut*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+															AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + pTempPushOut->TargetValue, 
+																							ActPushOut, Action_i, TypeOutputResult, pTempPushOut->DigitalOutput);													
 												break;
 												
 												default:break;
-											}																			
+											}																	
 										}
 									}
 								}
@@ -346,37 +367,41 @@ static void ObjectDetectionThread(void)
 								switch (ModuleConfig[Module_i].ActionInstanceConfig[Action_i].ActionType)
 								{
 									case ActRequestMachineData:
-											 AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue, 
+										//AddActionToList(byte i, int objectID, int targetValue, enum enumActionType actionType, byte actionNumber, byte outputType, byte outputChannel)
+											 AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ((propActionRequestMachineData*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																			 ActRequestMachineData, Action_i, NoOutput, 0);																				
 									break;
 									
 									case ActSetOutput					: 
-												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue, 
+												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ((propActionSetOutput*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																				ActSetOutput, Action_i, TypeOutputDigital, 0);		
 									break;
 									
 									case ActObjectTakeOver		: 
-												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue, 
+												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ((propActionObjectTakeOver*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																				ActObjectTakeOver, Action_i, NoOutput, 0);
 									break;
 									
-									case ActTriggerCamera			: 
-												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue, 
-																				ActTriggerCamera, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput);													
+									case ActTriggerCamera			:
+												pTempTriggerCamera = (propActionTriggerCamera*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + pTempTriggerCamera->TargetValue, 
+																				ActTriggerCamera, Action_i, TypeOutputDigital, pTempTriggerCamera->DigitalOutput);													
 									break;
 									
-									case ActTriggerSensor			: 
-												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue, 
-																				ActTriggerSensor, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID);													
+									case ActTriggerSensor			:
+												pTempTriggerSensor = (propActionTriggerSensor*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + pTempTriggerSensor->TargetValue, 
+																				ActTriggerSensor, Action_i, TypeOutputDigital, pTempTriggerSensor->SensorID);													
 									break;
 									
 									case ActPushOut						: 
-												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue, 
-																				ActPushOut, Action_i, TypeOutputResult, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput);													
+												pTempPushOut = (propActionPushOut*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+												AddActionToList(Module_i, moduleQueueTemp->DelieverdObjectID, encoderNumber + pTempPushOut->TargetValue, 
+																				ActPushOut, Action_i, TypeOutputResult, pTempPushOut->DigitalOutput);													
 									break;
 									
 									default:break;
-								}																			
+								}																				
 							}
 						}
 					}
@@ -439,37 +464,41 @@ static void ObjectDetectionThread(void)
 									switch (ModuleConfig[Module_i].ActionInstanceConfig[Action_i].ActionType)
 									{
 										case ActRequestMachineData:
-												 AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionRequestMachineData.TargetValue, 
+											//AddActionToList(byte i, int objectID, int targetValue, enum enumActionType actionType, byte actionNumber, byte outputType, byte outputChannel)
+												 AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ((propActionRequestMachineData*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																				 ActRequestMachineData, Action_i, NoOutput, 0);																				
 										break;
 										
 										case ActSetOutput					: 
-													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionSetOutput.TargetValue, 
+													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ((propActionSetOutput*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																					ActSetOutput, Action_i, TypeOutputDigital, 0);		
 										break;
 										
 										case ActObjectTakeOver		: 
-													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionObjectTakeOver.TargetValue, 
+													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ((propActionObjectTakeOver*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig)->TargetValue, 
 																					ActObjectTakeOver, Action_i, NoOutput, 0);
 										break;
 										
-										case ActTriggerCamera			: 
-													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.TargetValue, 
-																					ActTriggerCamera, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerCamera.DigitalOutput);													
+										case ActTriggerCamera			:
+													pTempTriggerCamera = (propActionTriggerCamera*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + pTempTriggerCamera->TargetValue, 
+																					ActTriggerCamera, Action_i, TypeOutputDigital, pTempTriggerCamera->DigitalOutput);													
 										break;
 										
-										case ActTriggerSensor			: 
-													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.TargetValue, 
-																					ActTriggerSensor, Action_i, TypeOutputDigital, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionTriggerSensor.SensorID);													
+										case ActTriggerSensor			:
+													pTempTriggerSensor = (propActionTriggerSensor*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + pTempTriggerSensor->TargetValue, 
+																					ActTriggerSensor, Action_i, TypeOutputDigital, pTempTriggerSensor->SensorID);													
 										break;
 										
 										case ActPushOut						: 
-													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.TargetValue, 
-																					ActPushOut, Action_i, TypeOutputResult, ModuleConfig[Module_i].ActionInstanceConfig[Action_i].Item_ActionPushOut.DigitalOutput);													
+													pTempPushOut = (propActionPushOut*)ModuleConfig[Module_i].ActionInstanceConfig[Action_i].pActionConfig;
+													AddActionToList(Module_i, ObjectBuffer[GlobalObjectCount - 1].ObjectID, encoderNumber + pTempPushOut->TargetValue, 
+																					ActPushOut, Action_i, TypeOutputResult, pTempPushOut->DigitalOutput);													
 										break;
 										
 										default:break;
-									}												
+									}											
 								}								
 								AddActiveFlag = false;
 							}
