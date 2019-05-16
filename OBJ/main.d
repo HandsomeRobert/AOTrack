@@ -102,6 +102,7 @@
 ..\obj\main.o: ..\COMMON\SemaphoreManage.h
 ..\obj\main.o: ..\FreeRTOS\include\semphr.h
 ..\obj\main.o: ..\FreeRTOS\include\queue.h
+..\obj\main.o: ..\HARDWARE\TIMER\timer.h
 ..\obj\main.o: ..\HARDWARE\SDRAM\sdram.h
 ..\obj\main.o: ..\HARDWARE\SDMMC\sdmmc_sdcard.h
 ..\obj\main.o: ..\FATFS\src\ff.h

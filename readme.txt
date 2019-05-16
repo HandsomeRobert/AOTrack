@@ -164,7 +164,14 @@
 	添加了一些包生成函数在TCPProtocol内
 2019.5.15
 	使用指针来访问每个模块里的动作和相关配置。。。（主要修改了ParametersLoad内的内容）
-	
+2019.5.16
+	修复无法实现ActionRequestMachineData, 是在ParametersLoad误改了str_ActionRequestMachineData。。。。。。
+	加入了Timer6用于统计每个线程的运行时间。
+	往ObjectDetection和Tracking内加入了TCPProtocol协议，RunIn, RunOut均默认往ClientID = ClientServer端发送
+	发现最耗时的是printf串口输出函数 ， 和Tracking的遍历所有列表的for循环，
+	Tracking空载1374us左右, 负载为2200us左右
+	ObjectDetection 空载为420us左右， 负载为1450us左右
+
 Bug Report：
 XXXX1. 2019.3.14：(2019.5.6 Solved解决了,netconn_close改为netconn_delete即可)
 XXXXClient与STM32（TecpServer）多次连接&断开后，无法再次连接STM32了，第6次连接（单个client）时会出现报错：
@@ -185,3 +192,4 @@ XXXX	Solved,直接用两个数相减，得到的就是两者的距离，如0-65534 = 2
 	5. EncoderNumber>其给定值是可能导致错误，会清零+定时器溢出次数*65536所以会导致错误产生，标记一下。
 	6. BUG==>数据接收在运行一段时间后会阻塞....阻塞在lan8720.c的152行，fframeLength=((DMARxDesc->Status&ETH_DMARXDESC_FL)>>ETH_DMARXDESC_FRAME_LENGTHSHIFT);
 	7. BUG==>XispekVision连接STM32，加入入队操作后会往外发112，不正确。去掉入队操作后，接收一段时间的诊断界面发送的数据后会死机。。。
+8. printf函数很耗时，测试性能时把prinrf函数去掉。。。

@@ -32,7 +32,7 @@ uint8_t DataProcessTask_init(void)
 static void DataProcessThread(void *arg)
 {
 	byte i =0;
-	byte err = 0;
+//	byte err = 0;
 	int* pInt;
 	byte* pByte;
 	static int lineID 	= 0;

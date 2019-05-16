@@ -3,6 +3,8 @@
 ***************************************************************************************************/
 #include "TcpPacketServer.h"
 #include "task.h"
+#include "TCPProtocol.h"
+#include "DataTransferManage.h"
 
 /////////////////////////TCPServer//////////////////////////////////////////////////
 uint16_t PortReceive = 20200;	//PortReceive
@@ -62,8 +64,8 @@ uint8_t TCPServerListenCycleTask_init(void)
 static void TCPServerListenThread(void *arg)
 {
 	////////////////
-	int clientID = 0;	
 	uint8_t i_cycle = 0,j_cycle = 0;
+	static int ClientIDArray[MaxClinets] = {0};
 	struct netconn* netConnRecv;
 	struct netconn* netConnSend;
 	struct netbuf*	recvnetbuf;
@@ -78,6 +80,7 @@ static void TCPServerListenThread(void *arg)
 	struct netconn *conn;	//conn为服务端监听socket
 	static ip_addr_t ipaddr;
 	static u16_t 			port;
+	static Packet* pPacket = NULL;
 	LWIP_UNUSED_ARG(arg);
 
 	conn=netconn_new(NETCONN_TCP);  //创建一个TCP链接，NETCONN_UDP为创建UDP连接
@@ -88,7 +91,7 @@ static void TCPServerListenThread(void *arg)
 	
 	while (!StopServerListen) 				//初始化上面的代码之后，此线程会一直循环执行这部分代码
 	{
-		if(ClientNum<8)//最大创建8个
+		if(ClientNum < MaxClinets)//最大创建8个
 		{
 			//接收连接并创建新的Receive Socket
 			err = netconn_accept(conn,&netConnRecv);  //接收连接请求,扫描是否有连接，利用conn监听，
@@ -132,17 +135,25 @@ static void TCPServerListenThread(void *arg)
 						printf("NetConnSend[%d]==>Establish Successful\n", ClientNum);
 						//将client，netConnSend, netConnRecv等加入到Session里
 						addSession(remot_addr[3], ClientNum, netConnRecv, netConnSend);	//clientID取连接服务器的IP地址的最后一段	即192.168.66.11 中的11
+						ClientIDArray[ClientNum] = remot_addr[3];
 						ClientNum++;	//存储下一组Client的Socket	
 						printf("The number of ClientNum==>%d\r\n", ClientNum);//由于从ClientNum从0开始，所以ClientNum++后才是所连接的Client数目
-						
 					}
 					else
 					{
 						netconn_delete(netConnSend); //返回值不等于ERR_OK,删除tcp_clientconn连接
 						printf("TCP_Server Connect Failed!!!==>error code ::[%d]\n", err_SendNetConn);
 					}
+				
+					pPacket = CreateStartTrackingPacket(1, 0);//标记跟踪启动
+					TCPSendPacket(ClientServer, pPacket);
+					pPacket = NULL;
 				}					
 			clientRepateFlag = false;			//清零用于确保下一次能正常建立连接
+			
+
+			pPacket = CreateClientIDPacket(ClientIDArray, ClientNum-1);//将所有连接了的Client和ID发送给PC
+			TCPSendPacket(ClientServer, pPacket);
 			}			
 		}			
 	
@@ -161,12 +172,14 @@ static void TCPServerListenThread(void *arg)
 					netconn_delete(Session[i_cycle].NetConnSend);
 					destroyQueue 	(Session[i_cycle].QueueRecv);
 					destroyQueue 	(Session[i_cycle].QueueSend);
+					Session[i_cycle].ClientID = 0;			//客户端口清零
 					//printf("主机:%d.%d.%d.%d断开与服务器的连接\r\n",remot_addr[0], remot_addr[1],remot_addr[2],remot_addr[3]);
 					printf("主机断开XXX的连接：======>%d", Session[i_cycle].ClientID);
 					
 					for(j_cycle = i_cycle;j_cycle<ClientNum-1;j_cycle++)//管理Session数组，删除相应的client对应的Sessionp[i_cycle],同时ClientNum减一，数组前移
 					{
-						Session[j_cycle] = Session[j_cycle + 1]; 
+						Session[j_cycle] 				= Session[j_cycle + 1];
+						ClientIDArray[j_cycle]	=	ClientIDArray[j_cycle + 1];
 					}
 					ClientNum--;//删除一组session
 				}

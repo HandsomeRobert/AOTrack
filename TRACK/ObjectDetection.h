@@ -50,7 +50,8 @@ typedef struct
 typedef struct
 {
 	__IO 	uint32_t 	DelieverdObjectID;				
-	__IO 	int64_t 	DelieverdEncoderNum;	
+	__IO 	int64_t 	DelieverdEncoderNum;
+//	int ClientID;
 	
 }ModuleQueueItem;
 

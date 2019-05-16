@@ -25,6 +25,7 @@
 "..\obj\key.o"
 "..\obj\sdram.o"
 "..\obj\sdmmc_sdcard.o"
+"..\obj\timer.o"
 "..\obj\ff.o"
 "..\obj\diskio.o"
 "..\obj\cc936.o"

@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F767xx,USE_HAL_DRIVER,DEBUG,OS_CRITICAL_METHOD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CORE;..\OBJ;..\USER;..\HALLIB\STM32F7xx_HAL_Driver\Inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\MALLOC;..\HARDWARE\LED;..\HARDWARE\MPU;..\HARDWARE\IIC;..\HARDWARE\LAN8720;..\HARDWARE\PCF8574;..\FreeRTOS\include;..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1;..\LWIP;..\LWIP\arch;..\LWIP\lwip-1.4.1\src\include;..\LWIP\lwip-1.4.1\src\include\ipv4;..\LWIP\lwip-1.4.1\src\include\netif;..\LWIP\lwip_app\lwip_comm;..\LWIP\lwip_app\TcpPacketServer;..\LWIP\lwip_app\TcpPacketClient;..\LWIP\lwip_app\UdpPacket;..\LWIP\lwip_app\Track_Comm;..\HARDWARE\ENCODER;..\HARDWARE\LightSignal;..\HARDWARE\KEY;..\HARDWARE\NAND;..\HARDWARE\QSPI;..\HARDWARE\SDMMC;..\HARDWARE\SDRAM;..\HARDWARE\W25QXX;..\FATFS\src;..\FATFS\src\option;..\FATFS\exfuns;..\EZXML;..\TRACK;..\COMMON</IncludePath>
+              <IncludePath>..\CORE;..\OBJ;..\USER;..\HALLIB\STM32F7xx_HAL_Driver\Inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\MALLOC;..\HARDWARE\LED;..\HARDWARE\MPU;..\HARDWARE\IIC;..\HARDWARE\LAN8720;..\HARDWARE\PCF8574;..\FreeRTOS\include;..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1;..\LWIP;..\LWIP\arch;..\LWIP\lwip-1.4.1\src\include;..\LWIP\lwip-1.4.1\src\include\ipv4;..\LWIP\lwip-1.4.1\src\include\netif;..\LWIP\lwip_app\lwip_comm;..\LWIP\lwip_app\TcpPacketServer;..\LWIP\lwip_app\TcpPacketClient;..\LWIP\lwip_app\UdpPacket;..\LWIP\lwip_app\Track_Comm;..\HARDWARE\TIMER;..\HARDWARE\ENCODER;..\HARDWARE\LightSignal;..\HARDWARE\KEY;..\HARDWARE\NAND;..\HARDWARE\QSPI;..\HARDWARE\SDMMC;..\HARDWARE\SDRAM;..\HARDWARE\W25QXX;..\FATFS\src;..\FATFS\src\option;..\FATFS\exfuns;..\EZXML;..\TRACK;..\COMMON</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -573,6 +573,11 @@
               <FileName>sdmmc_sdcard.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\SDMMC\sdmmc_sdcard.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\TIMER\timer.c</FilePath>
             </File>
           </Files>
         </Group>

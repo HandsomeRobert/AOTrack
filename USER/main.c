@@ -11,6 +11,7 @@
 #include "LightSignal.h"						//光电和PWM
 #include "pcf8574.h"								//以太网、蜂鸣器驱动
 #include "ActionExecute.h"					//输出动作初始化
+#include "timer.h"										//基本定时器定时
 
 #include "sdram.h"									//SDRAM驱动
 //#include "w25qxx.h"									//W25QXX QPI模式驱动FLASH	 
@@ -101,7 +102,8 @@ int main(void)
 	
   TIM2_CH1_Cap_Init(0XFFFFFFFF,108-1); 			//以1MHZ的频率计数来捕获光电脉冲高电平
 	TIM5_CH1_Cap_Init(0XFFFFFFFF,108-1); 			//以1MHZ的频率计数来捕获光电脉冲高电平
-
+	TIM6_Init(0XFFFF, 108-1);								//以1MHZ的频率计数来定时，也就是定时器1us计数一次
+	
 	CreateSemaphore();												//声明并创建所有信号量
 	/*暂不写数据*/
 	//WriteDownIOInfo();			//写下IO信息到SD卡中

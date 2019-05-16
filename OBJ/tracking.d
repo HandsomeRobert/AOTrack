@@ -133,3 +133,4 @@
 ..\obj\tracking.o: ..\COMMON\HardwareList.h
 ..\obj\tracking.o: ..\HARDWARE\LightSignal\LightSignal.h
 ..\obj\tracking.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+..\obj\tracking.o: ..\HARDWARE\TIMER\timer.h

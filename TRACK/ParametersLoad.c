@@ -66,7 +66,7 @@ static void ParametersLoadThread(void *arg)
 	uint8_t j_cycle = 0;	
 	char* pConfigTemp = NULL;
 	//跟踪段动作数量，追踪
-	char str_ActionRequestMachineData[]  	= "propActionRequestMachineData";//动作类型
+	char str_ActionRequestMachineData[]  	= "ActionRequestMachineData";//动作类型
 	char str_ActionSetOutput[] 				   	= "ActionSetOutput";
 	char str_ActionObjectTakeOver[] 			= "ActionObjectTakeOver";
 	char str_ActionTriggerCamera[] 				= "ActionTriggerCamera";
@@ -249,6 +249,7 @@ printf("{TestFlag12}: Checking whether into ActionPushOut \n");
 				}					
 			}
 			ezxml_free(track_x);					//释放对象
+
 
 		}
 	vTaskDelay(5000);									//5s扫描一次是否需要加载参数
