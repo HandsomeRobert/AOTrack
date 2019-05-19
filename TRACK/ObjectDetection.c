@@ -24,6 +24,9 @@ static void ObjectDetectionThread(void);
 
 static byte CreateObject(byte objectCNT, int moduleID, int encoder, int flag, int lastTriggerPreviousEncoder,int lastReceivePreviousEncoder)
 {
+	Packet* pPacket;
+	int data_len, i_cycle;
+	
 	while(ObjectBuffer[objectCNT].objectAliveFlag != false)		//防止覆盖跟踪尚未结束的对象
 	{
 		objectCNT++;
@@ -43,6 +46,14 @@ static byte CreateObject(byte objectCNT, int moduleID, int encoder, int flag, in
 	ObjectBuffer[objectCNT].objectAliveFlag = true;							//激活跟踪过程
 	
 	GlobalObjectID++;
+	
+					pPacket = CreateStartTrackingPacket(1, 1);//标记跟踪启动
+					data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
+					for(i_cycle = 0; i_cycle < ClientNum; i_cycle++)
+					{
+						if(Session[i_cycle].ClientID == ClientServer) break;
+					}
+					enQueue(Session[i_cycle].QueueSend, (byte*)pPacket, data_len);
 	
 	return objectCNT;//返回创建的对象在缓冲数组中的位置
 }
@@ -532,11 +543,11 @@ static void ObjectDetectionThread(void)
 *************************************************************************************************************************************************************/		
 			
 		
-		timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCountTime;
-		if(timeCountTime > 20)
-		{
-			printf("ObjectDetectionTime ==>%d \n", timeCountTime);
-		}
+//////		timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCountTime;
+//////		if(timeCountTime > 20)
+//////		{
+//////			printf("ObjectDetectionTime ==>%d \n", timeCountTime);
+//////		}
 //		
 
 

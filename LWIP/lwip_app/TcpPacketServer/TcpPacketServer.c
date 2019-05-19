@@ -65,6 +65,7 @@ static void TCPServerListenThread(void *arg)
 {
 	////////////////
 	uint8_t i_cycle = 0,j_cycle = 0;
+	int data_len = 0;
 	static int ClientIDArray[MaxClinets] = {0};
 	struct netconn* netConnRecv;
 	struct netconn* netConnSend;
@@ -146,7 +147,15 @@ static void TCPServerListenThread(void *arg)
 					}
 				
 					pPacket = CreateStartTrackingPacket(1, 0);//标记跟踪启动
-					TCPSendPacket(ClientServer, pPacket);
+					data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
+					for(i_cycle = 0; i_cycle < ClientNum; i_cycle++)
+					{
+						if(Session[i_cycle].ClientID == ClientServer) break;
+					}
+					enQueue(Session[i_cycle].QueueSend, (byte*)pPacket, data_len);
+				
+					
+//					TCPSendPacket(ClientServer, pPacket);
 					pPacket = NULL;
 				}					
 			clientRepateFlag = false;			//清零用于确保下一次能正常建立连接

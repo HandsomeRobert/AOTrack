@@ -96,11 +96,14 @@ uint8_t DataTransferManageTask_init(void)
 static void DataTransferManage(void *arg)
 {
 	uint32_t data_len = 0;
+	err_t err;
 	int i_cycle;
 	struct netbuf *recvbuf;
 	struct pbuf *q;
-	byte* dataRecvBuffer;
-	byte* dataRecvBufferTemp;
+	byte* 	dataRecvBuffer;
+	byte* 	dataRecvBufferTemp;
+	int* 		dataSendBufferTemp;
+	Packet* pPacketTemp;
 //	static err_t recv_err;
 //	static ip_addr_t ipaddr;
 //	static u16_t 			port;
@@ -113,6 +116,7 @@ static void DataTransferManage(void *arg)
 		{
 			for(i_cycle = 0; i_cycle<ClientNum;i_cycle++)	
 			{	
+/*************接收数据处理****************************/
 				if((netconn_recv(Session[i_cycle].NetConnRecv, &recvbuf)) == ERR_OK)  	//接收到数据
 				{	
 /*					
@@ -137,7 +141,7 @@ static void DataTransferManage(void *arg)
 					dataRecvBufferTemp = NULL;
 					taskEXIT_CRITICAL();  //开中断
 								
-//！！！！			/*入队操作会导致Xispekvision重复连/段TCP Connection*/ 是因为会往SOCKET意外的发送数据，112，112，112.。。。！！！！！！！！！！！！！！！
+//！！！！			/*入队操作可能会导致Xispekvision重复连/段TCP Connection*/ 是因为会往SOCKET意外的发送数据，112，112，112.。。。！！！！！！！！！！！！！！！
 					if(enQueue(Session[i_cycle].QueueRecv, DataTransferManage_recvbuf, data_len))		//接收到的数据放入缓冲区
 					{
 //						printf("Inset Element to ReceiveBuffer[%d] queue successful! \r\n", i_cycle);
@@ -145,7 +149,7 @@ static void DataTransferManage(void *arg)
 					
 
 //					printf("接到数据来自Client[%d]\n", i_cycle);
-					printf("%s\r\n",dataRecvBuffer);  //通过串口发送接收到的数据	
+					printf("%s\r\n", dataRecvBuffer);  //通过串口发送接收到的数据	
 					
 					data_len=0;  //复制完成后data_len要清零。					
 					myfree(SRAMEX, dataRecvBuffer);
@@ -153,6 +157,20 @@ static void DataTransferManage(void *arg)
 					netbuf_delete(recvbuf);//一定要加上这一句!!!!不然会内存泄漏！！！
 					recvbuf = NULL;
 				}
+				
+/*************发送数据处理****************************/
+				if(isEmpityQueue(Session[i_cycle].QueueSend) == FALSE)
+				{
+					if(deQueue(Session[i_cycle].QueueSend, &dataSendBufferTemp))		//出队成功
+					{
+						pPacketTemp = (Packet*)dataSendBufferTemp;
+																																						//包头大小        +   包数据大小     + 包尾大小
+						err = netconn_write(Session[i_cycle].NetConnSend ,pPacketTemp,(PACKET_HEADER_SIZE + pPacketTemp->DataSize + 4),NETCONN_COPY); //!!!发送数据sizeof(tcp_server_sendbuf)
+						if(err != ERR_OK) printf("Send data in Failed,Please check it in DataTransferManage.c ERROR_Code:%d \r\n", err);
+						myfree(SRAMEX, pPacketTemp);
+					}
+				}
+/**************END*************************************/				
 			}			
 		}
 	vTaskDelay(100);//100ms后再启用
