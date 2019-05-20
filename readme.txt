@@ -172,6 +172,14 @@
 	Tracking空载1374us左右, 负载为2200us左右
 	ObjectDetection 空载为420us左右， 负载为1450us左右
 
+
+注意事项：
+	1. mymalloc(SRAMEX, 128) 分配内存时间为800us左右，myfree在70us左右，所以推荐不要去动态开辟内存！！！遵循：空间换时间！！！
+	2. netconn_write耗时长，大概为2356us-->5023us
+	3. printf重定义输出到串口USART1, 耗时很长，性能测试时不应该使用printf~
+
+
+
 Bug Report：
 XXXX1. 2019.3.14：(2019.5.6 Solved解决了,netconn_close改为netconn_delete即可)
 XXXXClient与STM32（TecpServer）多次连接&断开后，无法再次连接STM32了，第6次连接（单个client）时会出现报错：

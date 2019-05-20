@@ -5,6 +5,7 @@
 #include "task.h"
 #include "TCPProtocol.h"
 #include "DataTransferManage.h"
+#include "timer.h"
 
 /////////////////////////TCPServer//////////////////////////////////////////////////
 uint16_t PortReceive = 20200;	//PortReceive
@@ -70,18 +71,15 @@ static void TCPServerListenThread(void *arg)
 	struct netconn* netConnRecv;
 	struct netconn* netConnSend;
 	struct netbuf*	recvnetbuf;
-	//uint8_t *dataReceived;//unsigned char==uint8_t
-//	int *pInt;
 	static bool clientRepateFlag = false;
-	////////////////	
-	//static uint32_t data_len = 0;
-	//struct pbuf *q;
+
 	err_t err,recv_err,err_SendNetConn;
 	uint8_t remot_addr[4];
 	struct netconn *conn;	//conn为服务端监听socket
 	static ip_addr_t ipaddr;
 	static u16_t 			port;
-	static Packet* pPacket = NULL;
+	Packet* pPacket = mymalloc(SRAMEX, 256);	//数据包暂存
+	
 	LWIP_UNUSED_ARG(arg);
 
 	conn=netconn_new(NETCONN_TCP);  //创建一个TCP链接，NETCONN_UDP为创建UDP连接
@@ -146,7 +144,7 @@ static void TCPServerListenThread(void *arg)
 						printf("TCP_Server Connect Failed!!!==>error code ::[%d]\n", err_SendNetConn);
 					}
 				
-					pPacket = CreateStartTrackingPacket(1, 0);//标记跟踪启动
+					pPacket = CreateStartTrackingPacket(pPacket, 1, 0);//标记跟踪启动
 					data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
 					for(i_cycle = 0; i_cycle < ClientNum; i_cycle++)
 					{
@@ -154,15 +152,13 @@ static void TCPServerListenThread(void *arg)
 					}
 					enQueue(Session[i_cycle].QueueSend, (byte*)pPacket, data_len);
 				
-					
-//					TCPSendPacket(ClientServer, pPacket);
-					pPacket = NULL;
+					//TCPSendPacket(ClientServer, pPacket);
 				}					
-			clientRepateFlag = false;			//清零用于确保下一次能正常建立连接
-			
+			clientRepateFlag = false;			//清零用于确保下一次能正常建立连接			
 
-			pPacket = CreateClientIDPacket(ClientIDArray, ClientNum-1);//将所有连接了的Client和ID发送给PC
+			pPacket = CreateClientIDPacket(pPacket, ClientIDArray, ClientNum-1);//将所有连接了的Client和ID发送给PC
 			TCPSendPacket(ClientServer, pPacket);
+				
 			}			
 		}			
 	

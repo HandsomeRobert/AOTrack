@@ -118,3 +118,4 @@
 ..\obj\datatransfermanage.o: ..\COMMON\SemaphoreManage.h
 ..\obj\datatransfermanage.o: ..\COMMON\TCPQueue.h
 ..\obj\datatransfermanage.o: ..\MALLOC\malloc.h
+..\obj\datatransfermanage.o: ..\HARDWARE\TIMER\timer.h

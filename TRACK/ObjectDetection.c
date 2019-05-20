@@ -5,28 +5,27 @@
 #include <math.h>
 #include "TCPProtocol.h"
 #include "timer.h"
+#include "malloc.h"
 
+#define moduleQueueDepth	10
 TaskHandle_t ObjectDetectionThread_Handler;
 QueueHandle_t	ModuleQueue[maxTrackingModule];				//创建信息队列用于接收信息
-#define moduleQueueDepth	10
-
-static char* strCreateObject = "<=================Detect someting Create Objectr===================>";
- 
-__IO ObjectInfo ObjectBuffer[maxTrackingObjects];										//创建最大只能保存maxTrackingObjects个对象的数组 
+__IO ObjectInfo ObjectBuffer[maxTrackingObjects];	
+									//创建最大只能保存maxTrackingObjects个对象的数组 
 //ObjectList ObjectInModuleList[maxTrackingModule];								//定义一个跟踪段指针列表数组
 
 StctActionListItem ObjectInModuleList[maxTrackingModule][maxTrackingObjects];//二维数组用于存储所有动作列表
 
 __IO	uint32_t GlobalObjectID;																	//定义一个全局对象ID，__IO表示直接从地址处取值，取得最新值，允许所有软件硬件修改此值
 
+static char* strCreateObject = "<=================Detect someting Create Objectr===================>";
+
+
 static void ObjectDetectionThread(void);
 
 
 static byte CreateObject(byte objectCNT, int moduleID, int encoder, int flag, int lastTriggerPreviousEncoder,int lastReceivePreviousEncoder)
 {
-	Packet* pPacket;
-	int data_len, i_cycle;
-	
 	while(ObjectBuffer[objectCNT].objectAliveFlag != false)		//防止覆盖跟踪尚未结束的对象
 	{
 		objectCNT++;
@@ -46,15 +45,7 @@ static byte CreateObject(byte objectCNT, int moduleID, int encoder, int flag, in
 	ObjectBuffer[objectCNT].objectAliveFlag = true;							//激活跟踪过程
 	
 	GlobalObjectID++;
-	
-					pPacket = CreateStartTrackingPacket(1, 1);//标记跟踪启动
-					data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
-					for(i_cycle = 0; i_cycle < ClientNum; i_cycle++)
-					{
-						if(Session[i_cycle].ClientID == ClientServer) break;
-					}
-					enQueue(Session[i_cycle].QueueSend, (byte*)pPacket, data_len);
-	
+
 	return objectCNT;//返回创建的对象在缓冲数组中的位置
 }
 
@@ -102,16 +93,14 @@ uint8_t ObjectDetectionTask_init(void)
 static void ObjectDetectionThread(void)
 {
 	long long temp = 0;
-	
-	byte Object_i = 0, Module_i = 0, Action_i = 0;		//遍历控制变量
-	byte GlobalObjectCount = 0;
-	uint32_t TimeCountStart = 0;											//用于计算线程运行时间
-	uint16_t timeCount = 0;
+	byte Object_i  = 0, Module_i = 0, Action_i = 0;		//遍历控制变量
+	byte GlobalObjectCount 	= 0;
+	uint16_t timeCount 			= 0;
 	static uint16_t timeCountTime = 0;
-	static bool AddActiveFlag = false;	
+	static bool AddActiveFlag 		= false;	
 	static StctActionListItem objectTrackTemp ;				//跟踪数据暂存值
-	static ModuleQueueItem* moduleQueueTemp;					//定义一个从队列中暂取数据的暂存值指针
-	static Packet* pPacket = NULL;
+	static ModuleQueueItem* 	moduleQueueTemp;					//定义一个从队列中暂取数据的暂存值指针
+	Packet* pPacket = mymalloc(SRAMEX, 256);					//分配一个暂存区
 	
 //	static propActionRequestMachineData* 	pTempRequestMachineData = NULL;
 //	static propActionSetOutput* 					pTempSetOutput = NULL;
@@ -121,11 +110,11 @@ static void ObjectDetectionThread(void)
 	static propActionPushOut* 						pTempPushOut 				= NULL;
 
 	
-	static __IO int64_t encoderNumber 		= 0;     				// 编码器计数值
-	static __IO int64_t encoder1Number 		= 0;
-	static __IO int64_t encoder2Number 		= 0;
+	static __IO int64_t encoderNumber 		= 0;     		//编码器计数值
+	static __IO int64_t encoder1Number 		= 0;				//编码器1计数值
+	static __IO int64_t encoder2Number 		= 0;				//编码器2计数值
 	
-	static short triggerInterval 					= 0;									//两次触发间隔编码器数
+	static short triggerInterval 					= 0;				//两次触发间隔编码器数
 	static __IO int64_t LS1_EncoderNumTem = 0;				//光电1对应的上一次编码器值(暂存用于双触发保护)
 	static __IO int64_t LS2_EncoderNumTem = 0;				//光电2对应的上一次编码器值(暂存用于双触发保护)
 	static __IO int64_t LS3_EncoderNumTem = 0;				//光电3对应的上一次编码器值(暂存用于双触发保护)
@@ -158,7 +147,6 @@ static void ObjectDetectionThread(void)
 *************************************************************************************************************************************************************/				
 	while(1)
 	{	
-//		TimeCountStart 	= xTaskGetTickCount();
 		timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);
 		
 //		printf("The Count of TIM6==%d \n", timeCountTime);
@@ -221,7 +209,7 @@ static void ObjectDetectionThread(void)
 									//系统初次启动编码器为0，可能无法创建兑现得转过一定编码器才会开始创建对象...
 									if(encoderNumber - moduleQueueTemp->DelieverdEncoderNum < ModuleConfig[Module_i].TrackingWindow)					//为传递过来的对象，仅将对象在此段的动作加入列表
 									{
-										pPacket = CreateObjectRunInPacket(1, moduleQueueTemp->DelieverdObjectID, Module_i, encoderNumber, 
+										pPacket = CreateObjectRunInPacket(pPacket, 1, moduleQueueTemp->DelieverdObjectID, Module_i, encoderNumber, 
 																											0, encoderNumber, moduleQueueTemp->DelieverdEncoderNum);//高速PC对象XXX进入了跟踪段XXX
 										TCPSendPacket(ClientServer, pPacket);
 										
@@ -275,7 +263,7 @@ static void ObjectDetectionThread(void)
 										GlobalObjectCount = CreateObject(GlobalObjectCount, Module_i, ModuleConfig[Module_i].Encoder, 1, encoderNumber, encoderNumber);
 										GlobalObjectCount++;
 											
-										pPacket = CreateObjectRunInPacket(1, ObjectBuffer[GlobalObjectCount - 1].ObjectID, Module_i, encoderNumber, 
+										pPacket = CreateObjectRunInPacket(pPacket, 1, ObjectBuffer[GlobalObjectCount - 1].ObjectID, Module_i, encoderNumber, 
 																											1, encoderNumber, moduleQueueTemp->DelieverdEncoderNum);//高速PC对象XXX进入了跟踪段XXX
 										TCPSendPacket(ClientServer, pPacket);
 										
@@ -326,7 +314,7 @@ static void ObjectDetectionThread(void)
 									//系统初次启动编码器为0，可能无法创建兑现得转过一定编码器才会开始创建对象...
 									if(encoderNumber - moduleQueueTemp->DelieverdEncoderNum < ModuleConfig[Module_i].TrackingWindow)					//为传递过来的对象，仅将对象在此段的动作加入列表
 									{
-										pPacket = CreateObjectRunInPacket(1,  moduleQueueTemp->DelieverdObjectID, Module_i, encoderNumber, 
+										pPacket = CreateObjectRunInPacket(pPacket, 1,  moduleQueueTemp->DelieverdObjectID, Module_i, encoderNumber, 
 																											0, encoderNumber, moduleQueueTemp->DelieverdEncoderNum);//高速PC对象XXX进入了跟踪段XXX
 										TCPSendPacket(ClientServer, pPacket);
 										
@@ -384,7 +372,7 @@ static void ObjectDetectionThread(void)
 						//系统初次启动编码器为0，可能无法创建得先转过一定编码器才会开始创建对象...
 						if(encoderNumber - moduleQueueTemp->DelieverdEncoderNum < ModuleConfig[Module_i].TrackingWindow)					//为传递过来的对象，仅将对象在此段的动作加入列表
 						{
-							pPacket = CreateObjectRunInPacket(1,  moduleQueueTemp->DelieverdObjectID, Module_i, encoderNumber, 
+							pPacket = CreateObjectRunInPacket(pPacket, 1,  moduleQueueTemp->DelieverdObjectID, Module_i, encoderNumber, 
 																	0, encoderNumber, moduleQueueTemp->DelieverdEncoderNum);//高速PC对象XXX进入了跟踪段XXX
 							TCPSendPacket(ClientServer, pPacket);
 							
@@ -484,7 +472,7 @@ static void ObjectDetectionThread(void)
 								GlobalObjectCount = CreateObject(GlobalObjectCount, Module_i, ModuleConfig[Module_i].Encoder, 1, encoderNumber, encoderNumber);
 								GlobalObjectCount++;
 									
-								pPacket = CreateObjectRunInPacket(1,  ObjectBuffer[GlobalObjectCount - 1].ObjectID, Module_i, encoderNumber, 
+								pPacket = CreateObjectRunInPacket(pPacket, 1,  ObjectBuffer[GlobalObjectCount - 1].ObjectID, Module_i, encoderNumber, 
 																									1,  encoderNumber, encoderNumber);//高速PC对象XXX进入了跟踪段XXX
 								TCPSendPacket(ClientServer, pPacket);
 								

@@ -80,32 +80,32 @@ typedef struct
 /*
 **创建各种包的函数
 *******/
-Packet* CreateHeartBeatPacket				(void);
-Packet* CreateReconfigurationPacket	(int fileID, int result);
-Packet* CreateStartTrackingPacket		(int lineID, int objectID);
-Packet* CreateStartControlPacket		(int lineID, int objectID);
-Packet* CreateObjectFalldownPacket	(int lineID, int moduleID);
-Packet* CreateStartIOLivePacket			(bool start);
-Packet* CreateClientIDPacket				(int* ConnectClientID,int ConnectIDNum);
-Packet* CreateErrorMessagePacket		(int messageID);
-Packet* CreateErrorAcknowledgePacket(int messageID);
-Packet* CreateObjectRunInPacket			(int lineID, int objectID, int moduleID, int encoder, int flag, int lastTriggerPreviousEncoder,int lastReceivePreviousEncoder);
-Packet* CreateObjectRunOutPacket		(int lineID, int objectID, int moduleID, int encoder, int destModuleID);
-Packet* CreateObjectDeletePacket		(int lineID, int objectID, int moduleID, int encoder);
-Packet* CreateTriggerCameraPacket		(int lineID, int objectID, int moduleID, int encoder, int cameraID, int imageIndex);
-Packet* CreateTriggerIOSensorPacket	(int lineID, int objectID, int moduleID, int encoder, int sensorID);
-Packet* CreateGetMachineDataPacket	(int lineID, int objectID, int moduleID, int encoder, short* pMachineData);
-Packet* CreateSetTrackingModePacket	(int lineID, int mode);
-Packet* CreateObjectPositionPacket	(int lineID, int* moduleIDList, int* modulePositionList, int num);
-Packet* CreateModuleInfoPacket			(int ModuleID, int ModuleSpeed, int numCreatedObjects, int numCreatedNormalObjects, int numCreatedInternalObjects, int numTakeoverObjects, int numLostObjects);
-Packet* CreateTrackingDummyPacket		(int lineID, int objectID, int moduleID, int encoder);
-Packet* CreateXRayErrorPacket				(int lineID, int ErrorFlag);
+Packet* CreateHeartBeatPacket				(Packet* pPacket);
+Packet* CreateReconfigurationPacket	(Packet* pPacket, int fileID, int result);
+Packet* CreateStartTrackingPacket		(Packet* pPacket, int lineID, int objectID);
+Packet* CreateStartControlPacket		(Packet* pPacket, int lineID, int objectID);
+Packet* CreateObjectFalldownPacket	(Packet* pPacket, int lineID, int moduleID);
+Packet* CreateStartIOLivePacket			(Packet* pPacket, bool start);
+Packet* CreateClientIDPacket				(Packet* pPacket, int* ConnectClientID,int ConnectIDNum);
+Packet* CreateErrorMessagePacket		(Packet* pPacket, int messageID);
+Packet* CreateErrorAcknowledgePacket(Packet* pPacket, int messageID);
+Packet* CreateObjectRunInPacket			(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder, int flag, int lastTriggerPreviousEncoder,int lastReceivePreviousEncoder);
+Packet* CreateObjectRunOutPacket		(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder, int destModuleID);
+Packet* CreateObjectDeletePacket		(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder);
+Packet* CreateTriggerCameraPacket		(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder, int cameraID, int imageIndex);
+Packet* CreateTriggerIOSensorPacket	(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder, int sensorID);
+Packet* CreateGetMachineDataPacket	(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder, short* pMachineData);
+Packet* CreateSetTrackingModePacket	(Packet* pPacket, int lineID, int mode);
+Packet* CreateObjectPositionPacket	(Packet* pPacket, int lineID, int* moduleIDList, int* modulePositionList, int num);
+Packet* CreateModuleInfoPacket			(Packet* pPacket, int ModuleID, int ModuleSpeed, int numCreatedObjects, int numCreatedNormalObjects, int numCreatedInternalObjects, int numTakeoverObjects, int numLostObjects);
+Packet* CreateTrackingDummyPacket		(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder);
+Packet* CreateXRayErrorPacket				(Packet* pPacket, int lineID, int ErrorFlag);
 
 /*
 **创建其它数据结构的函数
 *******/
-char* 	CreateHeartBeatTCP					(short count);
-char* 	CreateSendAngleTCP					(short startIndex, short pos, short angle);
+char* 	CreateHeartBeatTCP					(char* pData, short count);
+char* 	CreateSendAngleTCP					(char* pData, short startIndex, short pos, short angle);
 
 
 #endif

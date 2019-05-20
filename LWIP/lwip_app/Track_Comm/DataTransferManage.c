@@ -9,6 +9,7 @@
 #include "lwip_comm.h"
 #include "TcpPacketServer.h"
 #include "stdbool.h"
+#include "timer.h"
 
 uint8_t DataTransferManage_recvbuf[DATA_RX_BUFSIZE];	//TCP客户端接收数据缓冲区
 
@@ -24,13 +25,18 @@ void TCPSendPacket(byte clientID, Packet* packet)
 {
 	err_t err;
 	int i = 0;
+////	uint16_t timeCount = 0;
 	for(i = 0;i<ClientNum;i++)
 	{
 		if(Session[i].ClientID == clientID)
-		{																											//包头大小        +   包数据大小     + 包尾大小
-			err = netconn_write(Session[i].NetConnSend ,packet,(PACKET_HEADER_SIZE + packet->DataSize + 4),NETCONN_COPY); //!!!发送数据sizeof(tcp_server_sendbuf)
-			if(err != ERR_OK) printf("Send data in TCPSendDataChar Failed,Please check it in DataTransferManage.c \r\n");
-			myfree(SRAMEX, packet);
+		{
+////		timeCount 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);			//包头大小        +   包数据大小     + 包尾大小
+			//NETCONN_NOFLAG:2830 - 5082  ==> NETCONN_COPY:3424-->4824 NETCONN_NOCOPY::3454-->5016 NETCONN_MORE::3424-->4956
+			err = netconn_write(Session[i].NetConnSend ,packet,(PACKET_HEADER_SIZE + packet->DataSize + 4),NETCONN_MORE); //!!!发送数据sizeof(tcp_server_sendbuf)
+////			timeCount 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCount;		//耗时70us
+////			printf("netconn_write time  ==>%d \n", timeCount);
+			if(err != ERR_OK) printf("Send data in TCPSendDataChar Failed,Please check it in DataTransferManage.c code[%d] \r\n", err);
+			//myfree(SRAMEX, packet);
 		}
 	}		
 }
@@ -173,7 +179,7 @@ static void DataTransferManage(void *arg)
 /**************END*************************************/				
 			}			
 		}
-	vTaskDelay(100);//100ms后再启用
+	vTaskDelay(1);//1ms后再启用
 	}
 }
 

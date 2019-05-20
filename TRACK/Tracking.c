@@ -50,7 +50,6 @@ static void TrackingThread(void *arg)
 	static __IO int64_t encoder2Number = 0;
 	static __IO int64_t encoderDelivered = 0;
 	
-	static uint16_t timeCountTime = 0;
 	static bool isActionIn = false;
 //	static propActionRequestMachineData* 	pTempRequestMachineData = NULL;
 //	static propActionSetOutput* 					pTempSetOutput = NULL;
@@ -64,32 +63,33 @@ static void TrackingThread(void *arg)
 	static Packet* pPacket;															//数据包首地址
 	uint32_t TimeCountStart = 0;												//用于计算线程运行时间
 	uint16_t timeCount = 0;
+	uint16_t timeCount_for_cycle = 0;
+	uint16_t timeCountTime_Module = 0;
 	BaseType_t err;
 
 	moduleQueueTemp = mymalloc(SRAMEX, sizeof(ModuleQueueItem));//分配内存初始化
-
+	pPacket 				= mymalloc(SRAMEX, 256);										//为数据包分配一个固定的256字节的数据临时存储区
 	
 /************************************************************************************************************************************************************			
 *****************************************************************跟踪过程监控区******************************************************************************				
 *************************************************************************************************************************************************************/	
 	while(1)
 	{	
-//		TimeCountStart = xTaskGetTickCount();
-		timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);//0.7us
+		TimeCountStart 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);//0.7us
 		
 		if( ClientNum > 0)															//有检测程序Inspection连接
 		{
-			encoder1Number = (OverflowCount_Encoder3*ENCODER_CNT_MAX) + __HAL_TIM_GET_COUNTER(&htimx_Encoder3);//1.5us
-			encoder2Number = (OverflowCount_Encoder8*ENCODER_CNT_MAX) + __HAL_TIM_GET_COUNTER(&htimx_Encoder8);//1.5us
-			
+			encoder1Number = (OverflowCount_Encoder3*ENCODER_CNT_MAX) + __HAL_TIM_GET_COUNTER(&htimx_Encoder3);//15us
+			encoder2Number = (OverflowCount_Encoder8*ENCODER_CNT_MAX) + __HAL_TIM_GET_COUNTER(&htimx_Encoder8);//15us
+
 			for(Module_i = 0;Module_i < Module_Count;Module_i++)
-			{
+			{ 
 				switch (ModuleConfig[Module_i].Encoder)
 				{
 					case Encoder_1: encoderNumber = encoder1Number;break;
 					case Encoder_2: encoderNumber = encoder2Number;break;
-				}
-
+				}	
+				
 				for(Action_i = 0; Action_i < maxTrackingObjects;Action_i++)//这里比较耗时
 				{
 					if(ObjectInModuleList[Module_i][Action_i].IsActionAlive)
@@ -129,36 +129,19 @@ static void TrackingThread(void *arg)
 									
 									//将要发送的数据传递到发送buffer
 									
-									timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);
-									pPacket = CreateObjectRunOutPacket(1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber, pTempObjectTakeOver->DestinationModule);
-									timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCountTime;		//
-									printf("Sending Through step1 ==>%d \n", timeCountTime);									//耗时1022us
-									timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);
-									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
-									timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCountTime;		//耗时26us
-									printf("Sending Through step1.1 ==>%d \n", timeCountTime);
-									timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);
-									for(i_cycle = 0; i_cycle < ClientNum; i_cycle++)
+									//耗时1022us(动态分配内存的)，86us（传入pPacket的）
+									pPacket = CreateObjectRunOutPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber, pTempObjectTakeOver->DestinationModule);
+									
+//								TCPSendPacket(ClientServer, pPacket);//Spend Time 4900us
+
+									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;//耗时24us
+
+									for(i_cycle = 0; i_cycle < ClientNum; i_cycle++)//耗时26us
 									{
 										if(Session[i_cycle].ClientID == ClientServer) break;
-									}
-									timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCountTime;		//11us
-									printf("Sending Through step2 ==>%d \n", timeCountTime);									//耗时26us
-									timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);
+									}			
+									//耗时1214us
 									enQueue(Session[i_cycle].QueueSend, (byte*)pPacket, data_len);
-									
-									timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCountTime;		//11us
-									printf("Sending Through step3 ==>%d \n", timeCountTime);									//耗时1114us
-timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);
-									pTest = (byte*)mymalloc(SRAMEX, 128);
-									timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCountTime;		//耗时800us
-									printf("malloc 128bytes time  ==>%d \n", timeCountTime);
-									
-timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);
-									myfree(SRAMEX, pTest);
-									timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCountTime;		//耗时70us
-									printf("malloc 128bytes time  ==>%d \n", timeCountTime);
-//									TCPSendPacket(ClientServer, pPacket);
 //									//printf("ModuleCount==%d,  Module[%d]===>Destination[%d] \n", Module_Count, Module_i, pTempObjectTakeOver->DestinationModule);
 									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
 									break;
@@ -169,10 +152,10 @@ timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);
 									xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerCamera, eSetValueWithOverwrite, NULL);	//发送通知去触发相机
 									
 									//将要发送的数据传递到发送buffer
-									pPacket = CreateTriggerCameraPacket(1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber,
+									pPacket = CreateTriggerCameraPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber,
 																											pTempTriggerCamera->CameraID, 1);
+//									TCPSendPacket(ClientServer, pPacket);//耗时4800us
 									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4; 
-//									TCPSendPacket(pTempTriggerCamera->ClientID, pPacket);
 									for(i_cycle = 0; i_cycle < ClientNum; i_cycle++)
 									{
 										if(Session[i_cycle].ClientID == pTempTriggerCamera->ClientID) break;
@@ -187,7 +170,7 @@ timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);
 									//printf("ActTriggerSensor Triggered, Object[%d], Encoder=[%lld]\n", ObjectInModuleList[Module_i][Action_i].ObjectID, encoderNumber);
 									xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerSensor, eSetValueWithOverwrite, NULL);	
 								
-									pPacket = CreateTriggerIOSensorPacket(1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber, pTempTriggerSensor->SensorID);
+									pPacket = CreateTriggerIOSensorPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber, pTempTriggerSensor->SensorID);
 //									TCPSendPacket(pTempTriggerSensor->ClientID, pPacket);
 									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
 									for(i_cycle = 0; i_cycle < ClientNum; i_cycle++)
@@ -201,15 +184,15 @@ timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);
 								
 								case ActPushOut						: 						
 									//printf("ActPushOut Triggered, Object[%d], Encoder=[%lld]\n", ObjectInModuleList[Module_i][Action_i].ObjectID, encoderNumber);
-									pPacket = CreateObjectDeletePacket(1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber);
-									
+									pPacket = CreateObjectDeletePacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber);
+//									TCPSendPacket(ClientServer, pPacket);						
+								
 									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
 									for(i_cycle = 0; i_cycle < ClientNum; i_cycle++)
 									{
 										if(Session[i_cycle].ClientID == ClientServer) break;
 									}
-									enQueue(Session[i_cycle].QueueSend, (byte*)pPacket, data_len);
-								
+									enQueue(Session[i_cycle].QueueSend, (byte*)pPacket, data_len);							
 								
 									/******遍历寻找此对象在缓冲区数组的位置， 此处亦须释放对应的ObjectBuffer对象，否则无法再创建对象，无法往ObjectBuffer内填充值*****/
 									object_i = 0 ;
@@ -238,6 +221,8 @@ timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);
 					}
 				}			
 			
+//printf("Get for whole List Cycle Time ==>%d \n", __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCount_for_cycle);//空载440us一个循环，3次为1320us
+				
 				if(isActionIn == true)	//用于跳出大的Module循环
 				{
 					isActionIn = false;
@@ -245,22 +230,20 @@ timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);
 				}
 			
 			}
+//printf("Sending Module whole cycle Spending time  ==>%d \n", __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCountTime_Module);//1378us
+			
+
 /************************************************************************************************************************************************************			
 *****************************************************************跟踪过程监控区END******************************************************************************				
 *************************************************************************************************************************************************************/				
 
-//			timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCountTime;		//11us
-//			if(timeCountTime > 300)
-//			{
-//				printf("TrackingTime ==>%d \n", timeCountTime);
-//			}
-			
-			
-//			timeCount = xTaskGetTickCount()- TimeCountStart;
-//			if(timeCount > 0)
-//			{
-//				printf("Tracking Thread Running Time ==>%d \n", timeCount);//
-//			}
+/***运行时间统计***/
+//////			TimeCountStart 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - TimeCountStart;		//11us
+//////			if(TimeCountStart > 1450)
+//////			{
+//////				printf("TrackingTime ==>%d \n", TimeCountStart);//5252us, 4184us, 3608us
+//////			}	
+
 		}
 	vTaskDelay(1);																								//不阻塞1ms的话，会一直跑这个程序	
 	}	

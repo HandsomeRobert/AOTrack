@@ -151,7 +151,7 @@
           <Type>0</Type>
           <LineNumber>50</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134227316</Address>
+          <Address>134227308</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -167,7 +167,7 @@
           <Type>0</Type>
           <LineNumber>58</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134227384</Address>
+          <Address>134226726</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -178,12 +178,43 @@
           <ExecCommand></ExecCommand>
           <Expression>\\AOTrack_Program\../TRACK/ObjectDetection.c\58</Expression>
         </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>174</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134258392</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>E:\02-璺熻釜鎺у埗鍣ㄨ璁?02-璺熻釜鎺у埗鍣ㄧ▼搴忓紑鍙?AOTrack\LWIP\lwip_app\TcpPacketServer\TcpPacketServer.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\AOTrack_Program\../LWIP/lwip_app/TcpPacketServer/TcpPacketServer.c\174</Expression>
+        </Bp>
       </Breakpoint>
       <WatchWindow1>
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
           <ItemText>timeCountTime,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>pPacket</ItemText>
+        </Ww>
+        <Ww>
+          <count>2</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>data_len,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>timeCount,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

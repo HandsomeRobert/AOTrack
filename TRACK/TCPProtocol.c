@@ -16,9 +16,9 @@ void SetValueOffset(char* pDestination, int offset, int value)
 }
 
 //心跳数据包
-Packet* CreateHeartBeatPacket(void)
+Packet* CreateHeartBeatPacket(Packet* pPacket)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 	
@@ -39,9 +39,9 @@ Packet* CreateHeartBeatPacket(void)
 	return pPacket;
 }
 
-Packet* CreateReconfigurationPacket(int fileID, int result)
+Packet* CreateReconfigurationPacket(Packet* pPacket, int fileID, int result)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 	
@@ -69,9 +69,9 @@ Packet* CreateReconfigurationPacket(int fileID, int result)
 //StartTracking: [objectID]
 //	0:  Start
 //	1:  Stop
-Packet* CreateStartTrackingPacket(int lineID, int objectID)
+Packet* CreateStartTrackingPacket(Packet* pPacket, int lineID, int objectID)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 	
@@ -95,9 +95,9 @@ Packet* CreateStartTrackingPacket(int lineID, int objectID)
 }
 
 //启动Control
-Packet* CreateStartControlPacket(int lineID, int objectID)
+Packet* CreateStartControlPacket(Packet* pPacket, int lineID, int objectID)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 	
@@ -120,9 +120,9 @@ Packet* CreateStartControlPacket(int lineID, int objectID)
 	return pPacket;
 }
 
-Packet* CreateObjectFalldownPacket(int lineID, int moduleID)
+Packet* CreateObjectFalldownPacket(Packet* pPacket, int lineID, int moduleID)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 	
@@ -149,9 +149,9 @@ Packet* CreateObjectFalldownPacket(int lineID, int moduleID)
 //start: [ObjectID]
 //	0:	stop
 //	1:	start 
-Packet* CreateStartIOLivePacket(bool start)
+Packet* CreateStartIOLivePacket(Packet* pPacket, bool start)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 	
@@ -174,9 +174,9 @@ Packet* CreateStartIOLivePacket(bool start)
 }
 
 //PLC ---> PC
-Packet* CreateClientIDPacket(int * ConnectClientID,int ConnectIDNum)
+Packet* CreateClientIDPacket(Packet* pPacket, int * ConnectClientID,int ConnectIDNum)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	char * pOffset;
 //	int offset = 0;
@@ -204,9 +204,9 @@ Packet* CreateClientIDPacket(int * ConnectClientID,int ConnectIDNum)
 
 //PLC ---> PC
 //messageID [ObjectID]
-Packet* CreateErrorMessagePacket(int messageID)
+Packet* CreateErrorMessagePacket(Packet* pPacket, int messageID)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 	
@@ -231,9 +231,9 @@ Packet* CreateErrorMessagePacket(int messageID)
 //PLC <---> PC
 //messageID [ObjectID]
 //	0:	acknowledge all errors
-Packet* CreateErrorAcknowledgePacket(int messageID)
+Packet* CreateErrorAcknowledgePacket(Packet* pPacket, int messageID)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 	
@@ -262,9 +262,9 @@ Packet* CreateErrorAcknowledgePacket(int messageID)
 //	0: object that is taken over
 //	1: object that is normal created
 //	2: object that is created in diagnostics mode
-Packet* CreateObjectRunInPacket(int lineID, int objectID, int moduleID, int encoder, int flag, int lastTriggerPreviousEncoder,int lastReceivePreviousEncoder)
+Packet* CreateObjectRunInPacket(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder, int flag, int lastTriggerPreviousEncoder,int lastReceivePreviousEncoder)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 
@@ -293,9 +293,9 @@ Packet* CreateObjectRunInPacket(int lineID, int objectID, int moduleID, int enco
 }
 
 
-Packet* CreateObjectRunOutPacket(int lineID, int objectID, int moduleID, int encoder, int destModuleID)
+Packet* CreateObjectRunOutPacket(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder, int destModuleID)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 
@@ -322,9 +322,9 @@ Packet* CreateObjectRunOutPacket(int lineID, int objectID, int moduleID, int enc
 	return pPacket;
 }
 
-Packet* CreateObjectDeletePacket(int lineID, int objectID, int moduleID, int encoder)
+Packet* CreateObjectDeletePacket(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 
@@ -351,9 +351,9 @@ Packet* CreateObjectDeletePacket(int lineID, int objectID, int moduleID, int enc
 }
 	
 
-Packet* CreateTriggerCameraPacket(int lineID, int objectID, int moduleID, int encoder, int cameraID, int imageIndex)
+Packet* CreateTriggerCameraPacket(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder, int cameraID, int imageIndex)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 
@@ -381,9 +381,9 @@ Packet* CreateTriggerCameraPacket(int lineID, int objectID, int moduleID, int en
 	return pPacket;
 }
 	
-Packet* CreateTriggerIOSensorPacket(int lineID, int objectID, int moduleID, int encoder, int sensorID)
+Packet* CreateTriggerIOSensorPacket(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder, int sensorID)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 	
@@ -409,9 +409,9 @@ Packet* CreateTriggerIOSensorPacket(int lineID, int objectID, int moduleID, int 
 	return pPacket;
 }
 
-Packet* CreateGetMachineDataPacket(int lineID, int objectID, int moduleID, int encoder, short* pMachineData)
+Packet* CreateGetMachineDataPacket(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder, short* pMachineData)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 //	int offset = 0;
 	char* pDst;
@@ -446,9 +446,9 @@ Packet* CreateGetMachineDataPacket(int lineID, int objectID, int moduleID, int e
 //	2:	TrackingOneObject		set only one object as diagnostics object
 //	3:	TrackingMultiObject		set another object as diagnostics object after the last one finishes
 //	4:	TrackingLearning		learning mode, only one object should be in the inspection line
-Packet* CreateSetTrackingModePacket(int lineID, int mode)
+Packet* CreateSetTrackingModePacket(Packet* pPacket, int lineID, int mode)
 {
-	Packet* pPacket 		= (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket 		= (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 	
@@ -471,9 +471,9 @@ Packet* CreateSetTrackingModePacket(int lineID, int mode)
 	return pPacket;
 }
 
-Packet* CreateObjectPositionPacket(int lineID, int* moduleIDList, int* modulePositionList, int num)
+Packet* CreateObjectPositionPacket(Packet* pPacket, int lineID, int* moduleIDList, int* modulePositionList, int num)
 {
-	Packet* pPacket 		= (Packet*)mymalloc(SRAMEX, 256);
+//	Packet* pPacket 		= (Packet*)mymalloc(SRAMEX, 256);
 	Command* pCommand;
 	//int offset = 0;		
 	int offset, id, pos,i;
@@ -507,9 +507,9 @@ Packet* CreateObjectPositionPacket(int lineID, int* moduleIDList, int* modulePos
 	return pPacket;
 }
 
-Packet* CreateModuleInfoPacket(int ModuleID, int ModuleSpeed, int numCreatedObjects, int numCreatedNormalObjects, int numCreatedInternalObjects, int numTakeoverObjects, int numLostObjects)
+Packet* CreateModuleInfoPacket(Packet* pPacket, int ModuleID, int ModuleSpeed, int numCreatedObjects, int numCreatedNormalObjects, int numCreatedInternalObjects, int numTakeoverObjects, int numLostObjects)
 {
-	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* pPacket = (Packet*)mymalloc(SRAMEX, 128);
 	Command* pCommand;
 	int offset = 0;
 	
@@ -573,9 +573,9 @@ Packet* CreateSendPLCInfoPacket()
 ***************************************************************************/
 
 
-Packet* CreateTrackingDummyPacket(int lineID, int objectID, int moduleID, int encoder)
+Packet* CreateTrackingDummyPacket(Packet* pPacket, int lineID, int objectID, int moduleID, int encoder)
 {
-	Packet* 	pPacket 	= (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* 	pPacket 	= (Packet*)mymalloc(SRAMEX, 128);
 	Command* 	pCommand;
 	int offset = 0;
 	
@@ -600,9 +600,9 @@ Packet* CreateTrackingDummyPacket(int lineID, int objectID, int moduleID, int en
 	return pPacket;
 }
 
-char* CreateHeartBeatTCP(short count)
+char* CreateHeartBeatTCP(char* pData, short count)
 {
-	char* pData = (char*)mymalloc(SRAMEX, 16);
+//	char* pData = (char*)mymalloc(SRAMEX, 16);
 	
 	pData[0] = 0;
 	pData[1] = 0;
@@ -619,9 +619,9 @@ char* CreateHeartBeatTCP(short count)
 	return pData;
 }
 
-char* CreateSendAngleTCP(short startIndex, short pos, short angle)
+char* CreateSendAngleTCP(char* pData, short startIndex, short pos, short angle)
 {
-	char* pData = (char*)mymalloc(SRAMEX, 16);
+//	char* pData = (char*)mymalloc(SRAMEX, 16);
 	
 	pData[0] = 0;
 	pData[1] = 0;
@@ -639,9 +639,9 @@ char* CreateSendAngleTCP(short startIndex, short pos, short angle)
 	return pData;
 }
 
-Packet* CreateXRayErrorPacket(int lineID, int ErrorFlag)
+Packet* CreateXRayErrorPacket(Packet* pPacket, int lineID, int ErrorFlag)
 {
-	Packet* 	pPacket 	= (Packet*)mymalloc(SRAMEX, 128);
+//	Packet* 	pPacket 	= (Packet*)mymalloc(SRAMEX, 128);
 	Command* 	pCommand;
 	int offset = 0;
 	
