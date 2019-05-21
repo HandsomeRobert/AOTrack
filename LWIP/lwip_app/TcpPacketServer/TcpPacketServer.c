@@ -17,7 +17,7 @@ bool IsRunning = 0;
 bool StopServerListen;
 int i_MTU = 1500;
 
-struct PacketServerSession Session[MaxClinets];		//定义一个用于管理接收socket的session
+struct PacketServerSession Session[MaxClients];		//定义一个用于管理接收socket的session
 
 uint32_t tcp_server_recvbuf[TCP_SERVER_RX_BUFSIZE];	//TCP客户端接收数据缓冲区
 char *tcp_server_sendbuf="Apollo STM32F4/F7 NETCONN TCP Server send data\r\n";	
@@ -26,15 +26,25 @@ bool SocketLinkFlag = false;//连接建立标志
 //添加资源到Session里
 static void addSession(int clientID, int sessionID, struct netconn* netConnRecv, struct netconn* netConnSend)
 {
+	byte i = 0;
 	Session[sessionID].ClientID = clientID;
 	Session[sessionID].NetConnRecv = netConnRecv;
 	Session[sessionID].NetConnSend = netConnSend;
 	
-	Session[sessionID].QueueRecv = mymalloc(SRAMEX, sizeof(queue));
-	Session[sessionID].QueueSend = mymalloc(SRAMEX, sizeof(queue));
-	
-	initQueue(&Session[sessionID].QueueRecv, TCP_Queue_MAXBUFSIZE);//Initialing the Recvie buffer queue
-	initQueue(&Session[sessionID].QueueSend, TCP_Queue_MAXBUFSIZE);//Initialing the send buffer queue
+	for(i = 0; i < MaxBufferLength; i++)
+	{
+		Session[sessionID].BufferRecv[i].pBufferData = mymalloc(SRAMEX, 128);
+		Session[sessionID].BufferRecv[i].IsBufferAlive = false;
+	}
+	for(i = 0; i < MaxBufferLength; i++)
+	{
+		Session[sessionID].BufferSend[i].pBufferData = mymalloc(SRAMEX, 128);
+		Session[sessionID].BufferSend[i].IsBufferAlive = false;
+	}
+
+//	
+//	initQueue(&Session[sessionID].QueueRecv);//Initialing the Recvie buffer queue
+//	initQueue(&Session[sessionID].QueueSend);//Initialing the send buffer queue
 	printf("Session Client[%d] Add Successful\r\n",clientID);
 }
 
@@ -67,7 +77,7 @@ static void TCPServerListenThread(void *arg)
 	////////////////
 	uint8_t i_cycle = 0,j_cycle = 0;
 	int data_len = 0;
-	static int ClientIDArray[MaxClinets] = {0};
+	static int ClientIDArray[MaxClients] = {0};
 	struct netconn* netConnRecv;
 	struct netconn* netConnSend;
 	struct netbuf*	recvnetbuf;
@@ -90,7 +100,7 @@ static void TCPServerListenThread(void *arg)
 	
 	while (!StopServerListen) 				//初始化上面的代码之后，此线程会一直循环执行这部分代码
 	{
-		if(ClientNum < MaxClinets)//最大创建8个
+		if(ClientNum < MaxClients)//最大创建8个
 		{
 			//接收连接并创建新的Receive Socket
 			err = netconn_accept(conn,&netConnRecv);  //接收连接请求,扫描是否有连接，利用conn监听，
@@ -144,21 +154,36 @@ static void TCPServerListenThread(void *arg)
 						printf("TCP_Server Connect Failed!!!==>error code ::[%d]\n", err_SendNetConn);
 					}
 				
-					pPacket = CreateStartTrackingPacket(pPacket, 1, 0);//标记跟踪启动
+					pPacket  = CreateStartTrackingPacket(pPacket, 1, 0);//标记跟踪启动
 					data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
-					for(i_cycle = 0; i_cycle < ClientNum; i_cycle++)
+					i_cycle = 0;
+					while(Session[i_cycle].ClientID != ClientServer)
 					{
-						if(Session[i_cycle].ClientID == ClientServer) break;
-					}
-					enQueue(Session[i_cycle].QueueSend, (byte*)pPacket, data_len);
-				
-					//TCPSendPacket(ClientServer, pPacket);
+						i_cycle++;
+						if(i_cycle > ClientNum)
+						{
+							printf("Cannot find the session ClientServer[%d],Retrying...\r\n", ClientServer);
+							i_cycle = 0;
+						}
+					}			
+					WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);
+
 				}					
 			clientRepateFlag = false;			//清零用于确保下一次能正常建立连接			
 
-			pPacket = CreateClientIDPacket(pPacket, ClientIDArray, ClientNum-1);//将所有连接了的Client和ID发送给PC
-			TCPSendPacket(ClientServer, pPacket);
-				
+			pPacket  = CreateClientIDPacket(pPacket, ClientIDArray, ClientNum-1);//将所有连接了的Client和ID发送给PC
+			data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;//耗时24us
+			i_cycle = 0;
+			while(Session[i_cycle].ClientID != ClientServer)
+			{
+				i_cycle++;
+				if(i_cycle > ClientNum)
+				{
+					printf("In TcpPacketServer.c Cannot find the session ClientServer[%d],Retrying...\r\n", ClientServer);
+					i_cycle = 0;
+				}
+			}			
+			WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);
 			}			
 		}			
 	
@@ -175,8 +200,13 @@ static void TCPServerListenThread(void *arg)
 					netconn_close	(Session[i_cycle].NetConnSend);
 					netconn_delete(Session[i_cycle].NetConnRecv);
 					netconn_delete(Session[i_cycle].NetConnSend);
-					destroyQueue 	(Session[i_cycle].QueueRecv);
-					destroyQueue 	(Session[i_cycle].QueueSend);
+					for(j_cycle = 0; j_cycle<MaxBufferLength;j_cycle++)
+					{
+						myfree(SRAMEX, Session[i_cycle].BufferRecv[j_cycle].pBufferData);
+						myfree(SRAMEX, Session[i_cycle].BufferSend[j_cycle].pBufferData);
+						Session[i_cycle].BufferRecv[j_cycle].IsBufferAlive = false;
+						Session[i_cycle].BufferSend[j_cycle].IsBufferAlive = false;
+					}
 					Session[i_cycle].ClientID = 0;			//客户端口清零
 					//printf("主机:%d.%d.%d.%d断开与服务器的连接\r\n",remot_addr[0], remot_addr[1],remot_addr[2],remot_addr[3]);
 					printf("主机断开XXX的连接：======>%d", Session[i_cycle].ClientID);

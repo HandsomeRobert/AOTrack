@@ -97,6 +97,7 @@ static void ObjectDetectionThread(void)
 	byte GlobalObjectCount 	= 0;
 	uint16_t timeCount 			= 0;
 	static uint16_t timeCountTime = 0;
+	static byte i_cycle = 0, data_len=0;
 	static bool AddActiveFlag 		= false;	
 	static StctActionListItem objectTrackTemp ;				//跟踪数据暂存值
 	static ModuleQueueItem* 	moduleQueueTemp;					//定义一个从队列中暂取数据的暂存值指针
@@ -108,7 +109,7 @@ static void ObjectDetectionThread(void)
 	static propActionTriggerCamera* 			pTempTriggerCamera 	= NULL;
 	static propActionTriggerSensor* 			pTempTriggerSensor 	= NULL;
 	static propActionPushOut* 						pTempPushOut 				= NULL;
-
+	
 	
 	static __IO int64_t encoderNumber 		= 0;     		//编码器计数值
 	static __IO int64_t encoder1Number 		= 0;				//编码器1计数值
@@ -211,7 +212,18 @@ static void ObjectDetectionThread(void)
 									{
 										pPacket = CreateObjectRunInPacket(pPacket, 1, moduleQueueTemp->DelieverdObjectID, Module_i, encoderNumber, 
 																											0, encoderNumber, moduleQueueTemp->DelieverdEncoderNum);//高速PC对象XXX进入了跟踪段XXX
-										TCPSendPacket(ClientServer, pPacket);
+										data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
+										i_cycle  = 0;
+										while(Session[i_cycle].ClientID != ClientServer)
+										{
+											i_cycle++;
+											if(i_cycle > ClientNum)
+											{
+												printf("Cannot find the session ClientServer->ClientID[%d],Retrying...\r\n", ClientServer);
+												i_cycle = 0;
+											}
+										}			
+										WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);	
 										
 										for(Action_i = 0;Action_i < ModuleConfig[Module_i].NumberOfActions;Action_i++)
 										{
@@ -265,7 +277,18 @@ static void ObjectDetectionThread(void)
 											
 										pPacket = CreateObjectRunInPacket(pPacket, 1, ObjectBuffer[GlobalObjectCount - 1].ObjectID, Module_i, encoderNumber, 
 																											1, encoderNumber, moduleQueueTemp->DelieverdEncoderNum);//高速PC对象XXX进入了跟踪段XXX
-										TCPSendPacket(ClientServer, pPacket);
+										data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
+										i_cycle  = 0;
+										while(Session[i_cycle].ClientID != ClientServer)
+										{
+											i_cycle++;
+											if(i_cycle > ClientNum)
+											{
+												printf("Cannot find the session ClientServer->ClientID[%d],Retrying...\r\n", ClientServer);
+												i_cycle = 0;
+											}
+										}			
+										WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);	
 										
 										/*判断是哪种类型的动作(由于定位到了某个跟踪段的某个动作，所以是确定当前动作的种类)*/
 										switch (ModuleConfig[Module_i].ActionInstanceConfig[Action_i].ActionType)
@@ -316,7 +339,18 @@ static void ObjectDetectionThread(void)
 									{
 										pPacket = CreateObjectRunInPacket(pPacket, 1,  moduleQueueTemp->DelieverdObjectID, Module_i, encoderNumber, 
 																											0, encoderNumber, moduleQueueTemp->DelieverdEncoderNum);//高速PC对象XXX进入了跟踪段XXX
-										TCPSendPacket(ClientServer, pPacket);
+										data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
+										i_cycle  = 0;
+										while(Session[i_cycle].ClientID != ClientServer)
+										{
+											i_cycle++;
+											if(i_cycle > ClientNum)
+											{
+												printf("Cannot find the session ClientServer->ClientID[%d],Retrying...\r\n", ClientServer);
+												i_cycle = 0;
+											}
+										}			
+										WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);	
 										
 										for(Action_i = 0;Action_i < ModuleConfig[Module_i].NumberOfActions;Action_i++)
 										{
@@ -374,7 +408,18 @@ static void ObjectDetectionThread(void)
 						{
 							pPacket = CreateObjectRunInPacket(pPacket, 1,  moduleQueueTemp->DelieverdObjectID, Module_i, encoderNumber, 
 																	0, encoderNumber, moduleQueueTemp->DelieverdEncoderNum);//高速PC对象XXX进入了跟踪段XXX
-							TCPSendPacket(ClientServer, pPacket);
+							data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
+							i_cycle  = 0;
+							while(Session[i_cycle].ClientID != ClientServer)
+							{
+								i_cycle++;
+								if(i_cycle > ClientNum)
+								{
+									printf("Cannot find the session ClientServer->ClientID[%d],Retrying...\r\n", ClientServer);
+									i_cycle = 0;
+								}
+							}			
+							WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);	
 							
 							for(Action_i = 0;Action_i < ModuleConfig[Module_i].NumberOfActions;Action_i++)
 							{
@@ -474,7 +519,18 @@ static void ObjectDetectionThread(void)
 									
 								pPacket = CreateObjectRunInPacket(pPacket, 1,  ObjectBuffer[GlobalObjectCount - 1].ObjectID, Module_i, encoderNumber, 
 																									1,  encoderNumber, encoderNumber);//高速PC对象XXX进入了跟踪段XXX
-								TCPSendPacket(ClientServer, pPacket);
+								data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
+								i_cycle  = 0;
+								while(Session[i_cycle].ClientID != ClientServer)
+								{
+									i_cycle++;
+									if(i_cycle > ClientNum)
+									{
+										printf("Cannot find the session ClientServer->ClientID[%d],Retrying...\r\n", ClientServer);
+										i_cycle = 0;
+									}
+								}			
+								WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);	
 								
 								/*往跟踪段列表加入对应的动作*/
 								for(Action_i = 0;Action_i < ModuleConfig[Module_i].NumberOfActions;Action_i++)

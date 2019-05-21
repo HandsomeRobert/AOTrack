@@ -27,11 +27,11 @@ typedef struct
     int* pBase[MaxPointNumInQueue];     //每个队列最多只能缓存10个指针,每个指针(地址)在计算机中占4个字节
     ElemType front;      								//队头索引
     ElemType rear;       								//队尾索引
-    int PerElemMaxSize;    							//每个队列的每个元素的最大容量
+//    int PerElemMaxSize;    							//每个队列的每个元素的最大容量
 }queue;
 
 //初始化队列
-status initQueue(queue **PQueue,int queueCapacity);
+status initQueue(queue **PQueue);
 //销毁队列
 void destroyQueue(queue *PQueue);
 //清空队列

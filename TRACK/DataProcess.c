@@ -31,7 +31,7 @@ uint8_t DataProcessTask_init(void)
 //数据处理线程
 static void DataProcessThread(void *arg)
 {
-	byte i =0;
+	byte i=0 ,j=0;
 //	byte err = 0;
 	int* pInt;
 	byte* pByte;
@@ -49,13 +49,13 @@ static void DataProcessThread(void *arg)
 	{
 		for(i = 0;i < ClientNum;i++)
 		{
-			if(isEmpityQueue(Session[i].QueueRecv) == FALSE)
+			for(j = 0;j < MaxBufferLength;j++)
 			{
-				if(deQueue(Session[i].QueueRecv, &pRecvData))		//出队成功
+				if(Session[i].BufferRecv[j].IsBufferAlive)
 				{
 /*Test*Test*/	if((byte)*pRecvData == '1') xSemaphoreGive(OnSysRestart);		//用于测试数据接收
 					
-					pInt 			= (int*)pRecvData;
+					pInt 			= (int*)Session[i].BufferRecv[j].pBufferData;
 					lineID 		= *pInt++;
 					actionID 	= *pInt++;
 					objectID 	= *pInt++;
@@ -99,8 +99,9 @@ static void DataProcessThread(void *arg)
 						case PCCmdActionTrackingDummy: break;
 						
 					}
+								
+				Session[i].BufferRecv[j].IsBufferAlive = false; //处理完了要释放标记为false未使用状态
 				}
-				else printf("Outueue[%d] failed! \n", i);								
 			}
 		}
 		

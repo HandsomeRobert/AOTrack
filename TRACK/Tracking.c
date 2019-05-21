@@ -42,13 +42,13 @@ uint8_t TrackingTask_init(void)
 //Tracking跟踪线程
 static void TrackingThread(void *arg)
 {	
-	byte Module_i = 0, Action_i = 0;			//遍历控制变量
+	byte Module_i = 0, Action_i = 0;												//遍历控制变量
 	byte object_i = 0, i_cycle 	= 0;
 	int data_len = 0;
-	static __IO int64_t encoderNumber = 0;     					// 编码器计数值
-	static __IO int64_t encoder1Number = 0;
-	static __IO int64_t encoder2Number = 0;
-	static __IO int64_t encoderDelivered = 0;
+	static __IO int64_t encoderNumber 		= 0;     					// 编码器计数值
+	static __IO int64_t encoder1Number 		= 0;
+	static __IO int64_t encoder2Number 		= 0;
+	static __IO int64_t encoderDelivered 	= 0;
 	
 	static bool isActionIn = false;
 //	static propActionRequestMachineData* 	pTempRequestMachineData = NULL;
@@ -58,12 +58,11 @@ static void TrackingThread(void *arg)
 	static propActionTriggerSensor* 			pTempTriggerSensor = NULL;
 //	static propActionPushOut* 						pTempPushOut = NULL;
 
-	static byte *pTest = NULL;
 	static ModuleQueueItem* moduleQueueTemp;						//定义一个往队列中填充数据的暂放指针
 	static Packet* pPacket;															//数据包首地址
 	uint32_t TimeCountStart = 0;												//用于计算线程运行时间
 	uint16_t timeCount = 0;
-	uint16_t timeCount_for_cycle = 0;
+	uint16_t timeCount_for_cycle 	= 0;
 	uint16_t timeCountTime_Module = 0;
 	BaseType_t err;
 
@@ -135,14 +134,18 @@ static void TrackingThread(void *arg)
 //								TCPSendPacket(ClientServer, pPacket);//Spend Time 4900us
 
 									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;//耗时24us
-
-									for(i_cycle = 0; i_cycle < ClientNum; i_cycle++)//耗时26us
+									i_cycle = 0;
+									while(Session[i_cycle].ClientID != ClientServer)
 									{
-										if(Session[i_cycle].ClientID == ClientServer) break;
+										i_cycle++;
+										if(i_cycle > ClientNum)
+										{
+											printf("Cannot find the session ClientServer[%d],Retrying...\r\n", ClientServer);
+											i_cycle = 0;
+										}
 									}			
-									//耗时1214us
-									enQueue(Session[i_cycle].QueueSend, (byte*)pPacket, data_len);
-//									//printf("ModuleCount==%d,  Module[%d]===>Destination[%d] \n", Module_Count, Module_i, pTempObjectTakeOver->DestinationModule);
+									WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);
+									
 									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
 									break;
 								
@@ -150,18 +153,26 @@ static void TrackingThread(void *arg)
 									//printf("ActTriggerCamera Triggered, Object[%d], Encoder=[%lld]\n", ObjectInModuleList[Module_i][Action_i].ObjectID, encoderNumber);
 									pTempTriggerCamera = (propActionTriggerCamera*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
 									xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerCamera, eSetValueWithOverwrite, NULL);	//发送通知去触发相机
-									
+
+timeCount = __HAL_TIM_GET_COUNTER(&TIM6_Handler);		
 									//将要发送的数据传递到发送buffer
 									pPacket = CreateTriggerCameraPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber,
 																											pTempTriggerCamera->CameraID, 1);
 //									TCPSendPacket(ClientServer, pPacket);//耗时4800us
 									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4; 
-									for(i_cycle = 0; i_cycle < ClientNum; i_cycle++)
+									i_cycle  = 0;
+									while(Session[i_cycle].ClientID != ClientServer)//pTempTriggerCamera->ClientID
 									{
-										if(Session[i_cycle].ClientID == pTempTriggerCamera->ClientID) break;
-									}
-									enQueue(Session[i_cycle].QueueSend, (byte*)pPacket, data_len);
-
+										i_cycle++;
+										if(i_cycle > ClientNum)
+										{
+											printf("Cannot find the session pTempTriggerCamera->ClientID[%d],Retrying...\r\n", pTempTriggerCamera->ClientID);
+											i_cycle = 0;
+										}
+									}			
+									WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);
+timeCount = __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCount;		
+printf("TriggerCamerea send data use new function cost time:%d\r\n", timeCount);//254us
 									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
 								break;
 								
@@ -170,15 +181,24 @@ static void TrackingThread(void *arg)
 									//printf("ActTriggerSensor Triggered, Object[%d], Encoder=[%lld]\n", ObjectInModuleList[Module_i][Action_i].ObjectID, encoderNumber);
 									xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerSensor, eSetValueWithOverwrite, NULL);	
 								
+timeCount = __HAL_TIM_GET_COUNTER(&TIM6_Handler);
 									pPacket = CreateTriggerIOSensorPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber, pTempTriggerSensor->SensorID);
 //									TCPSendPacket(pTempTriggerSensor->ClientID, pPacket);
-									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
-									for(i_cycle = 0; i_cycle < ClientNum; i_cycle++)
-									{
-										if(Session[i_cycle].ClientID == pTempTriggerSensor->ClientID) break;
-									}
-									enQueue(Session[i_cycle].QueueSend, (byte*)pPacket, data_len);
 								
+									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
+									i_cycle  = 0;
+									while(Session[i_cycle].ClientID != ClientServer)//pTempTriggerCamera->ClientID
+									{
+										i_cycle++;
+										if(i_cycle > ClientNum)
+										{
+											printf("Cannot find the session pTempTriggerSensor->ClientID[%d],Retrying...\r\n", pTempTriggerCamera->ClientID);
+											i_cycle = 0;
+										}
+									}			
+									WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);
+timeCount = __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCount;		
+printf("TriggerSensor send data use new function cost time:%d\r\n", timeCount);//246us						
 									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
 									break;
 								
@@ -188,11 +208,17 @@ static void TrackingThread(void *arg)
 //									TCPSendPacket(ClientServer, pPacket);						
 								
 									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
-									for(i_cycle = 0; i_cycle < ClientNum; i_cycle++)
+									i_cycle  = 0;
+									while(Session[i_cycle].ClientID != ClientServer)
 									{
-										if(Session[i_cycle].ClientID == ClientServer) break;
-									}
-									enQueue(Session[i_cycle].QueueSend, (byte*)pPacket, data_len);							
+										i_cycle++;
+										if(i_cycle > ClientNum)
+										{
+											printf("Cannot find the session ClientServer->ClientID[%d],Retrying...\r\n", ClientServer);
+											i_cycle = 0;
+										}
+									}			
+									WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);							
 								
 									/******遍历寻找此对象在缓冲区数组的位置， 此处亦须释放对应的ObjectBuffer对象，否则无法再创建对象，无法往ObjectBuffer内填充值*****/
 									object_i = 0 ;

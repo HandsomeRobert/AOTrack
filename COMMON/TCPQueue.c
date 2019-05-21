@@ -7,13 +7,11 @@
 #include "malloc.h"
 
 //初始化队列
-status initQueue(queue **PQueue, int queueCapacity)
+status initQueue(queue **PQueue)
 {
 
 	(*PQueue)->front = 0; 
 	(*PQueue)->rear 	= 0; 
-	(*PQueue)->PerElemMaxSize = queueCapacity;
-
 	return OK;
 }
 

@@ -171,7 +171,11 @@
 	发现最耗时的是printf串口输出函数 ， 和Tracking的遍历所有列表的for循环，
 	Tracking空载1374us左右, 负载为2200us左右
 	ObjectDetection 空载为420us左右， 负载为1450us左右
-
+2019.5.21
+	所有数据都发往ClientServer==10端口，每个Session各建立一个BufferSend和BufferRecv，用于接收发送缓冲，不动态分配内存，采用空间换时间，使用一个10个大小的指针数组，每个指针分配128bytes.
+	DataTransferManage负责将发送缓冲区的数据发送出去，负责接收数据并存到接收数据缓冲区后交给DataProcess来处理！！！
+	Session[sessionID].BufferSend[i].pBufferData
+	暂为单Client，所有数据都发往ClientServer,多Client暂未测试，目前还有问题
 
 注意事项：
 	1. mymalloc(SRAMEX, 128) 分配内存时间为800us左右，myfree在70us左右，所以推荐不要去动态开辟内存！！！遵循：空间换时间！！！

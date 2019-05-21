@@ -9,12 +9,10 @@
 #include "TCPProtocol.h"
 
 #define LWIP_SEND_DATA			0X80    //定义有数据发送
-#define DATA_RX_BUFSIZE			2000		//定义tcp server最大接收数据长度
 #define DATA_PORT						8088		//定义tcp server的端口
 #define	ClientServer				10
 
 extern uint8_t DataSendFlag;
-
 
 //void Start();
 //void Stop();
@@ -25,6 +23,7 @@ extern uint8_t DataSendFlag;
 //bool IsConnected(int clientID);
 
 uint8_t DataTransferManageTask_init(void);
+void WriteDataToBufferSend(byte Session_i, byte* pData, byte data_len);
 void TCPSendDataChar(byte clientID, char* pData);
 void TCPSendDataByte(byte clientID, byte* pData, int dataSize);
 void TCPSendPacket	(byte clientID, Packet* packet);
