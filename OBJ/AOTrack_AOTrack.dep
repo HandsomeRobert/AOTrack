@@ -1,5 +1,5 @@
 Dependencies for Project 'AOTrack', Target 'AOTrack': (DO NOT MODIFY !)
-F (.\main.c)(0x5CDD2326)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
+F (.\main.c)(0x5CEB4068)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
 I (..\FreeRTOS\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x574E3E26)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E3E26)
@@ -91,16 +91,16 @@ I (..\SYSTEM\delay\delay.h)(0x5C89FF70)
 I (..\SYSTEM\usart\usart.h)(0x5C89FF71)
 I (..\HARDWARE\LED\led.h)(0x5C89FEA4)
 I (..\HARDWARE\ENCODER\bsp_encoder.h)(0x5CDD22B2)
-I (..\HARDWARE\LightSignal\LightSignal.h)(0x5CA33D61)
+I (..\HARDWARE\LightSignal\LightSignal.h)(0x5CE7BE36)
 I (..\HARDWARE\PCF8574\pcf8574.h)(0x5C89FF6E)
 I (..\HARDWARE\IIC\myiic.h)(0x5C89FF6E)
 I (..\TRACK\ActionExecute.h)(0x5CA48F45)
-I (..\COMMON\TaskManage.h)(0x5CE36209)
+I (..\COMMON\TaskManage.h)(0x5CE79199)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x574E3E26)
 I (..\COMMON\SemaphoreManage.h)(0x5CDD075E)
 I (..\FreeRTOS\include\semphr.h)(0x573F3A16)
 I (..\FreeRTOS\include\queue.h)(0x573F3A16)
-I (..\HARDWARE\TIMER\timer.h)(0x5CDD0F27)
+I (..\HARDWARE\TIMER\timer.h)(0x5CE7BE36)
 I (..\HARDWARE\SDRAM\sdram.h)(0x57B551A0)
 I (..\HARDWARE\SDMMC\sdmmc_sdcard.h)(0x57889F57)
 I (..\FATFS\src\ff.h)(0x5CBECF58)
@@ -382,7 +382,7 @@ I (..\FreeRTOS\include\task.h)(0x573F3A16)
 I (..\FreeRTOS\include\list.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x574E3E26)
 F (..\COMMON\SemaphoreManage.h)(0x5CDD075E)()
-F (..\COMMON\TaskManage.h)(0x5CE36209)()
+F (..\COMMON\TaskManage.h)(0x5CE79199)()
 F (..\COMMON\ScanIO.c)(0x5CC00EB2)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\scanio.o --omf_browse ..\obj\scanio.crf --depend ..\obj\scanio.d)
 I (..\COMMON\ScanIO.h)(0x5CBED5D0)
 I (..\COMMON\HardwareList.h)(0x5CB992AA)
@@ -549,7 +549,7 @@ I (..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_mdios.h)(0x579EFF08)
 I (..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h)(0x579EFF08)
 F (..\TRACK\ParametersLoad.c)(0x5CDD506F)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\parametersload.o --omf_browse ..\obj\parametersload.crf --depend ..\obj\parametersload.d)
 I (..\TRACK\ParametersLoad.h)(0x5CDBE8FC)
-I (..\COMMON\TaskManage.h)(0x5CE36209)
+I (..\COMMON\TaskManage.h)(0x5CE79199)
 I (..\FreeRTOS\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x574E3E26)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E3E26)
@@ -653,9 +653,9 @@ I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x574E3E26)
 I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x574E3E26)
 I (..\COMMON\ScanIO.h)(0x5CBED5D0)
 I (..\COMMON\HardwareList.h)(0x5CB992AA)
-F (..\TRACK\ObjectDetection.c)(0x5CE3D1C8)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\objectdetection.o --omf_browse ..\obj\objectdetection.crf --depend ..\obj\objectdetection.d)
+F (..\TRACK\ObjectDetection.c)(0x5CE7C1BC)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\objectdetection.o --omf_browse ..\obj\objectdetection.crf --depend ..\obj\objectdetection.d)
 I (..\TRACK\ObjectDetection.h)(0x5CDD5910)
-I (..\COMMON\TaskManage.h)(0x5CE36209)
+I (..\COMMON\TaskManage.h)(0x5CE79199)
 I (..\FreeRTOS\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x574E3E26)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E3E26)
@@ -746,7 +746,7 @@ I (..\COMMON\SemaphoreManage.h)(0x5CDD075E)
 I (..\FreeRTOS\include\semphr.h)(0x573F3A16)
 I (..\FreeRTOS\include\queue.h)(0x573F3A16)
 I (..\HARDWARE\ENCODER\bsp_encoder.h)(0x5CDD22B2)
-I (..\HARDWARE\LightSignal\LightSignal.h)(0x5CA33D61)
+I (..\HARDWARE\LightSignal\LightSignal.h)(0x5CE7BE36)
 I (..\SYSTEM\sys\sys.h)(0x5C89FF70)
 I (..\LWIP\lwip_app\Track_Comm\DataTransferManage.h)(0x5CE3C602)
 I (..\TRACK\TCPProtocol.h)(0x5CE21EB1)
@@ -783,10 +783,10 @@ I (..\HARDWARE\SDMMC\sdmmc_sdcard.h)(0x57889F57)
 I (..\HARDWARE\SDRAM\sdram.h)(0x57B551A0)
 I (..\EZXML\ezxml.h)(0x5CBEFCD1)
 I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x574E3E26)
-I (..\HARDWARE\TIMER\timer.h)(0x5CDD0F27)
-F (..\TRACK\Tracking.c)(0x5CE3D121)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\tracking.o --omf_browse ..\obj\tracking.crf --depend ..\obj\tracking.d)
+I (..\HARDWARE\TIMER\timer.h)(0x5CE7BE36)
+F (..\TRACK\Tracking.c)(0x5CEB5A73)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\tracking.o --omf_browse ..\obj\tracking.crf --depend ..\obj\tracking.d)
 I (..\TRACK\Tracking.h)(0x5CADA325)
-I (..\COMMON\TaskManage.h)(0x5CE36209)
+I (..\COMMON\TaskManage.h)(0x5CE79199)
 I (..\FreeRTOS\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x574E3E26)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E3E26)
@@ -913,12 +913,12 @@ I (..\HARDWARE\SDRAM\sdram.h)(0x57B551A0)
 I (..\EZXML\ezxml.h)(0x5CBEFCD1)
 I (..\TRACK\ObjectDetection.h)(0x5CDD5910)
 I (..\COMMON\HardwareList.h)(0x5CB992AA)
-I (..\HARDWARE\LightSignal\LightSignal.h)(0x5CA33D61)
+I (..\HARDWARE\LightSignal\LightSignal.h)(0x5CE7BE36)
 I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x574E3E26)
-I (..\HARDWARE\TIMER\timer.h)(0x5CDD0F27)
+I (..\HARDWARE\TIMER\timer.h)(0x5CE7BE36)
 F (..\TRACK\ActionExecute.c)(0x5CB8681C)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\actionexecute.o --omf_browse ..\obj\actionexecute.crf --depend ..\obj\actionexecute.d)
 I (..\TRACK\ActionExecute.h)(0x5CA48F45)
-I (..\COMMON\TaskManage.h)(0x5CE36209)
+I (..\COMMON\TaskManage.h)(0x5CE79199)
 I (..\FreeRTOS\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x574E3E26)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E3E26)
@@ -1009,9 +1009,9 @@ I (..\FreeRTOS\include\semphr.h)(0x573F3A16)
 I (..\FreeRTOS\include\queue.h)(0x573F3A16)
 I (..\HARDWARE\LED\led.h)(0x5C89FEA4)
 I (..\SYSTEM\sys\sys.h)(0x5C89FF70)
-F (..\TRACK\DataProcess.c)(0x5CE3C886)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\dataprocess.o --omf_browse ..\obj\dataprocess.crf --depend ..\obj\dataprocess.d)
+F (..\TRACK\DataProcess.c)(0x5CEB4689)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\dataprocess.o --omf_browse ..\obj\dataprocess.crf --depend ..\obj\dataprocess.d)
 I (..\TRACK\DataProcess.h)(0x5CDBE821)
-I (..\COMMON\TaskManage.h)(0x5CE36209)
+I (..\COMMON\TaskManage.h)(0x5CE79199)
 I (..\FreeRTOS\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x574E3E26)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E3E26)
@@ -1130,7 +1130,7 @@ I (..\MALLOC\malloc.h)(0x5C906062)
 I (..\TRACK\ObjectDetection.h)(0x5CDD5910)
 I (..\COMMON\HardwareList.h)(0x5CB992AA)
 I (..\HARDWARE\ENCODER\bsp_encoder.h)(0x5CDD22B2)
-I (..\HARDWARE\LightSignal\LightSignal.h)(0x5CA33D61)
+I (..\HARDWARE\LightSignal\LightSignal.h)(0x5CE7BE36)
 I (..\TRACK\ParametersLoad.h)(0x5CDBE8FC)
 I (..\FATFS\src\ff.h)(0x5CBECF58)
 I (..\FATFS\src\integer.h)(0x570CF746)
@@ -1139,6 +1139,7 @@ I (..\FATFS\exfuns\exfuns.h)(0x5C9235EE)
 I (..\HARDWARE\SDMMC\sdmmc_sdcard.h)(0x57889F57)
 I (..\HARDWARE\SDRAM\sdram.h)(0x57B551A0)
 I (..\EZXML\ezxml.h)(0x5CBEFCD1)
+I (..\HARDWARE\TIMER\timer.h)(0x5CE7BE36)
 F (..\TRACK\TCPProtocol.c)(0x5CE21E93)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\tcpprotocol.o --omf_browse ..\obj\tcpprotocol.crf --depend ..\obj\tcpprotocol.d)
 I (..\TRACK\TCPProtocol.h)(0x5CE21EB1)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x574E3E26)
@@ -1343,7 +1344,7 @@ I (..\LWIP\lwip-1.4.1\src\include\lwip/netifapi.h)(0x57C65795)
 I (..\MALLOC\malloc.h)(0x5C906062)
 I (..\SYSTEM\delay\delay.h)(0x5C89FF70)
 I (..\SYSTEM\usart\usart.h)(0x5C89FF71)
-I (..\COMMON\TaskManage.h)(0x5CE36209)
+I (..\COMMON\TaskManage.h)(0x5CE79199)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x574E3E26)
 F (..\LWIP\lwip_app\lwip_comm\lwipopts.h)(0x5C8635AB)()
 F (..\LWIP\lwip_app\TcpPacketServer\TcpPacketServer.c)(0x5CE3C5CC)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\tcppacketserver.o --omf_browse ..\obj\tcppacketserver.crf --depend ..\obj\tcppacketserver.d)
@@ -1457,14 +1458,14 @@ I (..\LWIP\lwip-1.4.1\src\include\lwip/netbuf.h)(0x57C65795)
 I (..\LWIP\lwip-1.4.1\src\include\lwip/pbuf.h)(0x57C65795)
 I (..\LWIP\lwip-1.4.1\src\include\ipv4\lwip/ip_addr.h)(0x57C65794)
 I (..\LWIP\lwip-1.4.1\src\include\lwip/def.h)(0x57C65794)
-I (..\COMMON\TaskManage.h)(0x5CE36209)
+I (..\COMMON\TaskManage.h)(0x5CE79199)
 I (..\COMMON\SemaphoreManage.h)(0x5CDD075E)
 I (..\COMMON\TCPQueue.h)(0x5CE36510)
 I (..\MALLOC\malloc.h)(0x5C906062)
 I (..\TRACK\TCPProtocol.h)(0x5CE21EB1)
 I (..\LWIP\lwip_app\Track_Comm\DataTransferManage.h)(0x5CE3C602)
-I (..\HARDWARE\TIMER\timer.h)(0x5CDD0F27)
-F (..\LWIP\lwip_app\Track_Comm\DataTransferManage.c)(0x5CE3C001)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\datatransfermanage.o --omf_browse ..\obj\datatransfermanage.crf --depend ..\obj\datatransfermanage.d)
+I (..\HARDWARE\TIMER\timer.h)(0x5CE7BE36)
+F (..\LWIP\lwip_app\Track_Comm\DataTransferManage.c)(0x5CE7BFD1)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\datatransfermanage.o --omf_browse ..\obj\datatransfermanage.crf --depend ..\obj\datatransfermanage.d)
 I (..\LWIP\lwip_app\Track_Comm\DataTransferManage.h)(0x5CE3C602)
 I (..\FreeRTOS\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x574E3E26)
@@ -1548,7 +1549,7 @@ I (..\FreeRTOS\include\portable.h)(0x573F3A16)
 I (..\FreeRTOS\include\deprecated_definitions.h)(0x573F3A16)
 I (..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1\portmacro.h)(0x5A1535EC)
 I (..\FreeRTOS\include\mpu_wrappers.h)(0x573F3A16)
-I (..\COMMON\TaskManage.h)(0x5CE36209)
+I (..\COMMON\TaskManage.h)(0x5CE79199)
 I (..\FreeRTOS\include\task.h)(0x573F3A16)
 I (..\FreeRTOS\include\list.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x574E3E26)
@@ -1581,7 +1582,7 @@ I (..\SYSTEM\delay\delay.h)(0x5C89FF70)
 I (..\COMMON\SemaphoreManage.h)(0x5CDD075E)
 I (..\COMMON\TCPQueue.h)(0x5CE36510)
 I (..\MALLOC\malloc.h)(0x5C906062)
-I (..\HARDWARE\TIMER\timer.h)(0x5CDD0F27)
+I (..\HARDWARE\TIMER\timer.h)(0x5CE7BE36)
 F (..\LWIP\arch\sys_arch.c)(0x5A5866AA)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\sys_arch.o --omf_browse ..\obj\sys_arch.crf --depend ..\obj\sys_arch.d)
 I (..\LWIP\lwip-1.4.1\src\include\lwip/debug.h)(0x57C65794)
 I (..\LWIP\lwip-1.4.1\src\include\lwip/arch.h)(0x57C65794)
@@ -2159,8 +2160,8 @@ I (..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_dfsdm.h)(0x579EFF08)
 I (..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_jpeg.h)(0x579EFF08)
 I (..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_mdios.h)(0x579EFF08)
 I (..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h)(0x579EFF08)
-F (..\HARDWARE\LightSignal\LightSignal.c)(0x5CB04F1A)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\lightsignal.o --omf_browse ..\obj\lightsignal.crf --depend ..\obj\lightsignal.d)
-I (..\HARDWARE\LightSignal\LightSignal.h)(0x5CA33D61)
+F (..\HARDWARE\LightSignal\LightSignal.c)(0x5CE7B52D)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\lightsignal.o --omf_browse ..\obj\lightsignal.crf --depend ..\obj\lightsignal.d)
+I (..\HARDWARE\LightSignal\LightSignal.h)(0x5CE7BE36)
 I (..\SYSTEM\sys\sys.h)(0x5C89FF70)
 I (..\USER\stm32f7xx.h)(0x579EFF08)
 I (..\USER\stm32f767xx.h)(0x579EFF08)
@@ -2472,8 +2473,8 @@ I (..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_mdios.h)(0x579EFF08)
 I (..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h)(0x579EFF08)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x574E3E26)
 I (..\SYSTEM\delay\delay.h)(0x5C89FF70)
-F (..\HARDWARE\TIMER\timer.c)(0x5CDD24EC)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\timer.o --omf_browse ..\obj\timer.crf --depend ..\obj\timer.d)
-I (..\HARDWARE\TIMER\timer.h)(0x5CDD0F27)
+F (..\HARDWARE\TIMER\timer.c)(0x5CEB4B2C)(-c --cpu Cortex-M7.fp.dp -g -O0 --apcs=interwork --split_sections -I ..\CORE -I ..\OBJ -I ..\USER -I ..\HALLIB\STM32F7xx_HAL_Driver\Inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\MALLOC -I ..\HARDWARE\LED -I ..\HARDWARE\MPU -I ..\HARDWARE\IIC -I ..\HARDWARE\LAN8720 -I ..\HARDWARE\PCF8574 -I ..\FreeRTOS\include -I ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1 -I ..\LWIP -I ..\LWIP\arch -I ..\LWIP\lwip-1.4.1\src\include -I ..\LWIP\lwip-1.4.1\src\include\ipv4 -I ..\LWIP\lwip-1.4.1\src\include\netif -I ..\LWIP\lwip_app\lwip_comm -I ..\LWIP\lwip_app\TcpPacketServer -I ..\LWIP\lwip_app\TcpPacketClient -I ..\LWIP\lwip_app\UdpPacket -I ..\LWIP\lwip_app\Track_Comm -I ..\HARDWARE\TIMER -I ..\HARDWARE\ENCODER -I ..\HARDWARE\LightSignal -I ..\HARDWARE\KEY -I ..\HARDWARE\NAND -I ..\HARDWARE\QSPI -I ..\HARDWARE\SDMMC -I ..\HARDWARE\SDRAM -I ..\HARDWARE\W25QXX -I ..\FATFS\src -I ..\FATFS\src\option -I ..\FATFS\exfuns -I ..\EZXML -I ..\TRACK -I ..\COMMON-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F767xx -DSTM32F767xx -DUSE_HAL_DRIVER -DDEBUG -DOS_CRITICAL_METHOD-o ..\obj\timer.o --omf_browse ..\obj\timer.crf --depend ..\obj\timer.d)
+I (..\HARDWARE\TIMER\timer.h)(0x5CE7BE36)
 I (..\SYSTEM\sys\sys.h)(0x5C89FF70)
 I (..\USER\stm32f7xx.h)(0x579EFF08)
 I (..\USER\stm32f767xx.h)(0x579EFF08)

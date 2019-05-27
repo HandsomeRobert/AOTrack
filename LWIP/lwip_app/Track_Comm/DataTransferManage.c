@@ -120,9 +120,11 @@ static void DataTransferManage(void *arg)
 	struct pbuf *q;
 	byte* 	dataRecvBuffer;
 	byte* 	dataRecvBufferTemp;
-	int* 		dataSendBufferTemp;
+
 	Packet* pPacketTemp;
-	
+	int timeCount = 0;
+	int timeCOuntFreeRTOS=0;
+
 	dataRecvBuffer = (byte* )mymalloc(SRAMEX, 256);
 	
 	while(1)
@@ -130,6 +132,8 @@ static void DataTransferManage(void *arg)
 		//数据接收进程
 		if(ClientNum > 0)	//有client接入
 		{
+			timeCOuntFreeRTOS = xTaskGetTickCount();
+			timeCount = OverflowCount_TIM6*65536 + __HAL_TIM_GET_COUNTER(&TIM6_Handler);
 			for(i_cycle = 0; i_cycle<ClientNum;i_cycle++)	
 			{	
 /*************接收数据处理****************************/
@@ -194,6 +198,11 @@ static void DataTransferManage(void *arg)
 				}
 /**************END*************************************/				
 			}			
+//////			timeCount = OverflowCount_TIM6*65536 + __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCount;
+//////			timeCOuntFreeRTOS = xTaskGetTickCount() - timeCOuntFreeRTOS;
+//////			printf("DataTransferManage Thread Runtime==>%d\r\n", timeCount);// time=32232us
+//////			printf("DataTransferManage Thread FreeRTOS==>%d\r\n", timeCOuntFreeRTOS);
+		
 		}
 	vTaskDelay(1);//1ms后再启用
 	}

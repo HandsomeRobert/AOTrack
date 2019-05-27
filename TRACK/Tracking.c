@@ -61,10 +61,20 @@ static void TrackingThread(void *arg)
 	static ModuleQueueItem* moduleQueueTemp;						//定义一个往队列中填充数据的暂放指针
 	static Packet* pPacket;															//数据包首地址
 	uint32_t TimeCountStart = 0;												//用于计算线程运行时间
+	uint32_t TimeCountStartRTOS=0;
+	
+	uint32_t TestTime1=0;
+	uint32_t TestTime2=0;
+	uint32_t TestTime3=0;
+	uint32_t TestTime4=0;
+	uint32_t TestTime5=0;
+	
+	
 	uint16_t timeCount = 0;
 	uint16_t timeCount_for_cycle 	= 0;
 	uint16_t timeCountTime_Module = 0;
 	BaseType_t err;
+OverflowCount_TIM6 = 0;
 
 	moduleQueueTemp = mymalloc(SRAMEX, sizeof(ModuleQueueItem));//分配内存初始化
 	pPacket 				= mymalloc(SRAMEX, 256);										//为数据包分配一个固定的256字节的数据临时存储区
@@ -74,7 +84,8 @@ static void TrackingThread(void *arg)
 *************************************************************************************************************************************************************/	
 	while(1)
 	{	
-		TimeCountStart 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);//0.7us
+		TimeCountStart 	= OverflowCount_TIM6*0XFFFF +__HAL_TIM_GET_COUNTER(&TIM6_Handler);//0.7us
+		TimeCountStartRTOS = xTaskGetTickCount();
 		
 		if( ClientNum > 0)															//有检测程序Inspection连接
 		{
@@ -89,7 +100,7 @@ static void TrackingThread(void *arg)
 					case Encoder_2: encoderNumber = encoder2Number;break;
 				}	
 				
-				for(Action_i = 0; Action_i < maxTrackingObjects;Action_i++)//这里比较耗时
+				for(Action_i = 0; Action_i < maxTrackingObjects/2; Action_i++)//这里比较耗时maxTrackingObjects 64：1420us, 32: 
 				{
 					if(ObjectInModuleList[Module_i][Action_i].IsActionAlive)
 					{
@@ -100,21 +111,17 @@ static void TrackingThread(void *arg)
 							switch(ObjectInModuleList[Module_i][Action_i].ActionType)		//13us
 							{
 								case ActRequestMachineData: 							
-									//printf("ActRequestMachineData Triggered, Object[%d], Encoder=[%lld] \n", ObjectInModuleList[Module_i][Action_i].ObjectID, encoderNumber);
 									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
 								break;
 								
 								case ActSetOutput					: 							
-									//printf("ActSetOutput Triggered, Object[%d], Encoder=[%lld]\n", ObjectInModuleList[Module_i][Action_i].ObjectID, encoderNumber);
 									xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerOutput, eSetValueWithOverwrite, NULL);
 									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
 								break;
 								
 								case ActObjectTakeOver		:								
-									//printf("ActObjectTakeOver Triggered, Object[%d], Encoder=[%lld]\n", ObjectInModuleList[Module_i][Action_i].ObjectID, encoderNumber);
-									
-									pTempObjectTakeOver = (propActionObjectTakeOver*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
-									switch (ModuleConfig[pTempObjectTakeOver->DestinationModule].Encoder)
+/*ConsumeTime:20us*/pTempObjectTakeOver = (propActionObjectTakeOver*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
+								  switch (ModuleConfig[pTempObjectTakeOver->DestinationModule].Encoder)
 									{
 										case Encoder_1: encoderDelivered = encoder1Number;break;
 										case Encoder_2: encoderDelivered = encoder2Number;;break;
@@ -124,14 +131,11 @@ static void TrackingThread(void *arg)
 									//moduleQueueTemp->ClientID							= 
 									
 									err = xQueueSend(ModuleQueue[pTempObjectTakeOver->DestinationModule], moduleQueueTemp, 0);		//
-									if(err==errQUEUE_FULL) printf("Queue is Full Send Failed!\r\n");
-									
+/*ConsumeTime:292usALL*/if(err==errQUEUE_FULL) printf("Queue is Full Send Failed!\r\n");
 									//将要发送的数据传递到发送buffer
 									
-									//耗时1022us(动态分配内存的)，86us（传入pPacket的）
-									pPacket = CreateObjectRunOutPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber, pTempObjectTakeOver->DestinationModule);
-									
-//								TCPSendPacket(ClientServer, pPacket);//Spend Time 4900us
+									//1. 耗时1022us(动态分配内存的)，2. 86us（传入pPacket的）
+/*ConsumeTime:96usALL*/pPacket = CreateObjectRunOutPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber, pTempObjectTakeOver->DestinationModule);
 
 									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;//耗时24us
 									i_cycle = 0;
@@ -144,22 +148,20 @@ static void TrackingThread(void *arg)
 											i_cycle = 0;
 										}
 									}			
-									WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);
-									
-									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
+/*ConsumeTime:160usALL*/WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);
+								
+/*ConsumeTime:550usALL*/ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
 									break;
 								
 								case ActTriggerCamera			: 						
-									//printf("ActTriggerCamera Triggered, Object[%d], Encoder=[%lld]\n", ObjectInModuleList[Module_i][Action_i].ObjectID, encoderNumber);
-									pTempTriggerCamera = (propActionTriggerCamera*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
-									xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerCamera, eSetValueWithOverwrite, NULL);	//发送通知去触发相机
+/*ConsumeTime:32us*/pTempTriggerCamera = (propActionTriggerCamera*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
 
-timeCount = __HAL_TIM_GET_COUNTER(&TIM6_Handler);		
-									//将要发送的数据传递到发送buffer
-									pPacket = CreateTriggerCameraPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber,
+/*ConsumeTime:720us*/xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerCamera, eSetValueWithOverwrite, NULL);	//发送通知去触发相机
+
+/*ConsumeTime:100us*/pPacket = CreateTriggerCameraPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber,
 																											pTempTriggerCamera->CameraID, 1);
-//									TCPSendPacket(ClientServer, pPacket);//耗时4800us
-									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4; 
+
+									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4; /*ConsumeTime:160us*///整个包含WriteDataToBufferSend耗时160us
 									i_cycle  = 0;
 									while(Session[i_cycle].ClientID != ClientServer)//pTempTriggerCamera->ClientID
 									{
@@ -170,20 +172,16 @@ timeCount = __HAL_TIM_GET_COUNTER(&TIM6_Handler);
 											i_cycle = 0;
 										}
 									}			
-									WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);
-timeCount = __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCount;		
-printf("TriggerCamerea send data use new function cost time:%d\r\n", timeCount);//254us
-									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
+/*ConsumeTime:160us*/WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);
+								
+/*ALL ConsumeTime:1002us*/ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
 								break;
 								
-								case ActTriggerSensor			: 
+								case ActTriggerSensor			: /*ConsumeTime:938us*/
 									pTempTriggerSensor = (propActionTriggerSensor*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
-									//printf("ActTriggerSensor Triggered, Object[%d], Encoder=[%lld]\n", ObjectInModuleList[Module_i][Action_i].ObjectID, encoderNumber);
 									xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerSensor, eSetValueWithOverwrite, NULL);	
 								
-timeCount = __HAL_TIM_GET_COUNTER(&TIM6_Handler);
 									pPacket = CreateTriggerIOSensorPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber, pTempTriggerSensor->SensorID);
-//									TCPSendPacket(pTempTriggerSensor->ClientID, pPacket);
 								
 									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
 									i_cycle  = 0;
@@ -197,15 +195,12 @@ timeCount = __HAL_TIM_GET_COUNTER(&TIM6_Handler);
 										}
 									}			
 									WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);
-timeCount = __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCount;		
-printf("TriggerSensor send data use new function cost time:%d\r\n", timeCount);//246us						
+				
 									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
 									break;
 								
-								case ActPushOut						: 						
-									//printf("ActPushOut Triggered, Object[%d], Encoder=[%lld]\n", ObjectInModuleList[Module_i][Action_i].ObjectID, encoderNumber);
-									pPacket = CreateObjectDeletePacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber);
-//									TCPSendPacket(ClientServer, pPacket);						
+								case ActPushOut						: /*ConsumeTime:256us*/				
+									pPacket = CreateObjectDeletePacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber);				
 								
 									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
 									i_cycle  = 0;
@@ -264,10 +259,14 @@ printf("TriggerSensor send data use new function cost time:%d\r\n", timeCount);/
 *************************************************************************************************************************************************************/				
 
 /***运行时间统计***/
-//////			TimeCountStart 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - TimeCountStart;		//11us
-//////			if(TimeCountStart > 1450)
-//////			{
-//////				printf("TrackingTime ==>%d \n", TimeCountStart);//5252us, 4184us, 3608us
+			
+			TimeCountStart 	=  OverflowCount_TIM6*0XFFFF + __HAL_TIM_GET_COUNTER(&TIM6_Handler) - TimeCountStart;		//11us
+			TimeCountStartRTOS = xTaskGetTickCount() - TimeCountStartRTOS;
+			
+//////			if(TimeCountStart > 800 && TimeCountStart<65536)//不知为何会出现大于65536+TimeCountStart(正常)的计数值情况出现...
+//////			{	
+//////				printf("TrackingTime ==>%d \n", TimeCountStart);//No-Load:1430us   Load:1600
+//////				printf("TrackingTimeRTOSSSS ==>%d \n", TimeCountStartRTOS);
 //////			}	
 
 		}

@@ -588,9 +588,9 @@ static void ObjectDetectionThread(void)
 			
 		
 //////		timeCountTime 	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCountTime;
-//////		if(timeCountTime > 20)
+//////		if(timeCountTime > 1200)
 //////		{
-//////			printf("ObjectDetectionTime ==>%d \n", timeCountTime);
+//////			printf("ObjectDetectionTime ==>%d \n", timeCountTime);//No-Load 485us,Loaded==>1126/1314/1700
 //////		}
 //		
 

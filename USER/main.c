@@ -102,7 +102,7 @@ int main(void)
 	
   TIM2_CH1_Cap_Init(0XFFFFFFFF,108-1); 			//以1MHZ的频率计数来捕获光电脉冲高电平
 	TIM5_CH1_Cap_Init(0XFFFFFFFF,108-1); 			//以1MHZ的频率计数来捕获光电脉冲高电平
-	TIM6_Init(0XFFFF, 108-1);								//以1MHZ的频率计数来定时，也就是定时器1us计数一次
+	TIM6_Init(0XFFFF, 108-1);								//16位定时器以1MHZ的频率计数来定时，也就是定时器1us计数一次
 	
 	CreateSemaphore();												//声明并创建所有信号量
 	/*暂不写数据*/

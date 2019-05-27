@@ -4,6 +4,7 @@
 #include "DataProcess.h"
 #include "malloc.h"
 #include "ObjectDetection.h"
+#include "timer.h"
 
 TaskHandle_t DataProcessTask_Handler;
 static void DataProcessThread(void *arg);
@@ -41,19 +42,22 @@ static void DataProcessThread(void *arg)
 	static int moduleID = 0;
 	static int encoder 	= 0;
 	static int dataSize = 0;
+	int timeCount;
 	
 	int* pRecvData = (int*)mymalloc(SRAMEX, TCP_Queue_MAXBUFSIZE);		//从PC来的完整数据包
 	byte* pData 	 = (byte*)mymalloc(SRAMEX, TCP_Queue_MAXBUFSIZE);		//从PC传来的信息
 	
 	while(1)
 	{
+		timeCount	= __HAL_TIM_GET_COUNTER(&TIM6_Handler);
+		
 		for(i = 0;i < ClientNum;i++)
 		{
 			for(j = 0;j < MaxBufferLength;j++)
 			{
 				if(Session[i].BufferRecv[j].IsBufferAlive)
 				{
-/*Test*Test*/	if((byte)*pRecvData == '1') xSemaphoreGive(OnSysRestart);		//用于测试数据接收
+/*Test*Test*/	if((byte)*Session[i].BufferRecv[j].pBufferData == '1') xSemaphoreGive(OnSysRestart);		//用于测试数据接收
 					
 					pInt 			= (int*)Session[i].BufferRecv[j].pBufferData;
 					lineID 		= *pInt++;
@@ -104,7 +108,12 @@ static void DataProcessThread(void *arg)
 				}
 			}
 		}
-		
+			
+//////		timeCount	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCount;
+//////		if(timeCount > 100)
+//////		{
+//////			printf("DataProcess Thread Time ==>%d \n", timeCount);//106us
+//////		}
 		vTaskDelay(10);
 	}																					
 }

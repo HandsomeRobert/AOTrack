@@ -177,12 +177,15 @@
 	Session[sessionID].BufferSend[i].pBufferData
 	暂为单Client，所有数据都发往ClientServer,多Client暂未测试，目前还有问题
 
-注意事项：
+耗时分析；
 	1. mymalloc(SRAMEX, 128) 分配内存时间为800us左右，myfree在70us左右，所以推荐不要去动态开辟内存！！！遵循：空间换时间！！！
 	2. netconn_write耗时长，大概为2356us-->5023us
 	3. printf重定义输出到串口USART1, 耗时很长，性能测试时不应该使用printf~
+	4. /*ConsumeTime:720us*/xTaskGenericNotify耗时很大，为720us左右
+	5. SOCKET发送数据耗时很长，各模式下耗时//NETCONN_NOFLAG:2830 - 5082  ==> NETCONN_COPY:3424-->4824 NETCONN_NOCOPY::3454-->5016 NETCONN_MORE::3424-->4956
 
-
+注意事项：
+	1. 
 
 Bug Report：
 XXXX1. 2019.3.14：(2019.5.6 Solved解决了,netconn_close改为netconn_delete即可)
