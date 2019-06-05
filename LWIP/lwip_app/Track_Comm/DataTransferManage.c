@@ -24,8 +24,9 @@ void WriteDataToBufferSend(byte Session_i, byte* pData, byte data_len)
 		j++;
 		if(j > MaxBufferLength)
 		{
-			printf("BufferSend is full , waiting to be free \r\n");
+			printf("Client[%d]==Session[%d].BufferSend is full , waiting to be free \r\n", Session[Session_i].ClientID, Session_i);
 			j = 0;
+			break;
 		}
 	}
 	mymemcpy(Session[Session_i].BufferSend[j].pBufferData, pData, data_len);
@@ -120,7 +121,7 @@ static void DataTransferManage(void *arg)
 	struct pbuf *q;
 	byte* 	dataRecvBuffer;
 	byte* 	dataRecvBufferTemp;
-
+//	byte clientID;
 	Packet* pPacketTemp;
 	int timeCount = 0;
 	int timeCOuntFreeRTOS=0;
@@ -141,7 +142,6 @@ static void DataTransferManage(void *arg)
 				{						
 					taskENTER_CRITICAL();  //关中断	
 					data_len = recvbuf->p->tot_len;
-//					dataRecvBuffer = (byte* )mymalloc(SRAMEX, data_len);
 					dataRecvBufferTemp = dataRecvBuffer;
 					
 					for(q=recvbuf->p;q!=NULL;q=q->next)
@@ -152,7 +152,7 @@ static void DataTransferManage(void *arg)
 					q = NULL;
 					dataRecvBufferTemp = NULL;
 					taskEXIT_CRITICAL();  //开中断
-	
+					
 /***********************入队***************************/	
 					j = 0;
 					while(Session[i_cycle].BufferRecv[j].IsBufferAlive)
@@ -162,17 +162,11 @@ static void DataTransferManage(void *arg)
 						{
 							printf("BufferRecv is full , waiting to be free \r\n");
 							j = 0;
+							break;
 						}
 					}
 					mymemcpy(Session[i_cycle].BufferRecv[j].pBufferData, dataRecvBuffer, data_len);
 					Session[i_cycle].BufferRecv[j].IsBufferAlive = true;
-
-//！！！！			/*入队操作可能会导致Xispekvision重复连/段TCP Connection*/ 是因为会往SOCKET意外的发送数据，112，112，112.。。。！！！！！！！！！！！！！！！
-//					if(enQueue(Session[i_cycle].QueueRecv, DataTransferManage_recvbuf, data_len))		//接收到的数据放入缓冲区
-//					{
-////						printf("Inset Element to ReceiveBuffer[%d] queue successful! \r\n", i_cycle);
-//					}
-					
 
 //					printf("接到数据来自Client[%d]\n", i_cycle);
 					printf("%s\r\n", dataRecvBuffer);  //通过串口发送接收到的数据	
@@ -189,16 +183,16 @@ static void DataTransferManage(void *arg)
 				{
 					if(Session[i_cycle].BufferSend[j].IsBufferAlive)
 					{
-						pPacketTemp = (Packet*)Session[i_cycle].BufferSend[j].pBufferData;
-																																												//包头大小        +   包数据大小     + 包尾大小
-						err = netconn_write(Session[i_cycle].NetConnSend ,pPacketTemp,(PACKET_HEADER_SIZE + pPacketTemp->DataSize + 4),NETCONN_COPY); //!!!发送数据sizeof(tcp_server_sendbuf)
-						if(err != ERR_OK) printf("Send data in Failed, use Sessio[%d] bufferPosition[%d]Please check it in DataTransferManage.c ERROR_Code:%d \r\n",i_cycle ,j ,err);
 						Session[i_cycle].BufferSend[j].IsBufferAlive = false;
+						
+						pPacketTemp = (Packet*)Session[i_cycle].BufferSend[j].pBufferData;																																					//包头大小        +   包数据大小     + 包尾大小
+						err = netconn_write(Session[i_cycle].NetConnSend ,pPacketTemp,(PACKET_HEADER_SIZE + pPacketTemp->DataSize + 4),NETCONN_COPY); //!!!发送数据sizeof(tcp_server_sendbuf)					
+						if(err != ERR_OK) printf("Send data in Failed, use Sessio[%d] bufferPosition[%d]Please check it in DataTransferManage.c ERROR_Code:%d \r\n",i_cycle ,j ,err);						
 					}
 				}
 /**************END*************************************/				
 			}			
-//////			timeCount = OverflowCount_TIM6*65536 + __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCount;
+//////			timeCount = __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCount;
 //////			timeCOuntFreeRTOS = xTaskGetTickCount() - timeCOuntFreeRTOS;
 //////			printf("DataTransferManage Thread Runtime==>%d\r\n", timeCount);// time=32232us
 //////			printf("DataTransferManage Thread FreeRTOS==>%d\r\n", timeCOuntFreeRTOS);

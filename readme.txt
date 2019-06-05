@@ -183,7 +183,9 @@
 	3. printf重定义输出到串口USART1, 耗时很长，性能测试时不应该使用printf~
 	4. /*ConsumeTime:720us*/xTaskGenericNotify耗时很大，为720us左右
 	5. SOCKET发送数据耗时很长，各模式下耗时//NETCONN_NOFLAG:2830 - 5082  ==> NETCONN_COPY:3424-->4824 NETCONN_NOCOPY::3454-->5016 NETCONN_MORE::3424-->4956
-
+	6. ObjectDetection耗时：No-Load 485us,Loaded==>1126/1314/1700
+	7. 耗时比较长的需要考虑异步处理，比如netconn_write耗时长，看看是不是有异步处理函数...
+	
 注意事项：
 	1. 
 

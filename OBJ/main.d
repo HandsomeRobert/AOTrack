@@ -138,7 +138,6 @@
 ..\obj\main.o: ..\LWIP\lwip_app\Track_Comm\DataTransferManage.h
 ..\obj\main.o: ..\TRACK\TCPProtocol.h
 ..\obj\main.o: ..\TRACK\Tracking.h
-..\obj\main.o: ..\TRACK\ObjectDetection.h
 ..\obj\main.o: ..\COMMON\HardwareList.h
 ..\obj\main.o: ..\COMMON\ScanIO.h
 ..\obj\main.o: ..\TRACK\DataProcess.h

@@ -2,11 +2,7 @@
 *************************************动作执行线程******************************************************
 ***************************************************************************************************/
 #include "ActionExecute.h"
-
-#define Message_TrrigerCamera 1			//动作对应的消息值
-#define Message_TrrigerSensor 2
-#define Message_TrrigerOutput 3
-#define Message_TrrigerPush 	4
+#include "Tracking.h"
 
 TaskHandle_t ActionExecuteTask_Handler;
 static void ActionExecuteThread(void );

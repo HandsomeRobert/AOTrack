@@ -32,7 +32,6 @@
 #include "DataTransferManage.h"			//多SOCKET数据传输统一管理
 #include "SemaphoreManage.h"				//统一管理所有信号量的定义和创建
 #include "Tracking.h"								//跟踪线程
-#include "ObjectDetection.h"				//跟踪对象管理线程
 #include "ScanIO.h"
 #include "DataProcess.h"						//数据处理线程
 
@@ -158,14 +157,7 @@ void Start_task(void *pvParameters)
 		printf("DataTransferManageThread Initialing Failed\n");
 	}
 	printf("DataTransferManageThread Initialing Successfully\n");
-	
-	while(!ObjectDetectionTask_init())									//ObjectDetion线程初始化
-	{
-		vTaskDelay(500);
-		printf("ObjectDetectionThread Initialing Failed\n");
-	}
-	printf("ObjectDetectionThread Initialing Successfully\n");
-	
+		
 	while(!TrackingTask_init())													//Tracking线程初始化
 	{
 		vTaskDelay(500);

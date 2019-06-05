@@ -1,9 +1,9 @@
 /**************************************************************************************************
-*************************************数据处理线程******************************************************
+*************************************数据处理线程***************************************************
 ***************************************************************************************************/
 #include "DataProcess.h"
 #include "malloc.h"
-#include "ObjectDetection.h"
+#include "Tracking.h"
 #include "timer.h"
 
 TaskHandle_t DataProcessTask_Handler;
@@ -60,6 +60,7 @@ static void DataProcessThread(void *arg)
 /*Test*Test*/	if((byte)*Session[i].BufferRecv[j].pBufferData == '1') xSemaphoreGive(OnSysRestart);		//用于测试数据接收
 					
 					pInt 			= (int*)Session[i].BufferRecv[j].pBufferData;
+					pInt++;//跳过报头
 					lineID 		= *pInt++;
 					actionID 	= *pInt++;
 					objectID 	= *pInt++;

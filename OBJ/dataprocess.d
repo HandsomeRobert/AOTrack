@@ -119,7 +119,7 @@
 ..\obj\dataprocess.o: ..\LWIP\lwip-1.4.1\src\include\lwip/def.h
 ..\obj\dataprocess.o: ..\COMMON\TCPQueue.h
 ..\obj\dataprocess.o: ..\MALLOC\malloc.h
-..\obj\dataprocess.o: ..\TRACK\ObjectDetection.h
+..\obj\dataprocess.o: ..\TRACK\Tracking.h
 ..\obj\dataprocess.o: ..\COMMON\HardwareList.h
 ..\obj\dataprocess.o: ..\HARDWARE\ENCODER\bsp_encoder.h
 ..\obj\dataprocess.o: ..\CORE\core_cm7.h
