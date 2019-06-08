@@ -11,6 +11,7 @@ extern uint32_t Timer;			//使用主函数定义的仿真Timer
 
 __IO	uint32_t GlobalObjectID;											//定义一个全局对象ID，__IO表示直接从地址处取值，取得最新值，允许所有软件硬件修改此值
 QueueHandle_t	ModuleQueue[maxTrackingModule];				//创建信息队列用于接收信息
+QueueHandle_t ActionExecuteQueue;								//创建动作执行的信息接收队列。
 __IO ObjectInfo ObjectBuffer[maxTrackingObjects];	  //创建最大只能保存maxTrackingObjects个对象的数组 
 									
 StctActionListItem ObjectInModuleList[maxTrackingModule][maxTrackingObjects];//二维数组用于存储所有动作列表
@@ -140,7 +141,7 @@ uint8_t TrackingTask_init(void)
 //Tracking跟踪线程
 static void TrackingThread(void *arg)
 {	
-	long long temp = 0;
+//	long long temp = 0;
 	byte GlobalObjectCount 	= 0;
 //	uint16_t timeCount 			= 0;
 	static bool AddActiveFlag 		= false;	
@@ -169,6 +170,7 @@ static void TrackingThread(void *arg)
 	static __IO int64_t encoderDelivered 	= 0;	
 //	static bool isActionIn = false;
 	static ModuleQueueItem* moduleQueueTemp;						//定义一个往队列中填充数据的暂放指针
+	static ActionExecuteQueueItem* actionExecuteQueueTemp;
 	static Packet* pPacket;															//数据包首地址
 	uint32_t TimeCountStart = 0;												//用于计算线程运行时间
 	uint32_t TimeCountStartRTOS=0;
@@ -187,6 +189,7 @@ static void TrackingThread(void *arg)
 OverflowCount_TIM6 = 0;
 
 	moduleQueueTemp = mymalloc(SRAMEX, sizeof(ModuleQueueItem));//分配内存初始化
+	actionExecuteQueueTemp = mymalloc(SRAMEX, sizeof(ActionExecuteQueueItem));//分配内存初始化
 	pPacket 				= mymalloc(SRAMEX, 256);										//为数据包分配一个固定的256字节的数据临时存储区
 	
 	
@@ -203,14 +206,14 @@ OverflowCount_TIM6 = 0;
 			ObjectInModuleList[Object_i][Action_i].IsActionAlive 	= false;				//初始化跟踪段动作列表中的动作为未激活状态
 	}
 	
-	//创建队列：
+	//创建跟踪模块信息队列：
 	for(Module_i = 0;Module_i < maxTrackingModule;Module_i++)
 	{
 		ModuleQueue[Module_i] = xQueueCreate(moduleQueueDepth, sizeof(ModuleQueueItem));
 		
 	}
-	moduleQueueTemp = mymalloc(SRAMEX, sizeof(ModuleQueueItem));//初始化指针
-	
+	//创建动作执行的信息接收队列
+	ActionExecuteQueue = xQueueCreate(moduleQueueDepth, sizeof(ActionExecuteQueueItem));//暂时定义队列长度同为moduleQueueDepth
 	
 /************************************************************************************************************************************************************			
 *****************************************************************跟踪过程监控区******************************************************************************				
@@ -450,8 +453,14 @@ printf("Get into ActRequestMachineData\r\n");
 								break;
 								
 								case ActSetOutput					: 
-printf("Get into ActSetOutput\r\n");									
-									xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerOutput, eSetValueWithOverwrite, NULL);
+printf("Get into ActSetOutput\r\n");			
+									pTempSetOutput = (propActionSetOutput*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
+									actionExecuteQueueTemp->actionType  = Message_TrrigerOutput;
+									actionExecuteQueueTemp->pAction 		= pTempTriggerCamera;
+									err = xQueueSend(ActionExecuteQueue, actionExecuteQueueTemp, 0);
+									if(err==errQUEUE_FULL) printf("ActionExecuteQueue is Full Send Failed!\r\n");
+								
+//									xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerOutput, eSetValueWithOverwrite, NULL);
 									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
 								testFlag = true;
 								break;
@@ -489,8 +498,12 @@ printf("Get into ActObjectTakeOver\r\n");
 								case ActTriggerCamera			: 
 printf("Get into ActTriggerCamera\r\n");										
 /*ConsumeTime:32us*/pTempTriggerCamera = (propActionTriggerCamera*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
-
-/*ConsumeTime:720us*/xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerCamera, eSetValueWithOverwrite, NULL);	//发送通知去触发相机
+									
+									actionExecuteQueueTemp->actionType  = Message_TrrigerCamera;
+									actionExecuteQueueTemp->pAction 		= pTempTriggerCamera;
+									err = xQueueSend(ActionExecuteQueue, actionExecuteQueueTemp, 0);
+									if(err==errQUEUE_FULL) printf("ActionExecuteQueue is Full Send Failed!\r\n");
+///*ConsumeTime:720us*/xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerCamera, eSetValueWithOverwrite, NULL);	//发送通知去触发相机
 
 /*ConsumeTime:100us*/pPacket = CreateTriggerCameraPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber,
 																											pTempTriggerCamera->CameraID, 1);
@@ -516,7 +529,11 @@ printf("Get into ActTriggerCamera\r\n");
 								case ActTriggerSensor			: /*ConsumeTime:938us*/
 printf("Get into ActTriggerSensor\r\n");	
 									pTempTriggerSensor = (propActionTriggerSensor*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
-									xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerSensor, eSetValueWithOverwrite, NULL);	
+									
+									actionExecuteQueueTemp->actionType  = Message_TrrigerSensor;
+									actionExecuteQueueTemp->pAction 		= pTempTriggerSensor;
+									err = xQueueSend(ActionExecuteQueue, actionExecuteQueueTemp, 0);
+									if(err==errQUEUE_FULL) printf("ActionExecuteQueue is Full Send Failed!\r\n");							
 								
 									pPacket = CreateTriggerIOSensorPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber, pTempTriggerSensor->SensorID);
 								
@@ -541,16 +558,16 @@ printf("Get into ActTriggerSensor\r\n");
 								case ActPushOut						: /*ConsumeTime:256us*/		
 printf("Get into ActPushOut\r\n");		
 									//此Packet有问题，不知有何问题
+									pTempPushOut = (propActionPushOut*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
 									pPacket = CreateObjectDeletePacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber);				
-								
+									
 									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
 									i_cycle  = 0;
 									for(i_cycle = 0;i_cycle <ClientNum; i_cycle++)//往所有连接的客户端都发送对象到来的消息
 									{
-										if(Session[i_cycle].ClientID != ClientServer)
+										if(Session[i_cycle].ClientID != ClientServer)//不往主程序发
 										WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);	
-									}						
-////								
+									}														
 									/******遍历寻找此对象在缓冲区数组的位置， 此处亦须释放对应的ObjectBuffer对象，否则无法再创建对象，无法往ObjectBuffer内填充值*****/
 									Object_i = 0 ;
 									while(ObjectBuffer[Object_i].ObjectID != ObjectInModuleList[Module_i][Action_i].ObjectID)
@@ -564,7 +581,10 @@ printf("Get into ActPushOut\r\n");
 									}
 									if(ObjectBuffer[Object_i].ProcessedResult == false)	
 									{
-										xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerPush, 	 eSetValueWithOverwrite, NULL);//发送通知去触发剔除																							
+										actionExecuteQueueTemp->actionType  = Message_TrrigerPush;
+										actionExecuteQueueTemp->pAction 		= pTempPushOut;
+										err = xQueueSend(ActionExecuteQueue, actionExecuteQueueTemp, 0);		
+//										xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerPush, 	 eSetValueWithOverwrite, NULL);//发送通知去触发剔除																							
 									}
 									ObjectBuffer[Object_i].objectAliveFlag = false;									//释放被占有的对象
 																		

@@ -62,8 +62,14 @@ typedef struct
 	
 }ModuleQueueItem;
 
+typedef struct
+{
+	byte actionType;
+	void* pAction;
+}ActionExecuteQueueItem;
 
 extern QueueHandle_t	ModuleQueue[maxTrackingModule];				//创建信息队列用于接收信息
+extern QueueHandle_t  ActionExecuteQueue;								//创建动作执行的信息接收队列
 extern __IO ObjectInfo ObjectBuffer[maxTrackingObjects];	  //创建最大只能保存maxTrackingObjects个对象的数组 
 uint8_t TrackingTask_init(void);
 

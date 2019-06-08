@@ -176,6 +176,8 @@
 	DataTransferManage负责将发送缓冲区的数据发送出去，负责接收数据并存到接收数据缓冲区后交给DataProcess来处理！！！
 	Session[sessionID].BufferSend[i].pBufferData
 	暂为单Client，所有数据都发往ClientServer,多Client暂未测试，目前还有问题
+2019.6.5 
+	成功连接PC，成功对接PC上的主程序和Inspection程序，能发送触发相机，触发IO，触发剔除命令给检测程序。连接成功，等待下一步工作
 
 耗时分析；
 	1. mymalloc(SRAMEX, 128) 分配内存时间为800us左右，myfree在70us左右，所以推荐不要去动态开辟内存！！！遵循：空间换时间！！！

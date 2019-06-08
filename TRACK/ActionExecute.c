@@ -3,6 +3,7 @@
 ***************************************************************************************************/
 #include "ActionExecute.h"
 #include "Tracking.h"
+#include "HardwareList.h"
 
 TaskHandle_t ActionExecuteTask_Handler;
 static void ActionExecuteThread(void );
@@ -29,7 +30,16 @@ uint8_t ActionExecuteTask_init(void)
 //ActionExecute跟踪线程
 static void ActionExecuteThread(void)
 {
-	BaseType_t notifyValue = 0;
+	BaseType_t actionType = 0;
+	uint16_t PinID;
+	static ActionExecuteQueueItem* actionInfoTemp;
+	
+//	static propActionRequestMachineData* 	pActionExcuteTempRequestMachineData = NULL;
+	static propActionSetOutput* 					pActionExcuteTempSetOutput      = NULL;
+//	static propActionObjectTakeOver* 			pActionExcuteTempObjectTakeOver = NULL;
+	static propActionTriggerCamera* 			pActionExcuteTempTriggerCamera 	= NULL;
+	static propActionTriggerSensor* 			pActionExcuteTempTriggerSensor 	= NULL;
+	static propActionPushOut* 						pActionExcuteTempPushOut 				= NULL;
 	
 	GPIO_InitTypeDef GPIO_Initure;
   __HAL_RCC_GPIOH_CLK_ENABLE();			//开启GPIOH时钟
@@ -52,40 +62,101 @@ static void ActionExecuteThread(void)
 
 	while(1)
 	{
-		notifyValue = ulTaskNotifyTake(pdTRUE, portMAX_DELAY);	//获取任务通知值
-
-		switch(notifyValue)
+		if(xQueueReceive(ActionExecuteQueue, actionInfoTemp, 0) == pdTRUE)	//获取队列信息
 		{
-			case Message_TrrigerCamera:									//Trriger Camera
+			actionType = actionInfoTemp->actionType;
+			switch(actionType)
+			{
+				case Message_TrrigerCamera:									//Trriger Camera
 				
-			//printf("TriggerCamera In ActionExecute.\n");
-			HAL_GPIO_WritePin(GPIOH,GPIO_PIN_7,GPIO_PIN_SET);			//拉高电平
-			vTaskDelay(10);
-			HAL_GPIO_WritePin(GPIOH,GPIO_PIN_7,GPIO_PIN_RESET);		//拉低电平
-			
-			break;
-			
-			case Message_TrrigerSensor:									//Trriger sensor
-				//printf("TriggerSensor In ActionExecute.\n");
-				HAL_GPIO_WritePin(GPIOH,GPIO_PIN_8,GPIO_PIN_SET);			//拉高电平
-				vTaskDelay(10);
-				HAL_GPIO_WritePin(GPIOH,GPIO_PIN_8,GPIO_PIN_RESET);		//拉低电平
-			break;
-			
-			case Message_TrrigerOutput:									//Trriger Output
-				//printf("TriggerOutput In ActionExecute.\n");
-				HAL_GPIO_WritePin(GPIOH,GPIO_PIN_9,GPIO_PIN_SET);			//拉高电平
-				vTaskDelay(10);
-				HAL_GPIO_WritePin(GPIOH,GPIO_PIN_9,GPIO_PIN_RESET);		//拉低电平
+						pActionExcuteTempTriggerCamera = (propActionTriggerCamera*)actionInfoTemp->pAction;
+						
+						switch(pActionExcuteTempTriggerCamera->CameraID)
+						{
+							case DigitalOutput_1: PinID = GPIO_PIN_7;break;
+							case DigitalOutput_2: PinID = GPIO_PIN_8;break;
+							case DigitalOutput_3: PinID = GPIO_PIN_9;break;
+							case DigitalOutput_4: PinID = GPIO_PIN_11;break;						
+							case DigitalOutput_5: PinID = GPIO_PIN_12;break;
+							case DigitalOutput_6: PinID = GPIO_PIN_13;break;
+							case DigitalOutput_7: PinID = GPIO_PIN_14;break;
+							case DigitalOutput_8: PinID = GPIO_PIN_15;break;
+							default:break;
+						}				
+						HAL_GPIO_WritePin(GPIOH,PinID,GPIO_PIN_SET);			//拉高电平
+						vTaskDelay(pActionExcuteTempTriggerCamera->OutputDuration);
+						HAL_GPIO_WritePin(GPIOH,PinID,GPIO_PIN_RESET);		//拉低电平
+				
 				break;
-			
-			case Message_TrrigerPush:										//Trriger Push
-				//printf("TriggerPush In ActionExecute.\n");
-				HAL_GPIO_WritePin(GPIOH,GPIO_PIN_11,GPIO_PIN_SET);			//拉高电平
-				vTaskDelay(10);
-				HAL_GPIO_WritePin(GPIOH,GPIO_PIN_11,GPIO_PIN_RESET);		//拉低电平
-				break;															
-		}	
+				
+				case Message_TrrigerSensor:									//Trriger sensor
+						pActionExcuteTempTriggerSensor = (propActionTriggerSensor*)actionInfoTemp->pAction;
+				
+						switch(pActionExcuteTempTriggerSensor->SensorID)
+						{
+							case DigitalOutput_1: PinID = GPIO_PIN_7;break;
+							case DigitalOutput_2: PinID = GPIO_PIN_8;break;
+							case DigitalOutput_3: PinID = GPIO_PIN_9;break;
+							case DigitalOutput_4: PinID = GPIO_PIN_11;break;						
+							case DigitalOutput_5: PinID = GPIO_PIN_12;break;
+							case DigitalOutput_6: PinID = GPIO_PIN_13;break;
+							case DigitalOutput_7: PinID = GPIO_PIN_14;break;
+							case DigitalOutput_8: PinID = GPIO_PIN_15;break;
+							default:break;
+						}				
+				break;
+				
+				case Message_TrrigerOutput:									//Trriger Output
+					pActionExcuteTempSetOutput = (propActionSetOutput*)actionInfoTemp->pAction;
+				
+						switch(pActionExcuteTempSetOutput->DigitalOutput)
+						{
+							case DigitalOutput_1: PinID = GPIO_PIN_7;break;
+							case DigitalOutput_2: PinID = GPIO_PIN_8;break;
+							case DigitalOutput_3: PinID = GPIO_PIN_9;break;
+							case DigitalOutput_4: PinID = GPIO_PIN_11;break;						
+							case DigitalOutput_5: PinID = GPIO_PIN_12;break;
+							case DigitalOutput_6: PinID = GPIO_PIN_13;break;
+							case DigitalOutput_7: PinID = GPIO_PIN_14;break;
+							case DigitalOutput_8: PinID = GPIO_PIN_15;break;
+							default:break;
+						}
+						if(pActionExcuteTempSetOutput->OutputInvert)
+						{
+							HAL_GPIO_WritePin(GPIOH,PinID,GPIO_PIN_RESET);			//拉低电平
+							vTaskDelay(pActionExcuteTempSetOutput->OutputDuration);
+							HAL_GPIO_WritePin(GPIOH,PinID,GPIO_PIN_SET);				//拉高电平
+						}
+						else
+						{
+							HAL_GPIO_WritePin(GPIOH,PinID,GPIO_PIN_SET);			//拉高电平
+							vTaskDelay(pActionExcuteTempSetOutput->OutputDuration);
+							HAL_GPIO_WritePin(GPIOH,PinID,GPIO_PIN_RESET);		//拉低电平
+						}
+					break;
+				
+				case Message_TrrigerPush:										//Trriger Push
+					pActionExcuteTempPushOut = (propActionPushOut*)actionInfoTemp->pAction;
+				
+						switch(pActionExcuteTempPushOut->DigitalOutput)
+						{
+							case DigitalOutput_1: PinID = GPIO_PIN_7;break;
+							case DigitalOutput_2: PinID = GPIO_PIN_8;break;
+							case DigitalOutput_3: PinID = GPIO_PIN_9;break;
+							case DigitalOutput_4: PinID = GPIO_PIN_11;break;						
+							case DigitalOutput_5: PinID = GPIO_PIN_12;break;
+							case DigitalOutput_6: PinID = GPIO_PIN_13;break;
+							case DigitalOutput_7: PinID = GPIO_PIN_14;break;
+							case DigitalOutput_8: PinID = GPIO_PIN_15;break;
+							default:break;
+						}				
+						HAL_GPIO_WritePin(GPIOH,PinID,GPIO_PIN_SET);			//拉高电平
+						vTaskDelay(pActionExcuteTempPushOut->PushLength);
+						HAL_GPIO_WritePin(GPIOH,PinID,GPIO_PIN_RESET);		//拉低电平
+					break;															
+			}	
+		}
+		
 		vTaskDelay(1);
 	}	
 }

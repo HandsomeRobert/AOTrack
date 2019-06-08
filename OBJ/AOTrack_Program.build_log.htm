@@ -27,14 +27,56 @@ Project File Date:  05/30/2019
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 3 (build 300)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'AOTrack'
-"..\OBJ\AOTrack_Program.axf" - 0 Error(s), 0 Warning(s).
+compiling ScanIO.c...
+compiling ParametersLoad.c...
+compiling ActionExecute.c...
+compiling main.c...
+compiling Tracking.c...
+..\TRACK\Tracking.c(144): warning:  #177-D: variable "temp" was declared but never referenced
+  	long long temp = 0;
+..\TRACK\Tracking.c(175): warning:  #550-D: variable "TimeCountStart" was set but never used
+  	uint32_t TimeCountStart = 0;												//???诩????叱?????时??
+..\TRACK\Tracking.c(176): warning:  #550-D: variable "TimeCountStartRTOS" was set but never used
+  	uint32_t TimeCountStartRTOS=0;
+..\TRACK\Tracking.c(178): warning:  #177-D: variable "TestTime1" was declared but never referenced
+  	uint32_t TestTime1=0;
+..\TRACK\Tracking.c(179): warning:  #177-D: variable "TestTime2" was declared but never referenced
+  	uint32_t TestTime2=0;
+..\TRACK\Tracking.c(180): warning:  #177-D: variable "TestTime3" was declared but never referenced
+  	uint32_t TestTime3=0;
+..\TRACK\Tracking.c(181): warning:  #177-D: variable "TestTime4" was declared but never referenced
+  	uint32_t TestTime4=0;
+..\TRACK\Tracking.c(182): warning:  #177-D: variable "TestTime5" was declared but never referenced
+  	uint32_t TestTime5=0;
+..\TRACK\Tracking.c(184): warning:  #550-D: variable "testFlag" was set but never used
+  	bool testFlag = false;
+..\TRACK\Tracking.c(185): warning:  #177-D: variable "timeCount" was declared but never referenced
+  	uint16_t timeCount = 0;
+..\TRACK\Tracking.c(19): warning:  #177-D: variable "pTempRequestMachineData" was declared but never referenced
+  static propActionRequestMachineData* 	pTempRequestMachineData = NULL;
+..\TRACK\Tracking.c(20): warning:  #550-D: variable "pTempSetOutput" was set but never used
+  static propActionSetOutput* 					pTempSetOutput      = NULL;
+..\TRACK\Tracking.c: 12 warnings, 0 errors
+compiling TcpPacketServer.c...
+..\LWIP\lwip_app\TcpPacketServer\TcpPacketServer.c(90): warning:  #177-D: variable "pInt" was declared but never referenced
+  	int* pInt;
+..\LWIP\lwip_app\TcpPacketServer\TcpPacketServer.c: 1 warning, 0 errors
+compiling DataProcess.c...
+..\TRACK\DataProcess.c(44): warning:  #550-D: variable "dataSize" was set but never used
+  	static int dataSize = 0;
+..\TRACK\DataProcess.c(45): warning:  #550-D: variable "timeCount" was set but never used
+  	int timeCount;
+..\TRACK\DataProcess.c: 2 warnings, 0 errors
+linking...
+Program Size: Code=125770 RO-data=177646 RW-data=784 ZI-data=31815376  
+"..\OBJ\AOTrack_Program.axf" - 0 Error(s), 15 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   E:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE
   C:\Keil_v5\ARM\PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:11
 </pre>
 </body>
 </html>
