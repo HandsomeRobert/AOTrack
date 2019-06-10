@@ -93,6 +93,7 @@
 ..\obj\tracking.o: ..\HARDWARE\ENCODER\bsp_encoder.h
 ..\obj\tracking.o: ..\CORE\core_cm7.h
 ..\obj\tracking.o: ..\LWIP\lwip_app\Track_Comm\DataTransferManage.h
+..\obj\tracking.o: ..\TRACK\TCPProtocol.h
 ..\obj\tracking.o: ..\LWIP\lwip_app\TcpPacketServer\TcpPacketServer.h
 ..\obj\tracking.o: ..\SYSTEM\sys\sys.h
 ..\obj\tracking.o: ..\CORE\core_cm7.h
@@ -128,8 +129,8 @@
 ..\obj\tracking.o: ..\HARDWARE\SDMMC\sdmmc_sdcard.h
 ..\obj\tracking.o: ..\HARDWARE\SDRAM\sdram.h
 ..\obj\tracking.o: ..\EZXML\ezxml.h
-..\obj\tracking.o: ..\COMMON\MyList.h
 ..\obj\tracking.o: ..\TRACK\ObjectDetection.h
 ..\obj\tracking.o: ..\COMMON\HardwareList.h
 ..\obj\tracking.o: ..\HARDWARE\LightSignal\LightSignal.h
 ..\obj\tracking.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+..\obj\tracking.o: ..\HARDWARE\TIMER\timer.h

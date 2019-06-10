@@ -87,6 +87,7 @@
 ..\obj\datatransfermanage.o: ..\FreeRTOS\include\task.h
 ..\obj\datatransfermanage.o: ..\FreeRTOS\include\list.h
 ..\obj\datatransfermanage.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+..\obj\datatransfermanage.o: ..\TRACK\TCPProtocol.h
 ..\obj\datatransfermanage.o: ..\LWIP\lwip-1.4.1\src\include\lwip/lwip_sys.h
 ..\obj\datatransfermanage.o: ..\LWIP\lwip-1.4.1\src\include\lwip/opt.h
 ..\obj\datatransfermanage.o: ..\LWIP\lwip_app\lwip_comm\lwipopts.h
@@ -117,3 +118,4 @@
 ..\obj\datatransfermanage.o: ..\COMMON\SemaphoreManage.h
 ..\obj\datatransfermanage.o: ..\COMMON\TCPQueue.h
 ..\obj\datatransfermanage.o: ..\MALLOC\malloc.h
+..\obj\datatransfermanage.o: ..\HARDWARE\TIMER\timer.h

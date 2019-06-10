@@ -145,24 +145,71 @@
 	为啥这个可以使用....xSemaphoreTake(OnLoadParametersFromPC, 1000) == pdTRUE
 	通信成功，串口助手发送字符'1'会重启板卡。
 目前参数加载，对象探测，跟踪，通信，接收到的数据处理，动作执行基本功能已走通
+<<<<<<< HEAD
 	Test Robert
 	
+=======
+	
+2019.5.6 
+	解决Bug1，TCP只能连接5次的问题，原因是使用netconn_close只是关闭了端口，未释放资源导致new netconn（应使用netconn_delete）的时候申请不到空间....，导致内存泄漏！！！
+2019.5.7
+	发现Bug7可能原因是DMA接收速度太慢了，空间满了，阻塞了，因为用电脑软件1S发一次就没啥问题。
+	但是，也就XISPEK软件连会阻塞，我自己的用调试助手不会出现阻塞（1ms周期循环发送）....
+
+2019.5.12
+	添加的TCPProtocol数据包生成，然后使用DataTransoferManage内的数据发送可以发送给PC，测试通信成功。PC软件界面会（跟踪控制启动，在ObjectDetection函数内用CreateStartTrackingPacket发送数据）
+界面会出现《控制器跟踪启动》字样。测试通过。接下来就是完善通信和改用数组来实现跟踪，动态链表速度慢，不稳定。。。
+
+2019.5.13
+	使用数组来实现Tracking，改掉了链表，链表速度慢。（Tracking周期速度4-15ms, ObjectDetection周期在12-14ms左右）
+	ObjectTakeOver 动作耗时：9ms,  其它动作4ms。。。
+	注：使用队列的时候一定要初始化，即xQueueCreate,不然会报错?AssetError:..\FreeRTOS\queue.c,1245，1244
+2019.5.14
+	添加了一些包生成函数在TCPProtocol内
+2019.5.15
+	使用指针来访问每个模块里的动作和相关配置。。。（主要修改了ParametersLoad内的内容）
+2019.5.16
+	修复无法实现ActionRequestMachineData, 是在ParametersLoad误改了str_ActionRequestMachineData。。。。。。
+	加入了Timer6用于统计每个线程的运行时间。
+	往ObjectDetection和Tracking内加入了TCPProtocol协议，RunIn, RunOut均默认往ClientID = ClientServer端发送
+	发现最耗时的是printf串口输出函数 ， 和Tracking的遍历所有列表的for循环，
+	Tracking空载1374us左右, 负载为2200us左右
+	ObjectDetection 空载为420us左右， 负载为1450us左右
+2019.5.21
+	所有数据都发往ClientServer==10端口，每个Session各建立一个BufferSend和BufferRecv，用于接收发送缓冲，不动态分配内存，采用空间换时间，使用一个10个大小的指针数组，每个指针分配128bytes.
+	DataTransferManage负责将发送缓冲区的数据发送出去，负责接收数据并存到接收数据缓冲区后交给DataProcess来处理！！！
+	Session[sessionID].BufferSend[i].pBufferData
+	暂为单Client，所有数据都发往ClientServer,多Client暂未测试，目前还有问题
+
+耗时分析；
+	1. mymalloc(SRAMEX, 128) 分配内存时间为800us左右，myfree在70us左右，所以推荐不要去动态开辟内存！！！遵循：空间换时间！！！
+	2. netconn_write耗时长，大概为2356us-->5023us
+	3. printf重定义输出到串口USART1, 耗时很长，性能测试时不应该使用printf~
+	4. /*ConsumeTime:720us*/xTaskGenericNotify耗时很大，为720us左右
+	5. SOCKET发送数据耗时很长，各模式下耗时//NETCONN_NOFLAG:2830 - 5082  ==> NETCONN_COPY:3424-->4824 NETCONN_NOCOPY::3454-->5016 NETCONN_MORE::3424-->4956
+
+注意事项：
+	1. 
+
+>>>>>>> 1a22b3f63fe6afdcdcd24e6b9917a5c988251c08
 Bug Report：
-	1. 2019.3.14：
-	Client与STM32（TecpServer）多次连接&断开后，无法再次连接STM32了，第6次连接（单个client）时会出现报错：
-		主机192.168.66.10连接上服务器,主机端口号为:49534
-		Assertion "netconn_connect: invalid conn" failed at line 197 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
-		TCP_Server Connect Failed!!!
-		Assertion "netconn_write: invalid conn" failed at line 605 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
-		Send data Failed,Please check it in DataTransferManage.c 
-		
-	第六次连接后断开时也报错，为Assertion "netconn_writAssertion "netconn_close: invalid conn" failed at line 668 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
-	！！！猜测是第六次连接时，Session[i]	的NetConnSend 没有被创建，即访问了不存在的NetConnSend端口导致的错误。	
-	！！至于为什么第6次之后就不能再连上PC的TCP Server了，有待探索。。。。
+XXXX1. 2019.3.14：(2019.5.6 Solved解决了,netconn_close改为netconn_delete即可)
+XXXXClient与STM32（TecpServer）多次连接&断开后，无法再次连接STM32了，第6次连接（单个client）时会出现报错：
+XXXX	主机192.168.66.10连接上服务器,主机端口号为:49534
+XXXX	Assertion "netconn_connect: invalid conn" failed at line 197 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
+XXXX	TCP_Server Connect Failed!!!
+XXXX	Assertion "netconn_write: invalid conn" failed at line 605 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
+XXXX	Send data Failed,Please check it in DataTransferManage.c 
+XXXX	
+XXXX第六次连接后断开时也报错，为Assertion "netconn_writAssertion "netconn_close: invalid conn" failed at line 668 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
+XXXX！！！猜测是第六次连接时，Session[i]	的NetConnSend 没有被创建，即访问了不存在的NetConnSend端口导致的错误。	
+XXXX！！至于为什么第6次之后就不能再连上PC的TCP Server了，有待探索。。。。
 	2. for循环扫描Netconn[]数组会扫描到不存在的NETCONN，但我好像设了一个移位buffer将此问题解决了，yes,我可真棒呀
 	3. emmm....电脑端连接TCP NETCONN使用串口调式软件无法快速发送数据，也就是说无法完整发送数据，得加个Buffer来缓冲...先发到Buffer再由NETCONN去调用函数去发送数据....
 
 	4. 当编码器数值溢出时可能出现BUG，即所有跟踪段的参考设计 可能都会出错.....
-		Solve,直接用两个数相减，得到的就是两者的距离，如0-65534 = 2
+XXXX	Solved,直接用两个数相减，得到的就是两者的距离，如0-65534 = 2
 	5. EncoderNumber>其给定值是可能导致错误，会清零+定时器溢出次数*65536所以会导致错误产生，标记一下。
-	
+	6. BUG==>数据接收在运行一段时间后会阻塞....阻塞在lan8720.c的152行，fframeLength=((DMARxDesc->Status&ETH_DMARXDESC_FL)>>ETH_DMARXDESC_FRAME_LENGTHSHIFT);
+	7. BUG==>XispekVision连接STM32，加入入队操作后会往外发112，不正确。去掉入队操作后，接收一段时间的诊断界面发送的数据后会死机。。。
+8. printf函数很耗时，测试性能时把prinrf函数去掉。。。

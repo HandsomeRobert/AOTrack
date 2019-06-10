@@ -10,7 +10,7 @@ TIM_HandleTypeDef TIM2_Handler;         //32位定时器2句柄
 TIM_HandleTypeDef TIM5_Handler;         //32Bit定时器5句柄
 
 TIM_HandleTypeDef TIM3_Handler;         //16Bit定时器3句柄
-TIM_HandleTypeDef TIM4_Handler;         //16Bit定时器4句柄
+//TIM_HandleTypeDef TIM4_Handler;         //16Bit定时器4句柄
 
 
 //捕获状态！！！！！！！

@@ -11,6 +11,7 @@
 #include "LightSignal.h"						//光电和PWM
 #include "pcf8574.h"								//以太网、蜂鸣器驱动
 #include "ActionExecute.h"					//输出动作初始化
+#include "timer.h"										//基本定时器定时
 
 #include "sdram.h"									//SDRAM驱动
 //#include "w25qxx.h"									//W25QXX QPI模式驱动FLASH	 
@@ -26,15 +27,12 @@
 
 #include "ParametersLoad.h"					//参数读取管理
 #include "TaskManage.h"							//统一管理优先级和堆栈大小
-#include "TcpPacketClient.h" 				//Client端程序
 #include "TcpPacketServer.h"				// Server端程序
-#include "UdpPacket.h"							//UDP端程序
 
 #include "DataTransferManage.h"			//多SOCKET数据传输统一管理
 #include "SemaphoreManage.h"				//统一管理所有信号量的定义和创建
 #include "Tracking.h"								//跟踪线程
 #include "ObjectDetection.h"				//跟踪对象管理线程
-#include "MyList.h"
 #include "ScanIO.h"
 #include "DataProcess.h"						//数据处理线程
 
@@ -104,7 +102,8 @@ int main(void)
 	
   TIM2_CH1_Cap_Init(0XFFFFFFFF,108-1); 			//以1MHZ的频率计数来捕获光电脉冲高电平
 	TIM5_CH1_Cap_Init(0XFFFFFFFF,108-1); 			//以1MHZ的频率计数来捕获光电脉冲高电平
-
+	TIM6_Init(0XFFFF, 108-1);								//16位定时器以1MHZ的频率计数来定时，也就是定时器1us计数一次
+	
 	CreateSemaphore();												//声明并创建所有信号量
 	/*暂不写数据*/
 	//WriteDownIOInfo();			//写下IO信息到SD卡中
@@ -181,24 +180,7 @@ void Start_task(void *pvParameters)
 	}
 	printf("ActionExecuteThread Initialing Successfully\n");
 	
-/*	
-//	//TCP客户端初始化及线程创建	
-//	taskENTER_CRITICAL();
-//	while(!tcp_client_init())
-//	{
-//		vTaskDelay(500);
-//		printf("TCP_Client Initialing Failed\n");
-//	}
-//	printf("TCP_Client Initialing Successfully\n");
 
-////UDP线程初始化	
-//	while(!udp_demo_init())
-//	{
-//		delay_ms(500);
-//		printf("UDP_Demo Initialing Failed\n");
-//	}
-//	printf("UDP_Demo Initialing Successfully\n");
-*/	
 	xTaskCreate((TaskFunction_t)StatusIndicate_task,
 							(const char*  )"StatusIndicate_task",
 							(uint16_t     )StatusIndicate_STK_SIZE,
@@ -213,13 +195,7 @@ void Start_task(void *pvParameters)
 							(UBaseType_t  )EncoderValue_TASK_PRIO,
 							(TaskHandle_t*)&EncoderValueTask_Handler);						
 ******/							
-	xTaskCreate((TaskFunction_t)DataAcquisition_task,
-							(const char*  )"DataAcquisiton_task",
-							(uint16_t     )DataAcquisition_STK_SIZE,
-							(void*        )NULL,
-							(UBaseType_t  )DataAcquisition_TASK_PRIO,
-							(TaskHandle_t*)&DataAcquisitionTask_Handler);
-		
+							
 	xTaskCreate((TaskFunction_t)SimaulationTimer_task,
 							(const char*  )"SimaulationTimer_task",
 							(uint16_t     )SimulationTimer_STK_SIZE,
@@ -242,34 +218,6 @@ void StatusIndicate_task(void *p_arg)
 		LED1_Toggle;
 		//printf("EncoderNum==>%llu\n", EncoderNumber);
 //printf("Test Status Indicate\n");
-		vTaskDelay(1000);
-	}
-}
-/******
-//编码器查询任务
-void EncoderValue_task()
-{
-	while(1)
-	{
-		EncoderNumber = (OverflowCount*CNT_MAX) + __HAL_TIM_GET_COUNTER(&htimx_Encoder);
-		vTaskDelay(1);
-	}
-}
-******/
-
-void DataAcquisition_task(void * p_arg)
-{
-
-	while(1)
-	{
-    DataSendFlag |= LWIP_SEND_DATA;
-		//tcp_client_flag |= LWIP_SEND_DATA;
-		//udp_flag |= LWIP_SEND_DATA;
-		
-//		//PWM波生成
-//		TIM_SetTIM3Compare4(TIM_GetTIM3Capture4()+1); 
-//		if(TIM_GetTIM3Capture4()==300)
-//		TIM_SetTIM3Compare4(0);
 		vTaskDelay(1000);
 	}
 }

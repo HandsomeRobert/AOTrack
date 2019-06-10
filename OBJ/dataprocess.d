@@ -91,6 +91,7 @@
 ..\obj\dataprocess.o: ..\FreeRTOS\include\semphr.h
 ..\obj\dataprocess.o: ..\FreeRTOS\include\queue.h
 ..\obj\dataprocess.o: ..\LWIP\lwip_app\Track_Comm\DataTransferManage.h
+..\obj\dataprocess.o: ..\TRACK\TCPProtocol.h
 ..\obj\dataprocess.o: ..\LWIP\lwip_app\TcpPacketServer\TcpPacketServer.h
 ..\obj\dataprocess.o: ..\SYSTEM\sys\sys.h
 ..\obj\dataprocess.o: ..\CORE\core_cm7.h
@@ -118,3 +119,17 @@
 ..\obj\dataprocess.o: ..\LWIP\lwip-1.4.1\src\include\lwip/def.h
 ..\obj\dataprocess.o: ..\COMMON\TCPQueue.h
 ..\obj\dataprocess.o: ..\MALLOC\malloc.h
+..\obj\dataprocess.o: ..\TRACK\ObjectDetection.h
+..\obj\dataprocess.o: ..\COMMON\HardwareList.h
+..\obj\dataprocess.o: ..\HARDWARE\ENCODER\bsp_encoder.h
+..\obj\dataprocess.o: ..\CORE\core_cm7.h
+..\obj\dataprocess.o: ..\HARDWARE\LightSignal\LightSignal.h
+..\obj\dataprocess.o: ..\TRACK\ParametersLoad.h
+..\obj\dataprocess.o: ..\FATFS\src\ff.h
+..\obj\dataprocess.o: ..\FATFS\src\integer.h
+..\obj\dataprocess.o: ..\FATFS\src\ffconf.h
+..\obj\dataprocess.o: ..\FATFS\exfuns\exfuns.h
+..\obj\dataprocess.o: ..\HARDWARE\SDMMC\sdmmc_sdcard.h
+..\obj\dataprocess.o: ..\HARDWARE\SDRAM\sdram.h
+..\obj\dataprocess.o: ..\EZXML\ezxml.h
+..\obj\dataprocess.o: ..\HARDWARE\TIMER\timer.h

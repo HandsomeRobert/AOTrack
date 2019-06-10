@@ -97,6 +97,7 @@
 ..\obj\objectdetection.o: ..\SYSTEM\sys\sys.h
 ..\obj\objectdetection.o: ..\CORE\core_cm7.h
 ..\obj\objectdetection.o: ..\LWIP\lwip_app\Track_Comm\DataTransferManage.h
+..\obj\objectdetection.o: ..\TRACK\TCPProtocol.h
 ..\obj\objectdetection.o: ..\LWIP\lwip_app\TcpPacketServer\TcpPacketServer.h
 ..\obj\objectdetection.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\objectdetection.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
@@ -130,5 +131,5 @@
 ..\obj\objectdetection.o: ..\HARDWARE\SDMMC\sdmmc_sdcard.h
 ..\obj\objectdetection.o: ..\HARDWARE\SDRAM\sdram.h
 ..\obj\objectdetection.o: ..\EZXML\ezxml.h
-..\obj\objectdetection.o: ..\COMMON\MyList.h
 ..\obj\objectdetection.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+..\obj\objectdetection.o: ..\HARDWARE\TIMER\timer.h

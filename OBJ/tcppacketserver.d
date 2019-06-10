@@ -116,3 +116,6 @@
 ..\obj\tcppacketserver.o: ..\COMMON\SemaphoreManage.h
 ..\obj\tcppacketserver.o: ..\COMMON\TCPQueue.h
 ..\obj\tcppacketserver.o: ..\MALLOC\malloc.h
+..\obj\tcppacketserver.o: ..\TRACK\TCPProtocol.h
+..\obj\tcppacketserver.o: ..\LWIP\lwip_app\Track_Comm\DataTransferManage.h
+..\obj\tcppacketserver.o: ..\HARDWARE\TIMER\timer.h

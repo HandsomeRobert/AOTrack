@@ -3,6 +3,8 @@
 ***************************************************************************************************/
 #include "Tracking.h"
 #include <math.h>
+#include "TCPProtocol.h"
+#include "timer.h"
 
 extern uint32_t Timer;			//使用主函数定义的仿真Timer
 
@@ -40,143 +42,233 @@ uint8_t TrackingTask_init(void)
 //Tracking跟踪线程
 static void TrackingThread(void *arg)
 {	
-	byte Module_i = 0;			//遍历控制变量
-	byte object_i = 0;
-	static __IO int64_t encoderNumber = 0;     					// 编码器计数值
-	static __IO int64_t encoder1Number = 0;
-	static __IO int64_t encoder2Number = 0;
-	static __IO int64_t encoderDelivered = 0;
+	byte Module_i = 0, Action_i = 0;												//遍历控制变量
+	byte object_i = 0, i_cycle 	= 0;
+	int data_len = 0;
+	static __IO int64_t encoderNumber 		= 0;     					// 编码器计数值
+	static __IO int64_t encoder1Number 		= 0;
+	static __IO int64_t encoder2Number 		= 0;
+	static __IO int64_t encoderDelivered 	= 0;
 	
-	static ObjectList pActionList;
-	static ObjectList pActionNextTemp;											//存储删掉结点之前的值
+	static bool isActionIn = false;
+//	static propActionRequestMachineData* 	pTempRequestMachineData = NULL;
+//	static propActionSetOutput* 					pTempSetOutput = NULL;
+	static propActionObjectTakeOver* 			pTempObjectTakeOver = NULL;
+	static propActionTriggerCamera* 			pTempTriggerCamera = NULL;
+	static propActionTriggerSensor* 			pTempTriggerSensor = NULL;
+//	static propActionPushOut* 						pTempPushOut = NULL;
+
 	static ModuleQueueItem* moduleQueueTemp;						//定义一个往队列中填充数据的暂放指针
+	static Packet* pPacket;															//数据包首地址
 	uint32_t TimeCountStart = 0;												//用于计算线程运行时间
+	uint32_t TimeCountStartRTOS=0;
+	
+	uint32_t TestTime1=0;
+	uint32_t TestTime2=0;
+	uint32_t TestTime3=0;
+	uint32_t TestTime4=0;
+	uint32_t TestTime5=0;
+	
+	
 	uint16_t timeCount = 0;
+	uint16_t timeCount_for_cycle 	= 0;
+	uint16_t timeCountTime_Module = 0;
 	BaseType_t err;
+OverflowCount_TIM6 = 0;
 
 	moduleQueueTemp = mymalloc(SRAMEX, sizeof(ModuleQueueItem));//分配内存初始化
-	pActionList			= mymalloc(SRAMEX, sizeof(struct LNode));//分配内存初始化
+	pPacket 				= mymalloc(SRAMEX, 256);										//为数据包分配一个固定的256字节的数据临时存储区
 	
 /************************************************************************************************************************************************************			
 *****************************************************************跟踪过程监控区******************************************************************************				
 *************************************************************************************************************************************************************/	
 	while(1)
 	{	
-		TimeCountStart = xTaskGetTickCount();
+		TimeCountStart 	= OverflowCount_TIM6*0XFFFF +__HAL_TIM_GET_COUNTER(&TIM6_Handler);//0.7us
+		TimeCountStartRTOS = xTaskGetTickCount();
 		
 		if( ClientNum > 0)															//有检测程序Inspection连接
 		{
-			encoder1Number = (OverflowCount_Encoder3*ENCODER_CNT_MAX) + __HAL_TIM_GET_COUNTER(&htimx_Encoder3);
-			encoder2Number = (OverflowCount_Encoder8*ENCODER_CNT_MAX) + __HAL_TIM_GET_COUNTER(&htimx_Encoder8);
-			
+			encoder1Number = (OverflowCount_Encoder3*ENCODER_CNT_MAX) + __HAL_TIM_GET_COUNTER(&htimx_Encoder3);//15us
+			encoder2Number = (OverflowCount_Encoder8*ENCODER_CNT_MAX) + __HAL_TIM_GET_COUNTER(&htimx_Encoder8);//15us
+
 			for(Module_i = 0;Module_i < Module_Count;Module_i++)
-			{
+			{ 
 				switch (ModuleConfig[Module_i].Encoder)
 				{
 					case Encoder_1: encoderNumber = encoder1Number;break;
 					case Encoder_2: encoderNumber = encoder2Number;break;
-				}
+				}	
 				
-				pActionList = ObjectInModuleList[Module_i]->next;  		//（ObjectInModuleList[Module_i]为尾指针，也为表头结点）->next指向第一个元素
-				while (pActionList != ObjectInModuleList[Module_i])  	//pModuleList未到表头
+				for(Action_i = 0; Action_i < maxTrackingObjects/2; Action_i++)//这里比较耗时maxTrackingObjects 64：1420us, 32: 
 				{
-					//printf("Module_PositionTest222===> Module[%d] \n", Module_i);
-					
-					if(encoderNumber > pActionList->Object.TargetValue)			//判断动作是否到达指定位置
-					{	
-						object_i = 0;					
-						printf("Object[%d], ActionTrigger Position is : %lld \n", pActionList->Object.ObjectID, encoderNumber);//头结点为空，所以会进来一次...
-						//xTaskSuspendAll()();
-						switch (pActionList->Object.ActionType)
-						{
-							case TypeActionTriggerCamera:		xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerCamera, eSetValueWithOverwrite, NULL);	//发送通知去触发相机
-																							TCPSendDataBase(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionTriggerCamera);//通知PC已经触发了相机
-																							pActionNextTemp = pActionList->next;
-																							vTaskSuspendAll();		//进入临界区防止被打断
-																							ListDeletePointItem(&ObjectInModuleList[Module_i], pActionList);//从跟踪段列表中删除执行了的动作
-																							xTaskResumeAll();		//退出临界区
-																							break;
+					if(ObjectInModuleList[Module_i][Action_i].IsActionAlive)
+					{
+						if(encoderNumber > ObjectInModuleList[Module_i][Action_i].TargetValue)
+						{	
+							isActionIn = true;
 							
-							case TypeActionObjectTakeOver: 				
-																							TCPSendDataBase(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionObjectTakeOver);//通知PC已经传递了对象
-																							switch (ModuleConfig[ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionObjectTakeOver.DestinationModule].Encoder)
-																							{
-																								case Encoder_1: encoderDelivered = encoder1Number;break;
-																								case Encoder_2: encoderDelivered = encoder2Number;;break;
-																							}
-																							moduleQueueTemp->DelieverdEncoderNum 	= encoderDelivered;
-																							moduleQueueTemp->DelieverdObjectID		=	pActionList->Object.ObjectID;			
-																							
-																							err = xQueueSend(ModuleQueue[ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionObjectTakeOver.DestinationModule], moduleQueueTemp, 0);		//往所要传递到的跟踪抖游列中发送数据，传递数据和对象ID	
-																							if(err==errQUEUE_FULL) printf("Queue is Full Send Failed!\r\n");
-																							pActionNextTemp = pActionList->next;	//必须先将pActionList指向下一个元素，不然先释放pActionList的话会导致pActionList从已被删除的区域指向next																										
-																							vTaskSuspendAll();		//进入临界区防止被打断
-																							ListDeletePointItem(&ObjectInModuleList[Module_i], pActionList);//从跟踪段列表中删除执行了的动作
-																							printf("ModuleCount==%d,  Module[%d]===>Destination[%d] \n", Module_Count, Module_i, ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionObjectTakeOver.DestinationModule);
-																							xTaskResumeAll();			//退出临界区
-																							break;
-																										
-							case TypeActionSetOutput:							
-																							xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerOutput, eSetValueWithOverwrite, NULL);
-																							TCPSendDataBase(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionSetOutput);//通知PC已经触发了输出
-																							pActionNextTemp = pActionList->next;
-																							vTaskSuspendAll();		//进入临界区防止被打断
-																							ListDeletePointItem(&ObjectInModuleList[Module_i], pActionList);//从跟踪段列表中删除执行了的动作
-																							xTaskResumeAll();		//退出临界区
-																							break;//发送通知去触发输出
-																										
-							case TypeActionTriggerSensor:		xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerSensor, eSetValueWithOverwrite, NULL);	
-																							TCPSendDataBase(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionTriggerSensor);//通知PC已经触发了信号采集
-																							pActionNextTemp = pActionList->next;
-																							vTaskSuspendAll();		//进入临界区防止被打断
-																							ListDeletePointItem(&ObjectInModuleList[Module_i], pActionList);//从跟踪段列表中删除执行了的动作
-																							xTaskResumeAll();		//退出临界区
-																							break;//发送通知去触发传感器采集
-																										
-							case TypeActionPushOut:					TCPSendDataBase(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionPushOut);//通知PC已经触发了相机
-																																												
-																							/******此处亦须释放对应的ObjectBuffer对象，否则无法再创建对象，无法往ObjectBuffer内填充值*****/
-																							while(ObjectBuffer[object_i].ObjectID != pActionList->Object.ObjectID)
-																							{
-																								object_i++;
-																								if(object_i > 63) 
-																								{
-																									printf("Cannot Find The consistent ObjectID in ObjectBuffer failed. \n");
-																									break;
-																								}	
-																							}
-																							ObjectBuffer[object_i].objectAliveFlag = false;					//释放被占有的对象
-							
-																							xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerPush, 	 eSetValueWithOverwrite, NULL);//发送通知去触发剔除
-																							pActionNextTemp = pActionList->next;
-																							vTaskSuspendAll();		//进入临界区防止被打断
-																							ListDeletePointItem(&ObjectInModuleList[Module_i], pActionList);//从跟踪段列表中删除执行了的动作
-																							xTaskResumeAll();		//退出临界区
-																							break;
-																										
-							case TypeActionRequestMachineData:	
-																							TCPSendDataBase(ModuleConfig[Module_i].ActionInstanceConfig[pActionList->Object.ActionNumber].Item_ActionTriggerCamera.ClientID, strActionRequestMachineData);//通知PC已经请求了机器数据
-																							pActionNextTemp = pActionList->next;
-																							vTaskSuspendAll();		//进入临界区防止被打断
-																							ListDeletePointItem(&ObjectInModuleList[Module_i], pActionList);//从跟踪段列表中删除执行了的动作
-																							xTaskResumeAll();		//退出临界区
-																							break;							
-						}	
-					pActionList = pActionNextTemp;					//下一轮循环递增pActionNextTemp = pActionList->next，即被删除前的指向的下一个结点,因为pActionList已从列表中删除，再去让它指向下一个元素就会错乱
+							switch(ObjectInModuleList[Module_i][Action_i].ActionType)		//13us
+							{
+								case ActRequestMachineData: 							
+									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
+								break;
+								
+								case ActSetOutput					: 							
+									xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerOutput, eSetValueWithOverwrite, NULL);
+									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
+								break;
+								
+								case ActObjectTakeOver		:								
+/*ConsumeTime:20us*/pTempObjectTakeOver = (propActionObjectTakeOver*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
+								  switch (ModuleConfig[pTempObjectTakeOver->DestinationModule].Encoder)
+									{
+										case Encoder_1: encoderDelivered = encoder1Number;break;
+										case Encoder_2: encoderDelivered = encoder2Number;;break;
+									}
+									moduleQueueTemp->DelieverdEncoderNum 	= encoderDelivered;
+									moduleQueueTemp->DelieverdObjectID		=	ObjectInModuleList[Module_i][Action_i].ObjectID;			
+									//moduleQueueTemp->ClientID							= 
+									
+									err = xQueueSend(ModuleQueue[pTempObjectTakeOver->DestinationModule], moduleQueueTemp, 0);		//
+/*ConsumeTime:292usALL*/if(err==errQUEUE_FULL) printf("Queue is Full Send Failed!\r\n");
+									//将要发送的数据传递到发送buffer
+									
+									//1. 耗时1022us(动态分配内存的)，2. 86us（传入pPacket的）
+/*ConsumeTime:96usALL*/pPacket = CreateObjectRunOutPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber, pTempObjectTakeOver->DestinationModule);
+
+									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;//耗时24us
+									i_cycle = 0;
+									while(Session[i_cycle].ClientID != ClientServer)
+									{
+										i_cycle++;
+										if(i_cycle > ClientNum)
+										{
+											printf("Cannot find the session ClientServer[%d],Retrying...\r\n", ClientServer);
+											i_cycle = 0;
+										}
+									}			
+/*ConsumeTime:160usALL*/WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);
+								
+/*ConsumeTime:550usALL*/ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
+									break;
+								
+								case ActTriggerCamera			: 						
+/*ConsumeTime:32us*/pTempTriggerCamera = (propActionTriggerCamera*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
+
+/*ConsumeTime:720us*/xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerCamera, eSetValueWithOverwrite, NULL);	//发送通知去触发相机
+
+/*ConsumeTime:100us*/pPacket = CreateTriggerCameraPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber,
+																											pTempTriggerCamera->CameraID, 1);
+
+									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4; /*ConsumeTime:160us*///整个包含WriteDataToBufferSend耗时160us
+									i_cycle  = 0;
+									while(Session[i_cycle].ClientID != ClientServer)//pTempTriggerCamera->ClientID
+									{
+										i_cycle++;
+										if(i_cycle > ClientNum)
+										{
+											printf("Cannot find the session pTempTriggerCamera->ClientID[%d],Retrying...\r\n", pTempTriggerCamera->ClientID);
+											i_cycle = 0;
+										}
+									}			
+/*ConsumeTime:160us*/WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);
+								
+/*ALL ConsumeTime:1002us*/ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
+								break;
+								
+								case ActTriggerSensor			: /*ConsumeTime:938us*/
+									pTempTriggerSensor = (propActionTriggerSensor*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
+									xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerSensor, eSetValueWithOverwrite, NULL);	
+								
+									pPacket = CreateTriggerIOSensorPacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber, pTempTriggerSensor->SensorID);
+								
+									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
+									i_cycle  = 0;
+									while(Session[i_cycle].ClientID != ClientServer)//pTempTriggerCamera->ClientID
+									{
+										i_cycle++;
+										if(i_cycle > ClientNum)
+										{
+											printf("Cannot find the session pTempTriggerSensor->ClientID[%d],Retrying...\r\n", pTempTriggerCamera->ClientID);
+											i_cycle = 0;
+										}
+									}			
+									WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);
+				
+									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
+									break;
+								
+								case ActPushOut						: /*ConsumeTime:256us*/				
+									pPacket = CreateObjectDeletePacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber);				
+								
+									data_len = PACKET_HEADER_SIZE + pPacket->DataSize + 4;
+									i_cycle  = 0;
+									while(Session[i_cycle].ClientID != ClientServer)
+									{
+										i_cycle++;
+										if(i_cycle > ClientNum)
+										{
+											printf("Cannot find the session ClientServer->ClientID[%d],Retrying...\r\n", ClientServer);
+											i_cycle = 0;
+										}
+									}			
+									WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);							
+								
+									/******遍历寻找此对象在缓冲区数组的位置， 此处亦须释放对应的ObjectBuffer对象，否则无法再创建对象，无法往ObjectBuffer内填充值*****/
+									object_i = 0 ;
+									while(ObjectBuffer[object_i].ObjectID != ObjectInModuleList[Module_i][Action_i].ObjectID)
+									{
+										object_i++;
+										if(object_i > (maxTrackingObjects - 1)) 
+										{
+											printf("Cannot Find The consistent ObjectID in ObjectBuffer failed In Tracking. \n");
+											break;
+										}	
+									}
+									if(ObjectBuffer[object_i].ProcessedResult == false)	
+									{
+										xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerPush, 	 eSetValueWithOverwrite, NULL);//发送通知去触发剔除																							
+									}
+									ObjectBuffer[object_i].objectAliveFlag = false;									//释放被占有的对象
+																		
+									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;		//释放占有的动作
+									break;
+								
+								default:break;
+							}
+						break;
+						}
 					}
-					else
-						pActionList = pActionList->next;
-					//xTaskResumeAll();
-				}																		
+				}			
+			
+//printf("Get for whole List Cycle Time ==>%d \n", __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCount_for_cycle);//空载440us一个循环，3次为1320us
+				
+				if(isActionIn == true)	//用于跳出大的Module循环
+				{
+					isActionIn = false;
+					break;
+				}
+			
 			}
+//printf("Sending Module whole cycle Spending time  ==>%d \n", __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCountTime_Module);//1378us
+			
+
 /************************************************************************************************************************************************************			
 *****************************************************************跟踪过程监控区END******************************************************************************				
 *************************************************************************************************************************************************************/				
-			timeCount = xTaskGetTickCount()- TimeCountStart;
-			if(timeCount > 0)
-			{
-				printf("Tracking Thread Running Time ==>%d \n", timeCount);//
-			}
+
+/***运行时间统计***/
+			
+			TimeCountStart 	=  OverflowCount_TIM6*0XFFFF + __HAL_TIM_GET_COUNTER(&TIM6_Handler) - TimeCountStart;		//11us
+			TimeCountStartRTOS = xTaskGetTickCount() - TimeCountStartRTOS;
+			
+//////			if(TimeCountStart > 800 && TimeCountStart<65536)//不知为何会出现大于65536+TimeCountStart(正常)的计数值情况出现...
+//////			{	
+//////				printf("TrackingTime ==>%d \n", TimeCountStart);//No-Load:1430us   Load:1600
+//////				printf("TrackingTimeRTOSSSS ==>%d \n", TimeCountStartRTOS);
+//////			}	
+
 		}
 	vTaskDelay(1);																								//不阻塞1ms的话，会一直跑这个程序	
 	}	

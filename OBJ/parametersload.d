@@ -102,7 +102,6 @@
 ..\obj\parametersload.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 ..\obj\parametersload.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 ..\obj\parametersload.o: ..\MALLOC\malloc.h
-..\obj\parametersload.o: ..\COMMON\MyList.h
 ..\obj\parametersload.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\parametersload.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 ..\obj\parametersload.o: ..\COMMON\ScanIO.h
