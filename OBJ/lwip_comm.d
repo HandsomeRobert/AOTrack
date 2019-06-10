@@ -5,7 +5,7 @@
 ..\obj\lwip_comm.o: ..\USER\stm32f7xx.h
 ..\obj\lwip_comm.o: ..\USER\stm32f767xx.h
 ..\obj\lwip_comm.o: ..\CORE\core_cm7.h
-..\obj\lwip_comm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\lwip_comm.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\lwip_comm.o: ..\CORE\core_cmInstr.h
 ..\obj\lwip_comm.o: ..\CORE\cmsis_armcc.h
 ..\obj\lwip_comm.o: ..\CORE\core_cmFunc.h
@@ -16,7 +16,7 @@
 ..\obj\lwip_comm.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_def.h
 ..\obj\lwip_comm.o: ..\USER\stm32f7xx.h
 ..\obj\lwip_comm.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-..\obj\lwip_comm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\lwip_comm.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\lwip_comm.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_rcc_ex.h
 ..\obj\lwip_comm.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio.h
 ..\obj\lwip_comm.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio_ex.h
@@ -86,7 +86,7 @@
 ..\obj\lwip_comm.o: ..\LWIP\arch/cc.h
 ..\obj\lwip_comm.o: ..\LWIP\arch/cpu.h
 ..\obj\lwip_comm.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\lwip_comm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\lwip_comm.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 ..\obj\lwip_comm.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\lwip_comm.o: ..\FreeRTOS\include\projdefs.h
 ..\obj\lwip_comm.o: ..\FreeRTOS\include\portable.h
@@ -127,4 +127,4 @@
 ..\obj\lwip_comm.o: ..\SYSTEM\delay\delay.h
 ..\obj\lwip_comm.o: ..\SYSTEM\usart\usart.h
 ..\obj\lwip_comm.o: ..\COMMON\TaskManage.h
-..\obj\lwip_comm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+..\obj\lwip_comm.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

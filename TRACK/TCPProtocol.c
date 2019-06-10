@@ -168,7 +168,7 @@ Packet* CreateStartIOLivePacket(Packet* pPacket, bool start)
 	pCommand->DataSize 	= 0;	
 	
 	offset = COMMAND_HEADER_SIZE;
-	SetValueOffset((char*)pCommand, offset, IntEndWord);		
+	SetValueOffset((char*)pCommand, offset, IntEndWord);
 	
 	return pPacket;
 }
@@ -308,7 +308,7 @@ Packet* CreateObjectRunOutPacket(Packet* pPacket, int lineID, int objectID, int 
 		
 	pCommand = (Command*)pPacket->pData;
 		
-	pCommand->ActionID 	= PCCmdActionObjectRunIn;
+	pCommand->ActionID 	= PCCmdActionObjectRunOut;
 	pCommand->LineID 		= lineID;
 	pCommand->ObjectID 	= objectID;
 	pCommand->ModuleID 	= moduleID;
@@ -337,7 +337,7 @@ Packet* CreateObjectDeletePacket(Packet* pPacket, int lineID, int objectID, int 
 
 	pCommand = (Command*)pPacket->pData;
 			
-	pCommand->ActionID 	= PCCmdActionObjectRunIn;
+	pCommand->ActionID 	= PCCmdActionObjectDelete;
 	pCommand->LineID 		= lineID;
 	pCommand->ObjectID 	= objectID;
 	pCommand->ModuleID 	= moduleID;
@@ -366,7 +366,7 @@ Packet* CreateTriggerCameraPacket(Packet* pPacket, int lineID, int objectID, int
 
 	pCommand = (Command*)pPacket->pData;
 			
-	pCommand->ActionID 	= PCCmdActionObjectRunIn;
+	pCommand->ActionID 	= PCCmdActionTriggerCamera;
 	pCommand->LineID 		= lineID;
 	pCommand->ObjectID 	= objectID;
 	pCommand->ModuleID 	= moduleID;

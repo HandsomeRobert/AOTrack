@@ -5,10 +5,10 @@
 ..\obj\netifapi.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\netifapi.o: ..\LWIP\arch/cc.h
 ..\obj\netifapi.o: ..\LWIP\arch/cpu.h
-..\obj\netifapi.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\netifapi.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\netifapi.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\netifapi.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\netifapi.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\netifapi.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\netifapi.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\netifapi.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\netifapi.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\netifapi.o: ..\USER\stm32f7xx_hal_conf.h

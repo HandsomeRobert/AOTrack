@@ -50,9 +50,9 @@ typedef struct {
 }lwip_mbox;
 
 typedef SemaphoreHandle_t sys_sem_t;    		//LWIP使用的信号量
-typedef QueueHandle_t sys_mutex_t; 		//LWIP使用的互斥信号量
-typedef lwip_mbox 	sys_mbox_t;    		//LWIP使用的消息邮箱,其实就是UCOS中的消息队列
-typedef unsigned char  sys_thread_t;     	//线程ID,也就是任务优先级
+typedef QueueHandle_t sys_mutex_t; 					//LWIP使用的互斥信号量
+typedef lwip_mbox 	sys_mbox_t;    					//LWIP使用的消息邮箱,其实就是UCOS中的消息队列
+typedef unsigned char  sys_thread_t;     		//线程ID,也就是任务优先级
 
 #endif 
 

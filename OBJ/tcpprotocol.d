@@ -1,12 +1,12 @@
 ..\obj\tcpprotocol.o: ..\TRACK\TCPProtocol.c
 ..\obj\tcpprotocol.o: ..\TRACK\TCPProtocol.h
-..\obj\tcpprotocol.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+..\obj\tcpprotocol.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 ..\obj\tcpprotocol.o: ..\MALLOC\malloc.h
 ..\obj\tcpprotocol.o: ..\SYSTEM\sys\sys.h
 ..\obj\tcpprotocol.o: ..\USER\stm32f7xx.h
 ..\obj\tcpprotocol.o: ..\USER\stm32f767xx.h
 ..\obj\tcpprotocol.o: ..\CORE\core_cm7.h
-..\obj\tcpprotocol.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\tcpprotocol.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\tcpprotocol.o: ..\CORE\core_cmInstr.h
 ..\obj\tcpprotocol.o: ..\CORE\cmsis_armcc.h
 ..\obj\tcpprotocol.o: ..\CORE\core_cmFunc.h
@@ -17,7 +17,7 @@
 ..\obj\tcpprotocol.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_def.h
 ..\obj\tcpprotocol.o: ..\USER\stm32f7xx.h
 ..\obj\tcpprotocol.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-..\obj\tcpprotocol.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\tcpprotocol.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\tcpprotocol.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_rcc_ex.h
 ..\obj\tcpprotocol.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio.h
 ..\obj\tcpprotocol.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio_ex.h

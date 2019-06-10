@@ -6,7 +6,6 @@
 "..\obj\scanio.o"
 "..\obj\tcpqueue.o"
 "..\obj\parametersload.o"
-"..\obj\objectdetection.o"
 "..\obj\tracking.o"
 "..\obj\actionexecute.o"
 "..\obj\dataprocess.o"

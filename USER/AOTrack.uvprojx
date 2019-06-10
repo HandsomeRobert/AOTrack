@@ -440,11 +440,6 @@
               <FilePath>..\TRACK\ParametersLoad.c</FilePath>
             </File>
             <File>
-              <FileName>ObjectDetection.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\TRACK\ObjectDetection.c</FilePath>
-            </File>
-            <File>
               <FileName>Tracking.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\TRACK\Tracking.c</FilePath>

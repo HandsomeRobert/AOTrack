@@ -180,6 +180,11 @@
 	DataTransferManage负责将发送缓冲区的数据发送出去，负责接收数据并存到接收数据缓冲区后交给DataProcess来处理！！！
 	Session[sessionID].BufferSend[i].pBufferData
 	暂为单Client，所有数据都发往ClientServer,多Client暂未测试，目前还有问题
+2019.6.5 
+	成功连接PC，成功对接PC上的主程序和Inspection程序，能发送触发相机，触发IO，触发剔除命令给检测程序。连接成功，等待下一步工作
+2019.6.10
+	1.接收数据不正常，并不会完整接收一个PKBG  XXXX PKED,分别存储在多个Buffer里，导致接收不正常。
+	2.目前的接收方式如果不及时处理Session[sessionID].BufferRecv[i]里的数据会溢出到Session[sessionID].BufferSend[i]导致乱往外发数据。
 
 耗时分析；
 	1. mymalloc(SRAMEX, 128) 分配内存时间为800us左右，myfree在70us左右，所以推荐不要去动态开辟内存！！！遵循：空间换时间！！！
@@ -187,7 +192,9 @@
 	3. printf重定义输出到串口USART1, 耗时很长，性能测试时不应该使用printf~
 	4. /*ConsumeTime:720us*/xTaskGenericNotify耗时很大，为720us左右
 	5. SOCKET发送数据耗时很长，各模式下耗时//NETCONN_NOFLAG:2830 - 5082  ==> NETCONN_COPY:3424-->4824 NETCONN_NOCOPY::3454-->5016 NETCONN_MORE::3424-->4956
-
+	6. ObjectDetection耗时：No-Load 485us,Loaded==>1126/1314/1700
+	7. 耗时比较长的需要考虑异步处理，比如netconn_write耗时长，看看是不是有异步处理函数...
+	
 注意事项：
 	1. 
 
@@ -213,3 +220,6 @@ XXXX	Solved,直接用两个数相减，得到的就是两者的距离，如0-65534 = 2
 	6. BUG==>数据接收在运行一段时间后会阻塞....阻塞在lan8720.c的152行，fframeLength=((DMARxDesc->Status&ETH_DMARXDESC_FL)>>ETH_DMARXDESC_FRAME_LENGTHSHIFT);
 	7. BUG==>XispekVision连接STM32，加入入队操作后会往外发112，不正确。去掉入队操作后，接收一段时间的诊断界面发送的数据后会死机。。。
 8. printf函数很耗时，测试性能时把prinrf函数去掉。。。
+9.发现数据接收不完整Session[sessionID].BufferRecv[i]片段接收PKBG XXX PKED，并不会一次性存入单个BufferRecv[i],
+  另外，溢出时会将值溢出到其它内存空间（比如会溢出到Session[i].SendBuffer[j]就会导致意外的往外乱发送数据，大BUGGGGG）,如果DataProcess不及时处理RecvBuffer,
+  并释放IsBufferAlive，就会导致Buffer溢出到其它位置！！！

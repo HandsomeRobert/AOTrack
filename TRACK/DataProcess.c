@@ -1,9 +1,9 @@
 /**************************************************************************************************
-*************************************数据处理线程******************************************************
+*************************************数据处理线程***************************************************
 ***************************************************************************************************/
 #include "DataProcess.h"
 #include "malloc.h"
-#include "ObjectDetection.h"
+#include "Tracking.h"
 #include "timer.h"
 
 TaskHandle_t DataProcessTask_Handler;
@@ -57,54 +57,59 @@ static void DataProcessThread(void *arg)
 			{
 				if(Session[i].BufferRecv[j].IsBufferAlive)
 				{
-/*Test*Test*/	if((byte)*Session[i].BufferRecv[j].pBufferData == '1') xSemaphoreGive(OnSysRestart);		//用于测试数据接收
-					
+///*Test*Test*/	if((byte)*Session[i].BufferRecv[j].pBufferData == '1') xSemaphoreGive(OnSysRestart);		//用于测试数据接收
 					pInt 			= (int*)Session[i].BufferRecv[j].pBufferData;
-					lineID 		= *pInt++;
-					actionID 	= *pInt++;
-					objectID 	= *pInt++;
-					moduleID 	= *pInt++;
-					encoder 	= *pInt++;
-					dataSize 	= *pInt++;
-					
-					pByte = (byte*)pInt;
-					pData = pByte;							//去除包头后的实际数据
-					
-					switch(actionID)						//来自PC的控制命令
-					{	//System
-						case PCCmdActionHeartBeat: 		break;
-						case PCCmdActionWarmRestart: 	break;
-						case PCCmdActionColdRestart: 		xSemaphoreGive(OnSysRestart);							break;
-						case PCCmdActionReconfiguration: 		break;//xSemaphoreGive(OnLoadParametersFromPC);
-						case PCCmdActionStartIOLive: 	break;
-						case PCCmdActionGetConnectedClientID: PCGetConnectedClientIDs(0, Session, ClientNum);break;
-						case PCCmdActionErrorMessage: break;
-						case PCCmdActionErrorAcknowledge: break;
-						//Tracking
-						case PCCmdActionObjectRunIn: break;
-						case PCCmdActionObjectRunOut: break;
-						case PCCmdActionObjectDelete: break;
-						case PCCmdActionTriggerCamera: break;
-						case PCCmdActionTriggerIOSensor: break;
-						case PCCmdActionGetMachineData: break;
-						case PCCmdActionSetPushResult: STM32GetPushResult(lineID, objectID, moduleID, encoder);break;//
-						case PCCmdActionSetUserResult: break;
-						case PCCmdActionStartTracking: break;
-						case PCCmdActionObjectFallDown: break;
-						//Automation
-						case PCCmdActionSetPLCVariable: break;
-						case PCCmdActionStartControl: break;
-						//Diagnostics
-						case PCCmdActionSetTrackingMode: STM32SetTrackingMode(lineID, objectID, moduleID);break;
-						case PCCmdActionObjectPosition: break;
-						case PCCmdActionObjectWidth: break;
-						case PCCmdActionRequestModuleInfo: break;
-						case PCCmdActionRequestPLCInfo: break;
-						case PCCmdActionTrackingDummy: break;
+					if((*pInt) == 0x47424B50)//确认数据是否有效包含报头
+					{
+						pInt++;//跳过报头
+						lineID 		= *pInt++;
+						actionID 	= *pInt++;
+						objectID 	= *pInt++;
+						moduleID 	= *pInt++;
+						encoder 	= *pInt++;
+						dataSize 	= *pInt++;
 						
+						pByte = (byte*)pInt;
+						pData = pByte;							//去除包头后的实际数据
+						
+						switch(actionID)						//来自PC的控制命令
+						{	//System
+							case PCCmdActionHeartBeat: 		break;
+							case PCCmdActionWarmRestart: 	break;
+							case PCCmdActionColdRestart: 		xSemaphoreGive(OnSysRestart);							break;
+							case PCCmdActionReconfiguration: 		break;//xSemaphoreGive(OnLoadParametersFromPC);
+							case PCCmdActionStartIOLive: 	break;
+							case PCCmdActionGetConnectedClientID: PCGetConnectedClientIDs(0, Session, ClientNum);break;
+							case PCCmdActionErrorMessage: break;
+							case PCCmdActionErrorAcknowledge: break;
+							//Tracking
+							case PCCmdActionObjectRunIn: break;
+							case PCCmdActionObjectRunOut: break;
+							case PCCmdActionObjectDelete: break;
+							case PCCmdActionTriggerCamera: break;
+							case PCCmdActionTriggerIOSensor: break;
+							case PCCmdActionGetMachineData: break;
+							case PCCmdActionSetPushResult: STM32GetPushResult(lineID, objectID, moduleID, encoder);break;//
+							case PCCmdActionSetUserResult: break;
+							case PCCmdActionStartTracking: break;
+							case PCCmdActionObjectFallDown: break;
+							//Automation
+							case PCCmdActionSetPLCVariable: break;
+							case PCCmdActionStartControl: break;
+							//Diagnostics
+							case PCCmdActionSetTrackingMode: STM32SetTrackingMode(lineID, objectID, moduleID);break;
+							case PCCmdActionObjectPosition: break;
+							case PCCmdActionObjectWidth: break;
+							case PCCmdActionRequestModuleInfo: break;
+							case PCCmdActionRequestPLCInfo: break;
+							case PCCmdActionTrackingDummy: break;
+							
+						}
+									
+					
 					}
-								
-				Session[i].BufferRecv[j].IsBufferAlive = false; //处理完了要释放标记为false未使用状态
+					Session[i].BufferRecv[j].IsBufferAlive = false; //处理完了要释放标记为false未使用状态
+
 				}
 			}
 		}

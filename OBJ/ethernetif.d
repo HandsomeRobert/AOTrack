@@ -7,10 +7,10 @@
 ..\obj\ethernetif.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\ethernetif.o: ..\LWIP\arch/cc.h
 ..\obj\ethernetif.o: ..\LWIP\arch/cpu.h
-..\obj\ethernetif.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\ethernetif.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\ethernetif.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\ethernetif.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\ethernetif.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\ethernetif.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\ethernetif.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\ethernetif.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\ethernetif.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\ethernetif.o: ..\USER\stm32f7xx_hal_conf.h
@@ -103,4 +103,4 @@
 ..\obj\ethernetif.o: ..\LWIP\lwip_app\lwip_comm\lwip_comm.h
 ..\obj\ethernetif.o: ..\LWIP\lwip-1.4.1\src\include\netif/etharp.h
 ..\obj\ethernetif.o: ..\LWIP\lwip-1.4.1\src\include\ipv4\lwip/ip.h
-..\obj\ethernetif.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\ethernetif.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

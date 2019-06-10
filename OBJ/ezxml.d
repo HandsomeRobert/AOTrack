@@ -1,8 +1,8 @@
 ..\obj\ezxml.o: ..\EZXML\ezxml.c
-..\obj\ezxml.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-..\obj\ezxml.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
-..\obj\ezxml.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-..\obj\ezxml.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
+..\obj\ezxml.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+..\obj\ezxml.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+..\obj\ezxml.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\ezxml.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
 ..\obj\ezxml.o: ..\EZXML\ezxml.h
 ..\obj\ezxml.o: ..\FATFS\src\ff.h
 ..\obj\ezxml.o: ..\FATFS\src\integer.h
@@ -12,7 +12,7 @@
 ..\obj\ezxml.o: ..\USER\stm32f7xx.h
 ..\obj\ezxml.o: ..\USER\stm32f767xx.h
 ..\obj\ezxml.o: ..\CORE\core_cm7.h
-..\obj\ezxml.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\ezxml.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\ezxml.o: ..\CORE\core_cmInstr.h
 ..\obj\ezxml.o: ..\CORE\cmsis_armcc.h
 ..\obj\ezxml.o: ..\CORE\core_cmFunc.h
@@ -23,7 +23,7 @@
 ..\obj\ezxml.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_def.h
 ..\obj\ezxml.o: ..\USER\stm32f7xx.h
 ..\obj\ezxml.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-..\obj\ezxml.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\ezxml.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\ezxml.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_rcc_ex.h
 ..\obj\ezxml.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio.h
 ..\obj\ezxml.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio_ex.h

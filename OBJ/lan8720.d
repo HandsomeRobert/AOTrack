@@ -4,7 +4,7 @@
 ..\obj\lan8720.o: ..\USER\stm32f7xx.h
 ..\obj\lan8720.o: ..\USER\stm32f767xx.h
 ..\obj\lan8720.o: ..\CORE\core_cm7.h
-..\obj\lan8720.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\lan8720.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\lan8720.o: ..\CORE\core_cmInstr.h
 ..\obj\lan8720.o: ..\CORE\cmsis_armcc.h
 ..\obj\lan8720.o: ..\CORE\core_cmFunc.h
@@ -15,7 +15,7 @@
 ..\obj\lan8720.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_def.h
 ..\obj\lan8720.o: ..\USER\stm32f7xx.h
 ..\obj\lan8720.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-..\obj\lan8720.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\lan8720.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\lan8720.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_rcc_ex.h
 ..\obj\lan8720.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio.h
 ..\obj\lan8720.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio_ex.h

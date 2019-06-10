@@ -5,10 +5,10 @@
 ..\obj\api_msg.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\api_msg.o: ..\LWIP\arch/cc.h
 ..\obj\api_msg.o: ..\LWIP\arch/cpu.h
-..\obj\api_msg.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\api_msg.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\api_msg.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\api_msg.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\api_msg.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\api_msg.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\api_msg.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\api_msg.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\api_msg.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\api_msg.o: ..\USER\stm32f7xx_hal_conf.h
@@ -116,4 +116,4 @@
 ..\obj\api_msg.o: ..\LWIP\lwip-1.4.1\src\include\lwip/netifapi.h
 ..\obj\api_msg.o: ..\LWIP\lwip-1.4.1\src\include\lwip/timers.h
 ..\obj\api_msg.o: ..\LWIP\lwip-1.4.1\src\include\lwip/dns.h
-..\obj\api_msg.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\api_msg.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
