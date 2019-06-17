@@ -1,12 +1,12 @@
 ..\obj\tcpqueue.o: ..\COMMON\TCPQueue.c
-..\obj\tcpqueue.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\tcpqueue.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\tcpqueue.o: ..\COMMON\TCPQueue.h
 ..\obj\tcpqueue.o: ..\MALLOC\malloc.h
 ..\obj\tcpqueue.o: ..\SYSTEM\sys\sys.h
 ..\obj\tcpqueue.o: ..\USER\stm32f7xx.h
 ..\obj\tcpqueue.o: ..\USER\stm32f767xx.h
 ..\obj\tcpqueue.o: ..\CORE\core_cm7.h
-..\obj\tcpqueue.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\tcpqueue.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\tcpqueue.o: ..\CORE\core_cmInstr.h
 ..\obj\tcpqueue.o: ..\CORE\cmsis_armcc.h
 ..\obj\tcpqueue.o: ..\CORE\core_cmFunc.h

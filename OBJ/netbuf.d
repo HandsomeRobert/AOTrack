@@ -5,10 +5,10 @@
 ..\obj\netbuf.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\netbuf.o: ..\LWIP\arch/cc.h
 ..\obj\netbuf.o: ..\LWIP\arch/cpu.h
-..\obj\netbuf.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\netbuf.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\netbuf.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\netbuf.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\netbuf.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\netbuf.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\netbuf.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\netbuf.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\netbuf.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\netbuf.o: ..\USER\stm32f7xx_hal_conf.h
@@ -98,4 +98,4 @@
 ..\obj\netbuf.o: ..\LWIP\lwip-1.4.1\src\include\lwip/def.h
 ..\obj\netbuf.o: ..\LWIP\lwip-1.4.1\src\include\lwip/memp.h
 ..\obj\netbuf.o: ..\LWIP\lwip-1.4.1\src\include\lwip/memp_std.h
-..\obj\netbuf.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\netbuf.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

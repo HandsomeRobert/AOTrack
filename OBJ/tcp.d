@@ -5,10 +5,10 @@
 ..\obj\tcp.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\tcp.o: ..\LWIP\arch/cc.h
 ..\obj\tcp.o: ..\LWIP\arch/cpu.h
-..\obj\tcp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\tcp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\tcp.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\tcp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\tcp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\tcp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\tcp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\tcp.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\tcp.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\tcp.o: ..\USER\stm32f7xx_hal_conf.h
@@ -105,4 +105,4 @@
 ..\obj\tcp.o: ..\LWIP\lwip-1.4.1\src\include\ipv4\lwip/icmp.h
 ..\obj\tcp.o: ..\LWIP\lwip-1.4.1\src\include\lwip/tcp_impl.h
 ..\obj\tcp.o: ..\LWIP\lwip-1.4.1\src\include\lwip/stats.h
-..\obj\tcp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\tcp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

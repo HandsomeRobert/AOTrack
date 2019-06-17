@@ -105,11 +105,9 @@ static void DataProcessThread(void *arg)
 							case PCCmdActionTrackingDummy: break;
 							
 						}
-									
-					
 					}
+					
 					Session[i].BufferRecv[j].IsBufferAlive = false; //处理完了要释放标记为false未使用状态
-
 				}
 			}
 		}

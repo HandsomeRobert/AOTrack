@@ -5,10 +5,10 @@
 ..\obj\api_lib.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\api_lib.o: ..\LWIP\arch/cc.h
 ..\obj\api_lib.o: ..\LWIP\arch/cpu.h
-..\obj\api_lib.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\api_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\api_lib.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\api_lib.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\api_lib.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\api_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\api_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\api_lib.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\api_lib.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\api_lib.o: ..\USER\stm32f7xx_hal_conf.h
@@ -115,4 +115,4 @@
 ..\obj\api_lib.o: ..\LWIP\lwip-1.4.1\src\include\lwip/tcp.h
 ..\obj\api_lib.o: ..\LWIP\lwip-1.4.1\src\include\lwip/mem.h
 ..\obj\api_lib.o: ..\LWIP\lwip-1.4.1\src\include\ipv4\lwip/icmp.h
-..\obj\api_lib.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\api_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

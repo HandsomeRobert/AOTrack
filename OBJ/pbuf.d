@@ -5,10 +5,10 @@
 ..\obj\pbuf.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\pbuf.o: ..\LWIP\arch/cc.h
 ..\obj\pbuf.o: ..\LWIP\arch/cpu.h
-..\obj\pbuf.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\pbuf.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\pbuf.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\pbuf.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\pbuf.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\pbuf.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\pbuf.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\pbuf.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\pbuf.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\pbuf.o: ..\USER\stm32f7xx_hal_conf.h
@@ -103,4 +103,4 @@
 ..\obj\pbuf.o: ..\FreeRTOS\include\queue.h
 ..\obj\pbuf.o: ..\FreeRTOS\include\semphr.h
 ..\obj\pbuf.o: ..\LWIP\arch/perf.h
-..\obj\pbuf.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\pbuf.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

@@ -4,7 +4,7 @@
 ..\obj\sdmmc_sdcard.o: ..\USER\stm32f7xx.h
 ..\obj\sdmmc_sdcard.o: ..\USER\stm32f767xx.h
 ..\obj\sdmmc_sdcard.o: ..\CORE\core_cm7.h
-..\obj\sdmmc_sdcard.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\sdmmc_sdcard.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\sdmmc_sdcard.o: ..\CORE\core_cmInstr.h
 ..\obj\sdmmc_sdcard.o: ..\CORE\cmsis_armcc.h
 ..\obj\sdmmc_sdcard.o: ..\CORE\core_cmFunc.h
@@ -15,7 +15,7 @@
 ..\obj\sdmmc_sdcard.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_def.h
 ..\obj\sdmmc_sdcard.o: ..\USER\stm32f7xx.h
 ..\obj\sdmmc_sdcard.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-..\obj\sdmmc_sdcard.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\sdmmc_sdcard.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\sdmmc_sdcard.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_rcc_ex.h
 ..\obj\sdmmc_sdcard.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio.h
 ..\obj\sdmmc_sdcard.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio_ex.h
@@ -77,5 +77,5 @@
 ..\obj\sdmmc_sdcard.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_mdios.h
 ..\obj\sdmmc_sdcard.o: ..\CORE\core_cm7.h
 ..\obj\sdmmc_sdcard.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
-..\obj\sdmmc_sdcard.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\sdmmc_sdcard.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\sdmmc_sdcard.o: ..\SYSTEM\delay\delay.h

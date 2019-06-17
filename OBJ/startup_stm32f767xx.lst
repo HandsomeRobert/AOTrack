@@ -1013,11 +1013,11 @@ ARM Macro Assembler    Page 16
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M7.fp.dp --apcs=
 interwork --depend=..\obj\startup_stm32f767xx.d -o..\obj\startup_stm32f767xx.o 
--ID:\00-文件\01-当前工作\AOTrack程序设计\AOTrack\USER\RTE -ID:\Keil_v5\ARM\PACK
-\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include -ID:\Keil_v
-5\ARM\CMSIS\Include --predefine="__UVISION_VERSION SETA 521" --predefine="STM32
-F767xx SETA 1" --list=..\obj\startup_stm32f767xx.lst ..\CORE\startup_stm32f767x
-x.s
+-IE:\02-跟踪控制器设计\02-跟踪控制器程序开发\AOTrack\USER\RTE -IC:\Keil_v5\ARM\
+PACK\Keil\STM32F7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include -IC:\Ke
+il_v5\ARM\CMSIS\Include --predefine="__UVISION_VERSION SETA 521" --predefine="S
+TM32F767xx SETA 1" --list=..\obj\startup_stm32f767xx.lst ..\CORE\startup_stm32f
+767xx.s
 
 
 

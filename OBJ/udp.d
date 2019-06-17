@@ -5,10 +5,10 @@
 ..\obj\udp.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\udp.o: ..\LWIP\arch/cc.h
 ..\obj\udp.o: ..\LWIP\arch/cpu.h
-..\obj\udp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\udp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\udp.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\udp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\udp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\udp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\udp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\udp.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\udp.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\udp.o: ..\USER\stm32f7xx_hal_conf.h
@@ -107,4 +107,4 @@
 ..\obj\udp.o: ..\LWIP\lwip-1.4.1\src\include\lwip/snmp.h
 ..\obj\udp.o: ..\LWIP\arch/perf.h
 ..\obj\udp.o: ..\LWIP\lwip-1.4.1\src\include\lwip/dhcp.h
-..\obj\udp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\udp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

@@ -5,10 +5,10 @@
 ..\obj\timers_1.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\timers_1.o: ..\LWIP\arch/cc.h
 ..\obj\timers_1.o: ..\LWIP\arch/cpu.h
-..\obj\timers_1.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\timers_1.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\timers_1.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\timers_1.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\timers_1.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\timers_1.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\timers_1.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\timers_1.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\timers_1.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\timers_1.o: ..\USER\stm32f7xx_hal_conf.h

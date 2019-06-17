@@ -185,6 +185,11 @@
 2019.6.10
 	1.接收数据不正常，并不会完整接收一个PKBG  XXXX PKED,分别存储在多个Buffer里，导致接收不正常。
 	2.目前的接收方式如果不及时处理Session[sessionID].BufferRecv[i]里的数据会溢出到Session[sessionID].BufferSend[i]导致乱往外发数据。
+上机实测出问题补充：
+	1. ActionExecuteQueue出问题，由于延时的出现，使用的串行延时而不是并行延时，处理有问题。
+	2. 发送速度太慢，BufferSend is full，数据无法及时的发送。Object Buffer也阻塞了，无法按时处理
+	3. 速度太慢，阻塞，
+	4. 相机触发ID无效。
 
 耗时分析；
 	1. mymalloc(SRAMEX, 128) 分配内存时间为800us左右，myfree在70us左右，所以推荐不要去动态开辟内存！！！遵循：空间换时间！！！

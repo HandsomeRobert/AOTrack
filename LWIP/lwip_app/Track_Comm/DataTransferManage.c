@@ -125,6 +125,7 @@ static void DataTransferManage(void *arg)
 	Packet* pPacketTemp;
 	int timeCount = 0;
 	int timeCOuntFreeRTOS=0;
+	bool isDataIntegra = false;
 
 	dataRecvBuffer = (byte* )mymalloc(SRAMEX, 256);
 	
@@ -137,23 +138,44 @@ static void DataTransferManage(void *arg)
 			timeCount = OverflowCount_TIM6*65536 + __HAL_TIM_GET_COUNTER(&TIM6_Handler);
 			for(i_cycle = 0; i_cycle<ClientNum;i_cycle++)	
 			{	
-/*************接收数据处理****************************/
-				if((netconn_recv(Session[i_cycle].NetConnRecv, &recvbuf)) == ERR_OK)  	//接收到数据
-				{						
-					taskENTER_CRITICAL();  //关中断	
-					data_len = recvbuf->p->tot_len;
-					dataRecvBufferTemp = dataRecvBuffer;
-					
-					for(q=recvbuf->p;q!=NULL;q=q->next)
-					{
-						memcpy(dataRecvBufferTemp, q->payload, q->len);
-						dataRecvBufferTemp = dataRecvBufferTemp + q->len;
+/*************接收数据处理****************************
+*****************************************************/
+				while(true)
+				{
+					if((netconn_recv(Session[i_cycle].NetConnRecv, &recvbuf)) == ERR_OK)  	//接收到数据
+					{						
+						taskENTER_CRITICAL();  //关中断	
+						data_len = recvbuf->p->tot_len;
+						dataRecvBufferTemp = dataRecvBuffer;
+						
+						for(q=recvbuf->p;q!=NULL;q=q->next)
+						{
+							memcpy(dataRecvBufferTemp, q->payload, q->len);
+							dataRecvBufferTemp = dataRecvBufferTemp + q->len;
+						}
+						q = NULL;
+//						dataRecvBufferTemp = NULL;
+						taskEXIT_CRITICAL();  //开中断
+						
+						if(*(int*)dataRecvBuffer == 0x47424B50)//确认报头
+						{
+							if(*(int*)(dataRecvBufferTemp-4) == 0x44454B50)//收到报尾
+							{
+								isDataIntegra = true;
+								break;
+							}
+						}
+						else
+							break;
 					}
-					q = NULL;
-					dataRecvBufferTemp = NULL;
-					taskEXIT_CRITICAL();  //开中断
+					else
+						break;					
+				}
 					
-/***********************入队***************************/	
+/***********************入队***************************/
+				if(isDataIntegra)
+				{
+					isDataIntegra = false;
 					j = 0;
 					while(Session[i_cycle].BufferRecv[j].IsBufferAlive)
 					{
@@ -167,8 +189,7 @@ static void DataTransferManage(void *arg)
 					}
 					mymemcpy(Session[i_cycle].BufferRecv[j].pBufferData, dataRecvBuffer, data_len);
 					Session[i_cycle].BufferRecv[j].IsBufferAlive = true;
-
-//					printf("接到数据来自Client[%d]\n", i_cycle);
+					
 					printf("%s\r\n", dataRecvBuffer);  //通过串口发送接收到的数据	
 					
 					data_len=0;  //复制完成后data_len要清零。					
@@ -177,6 +198,9 @@ static void DataTransferManage(void *arg)
 					netbuf_delete(recvbuf);//一定要加上这一句!!!!不然会内存泄漏！！！
 					recvbuf = NULL;
 				}
+
+/******************Receive END************************
+*****************************************************/
 				
 /*************发送数据处理****************************/
 				for(j = 0;j<MaxBufferLength;j++)
@@ -187,7 +211,7 @@ static void DataTransferManage(void *arg)
 						
 						pPacketTemp = (Packet*)Session[i_cycle].BufferSend[j].pBufferData;																																					//包头大小        +   包数据大小     + 包尾大小
 						err = netconn_write(Session[i_cycle].NetConnSend ,pPacketTemp,(PACKET_HEADER_SIZE + pPacketTemp->DataSize + 4),NETCONN_COPY); //!!!发送数据sizeof(tcp_server_sendbuf)					
-						if(err != ERR_OK) printf("Send data in Failed, use Sessio[%d] bufferPosition[%d]Please check it in DataTransferManage.c ERROR_Code:%d \r\n",i_cycle ,j ,err);						
+						if(err != ERR_OK) printf("Send data in CycleSend Failed, use Sessio[%d] bufferPosition[%d]Please check it in DataTransferManage.c ERROR_Code:%d \r\n",i_cycle ,j ,err);						
 					}
 				}
 /**************END*************************************/				

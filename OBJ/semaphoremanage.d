@@ -1,8 +1,8 @@
 ..\obj\semaphoremanage.o: ..\COMMON\SemaphoreManage.c
 ..\obj\semaphoremanage.o: ..\COMMON\SemaphoreManage.h
 ..\obj\semaphoremanage.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\semaphoremanage.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\semaphoremanage.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\semaphoremanage.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\semaphoremanage.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\semaphoremanage.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\semaphoremanage.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\semaphoremanage.o: ..\USER\stm32f7xx_hal_conf.h
@@ -18,7 +18,7 @@
 ..\obj\semaphoremanage.o: ..\USER\system_stm32f7xx.h
 ..\obj\semaphoremanage.o: ..\USER\stm32f7xx_hal_conf.h
 ..\obj\semaphoremanage.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-..\obj\semaphoremanage.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\semaphoremanage.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\semaphoremanage.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_rcc_ex.h
 ..\obj\semaphoremanage.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio.h
 ..\obj\semaphoremanage.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio_ex.h
@@ -87,4 +87,4 @@
 ..\obj\semaphoremanage.o: ..\FreeRTOS\include\queue.h
 ..\obj\semaphoremanage.o: ..\FreeRTOS\include\task.h
 ..\obj\semaphoremanage.o: ..\FreeRTOS\include\list.h
-..\obj\semaphoremanage.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+..\obj\semaphoremanage.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

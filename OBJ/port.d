@@ -1,7 +1,7 @@
 ..\obj\port.o: ..\FreeRTOS\portable\RVDS\ARM_CM7\r0p1\port.c
 ..\obj\port.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\port.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\port.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\port.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\port.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\port.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\port.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\port.o: ..\USER\stm32f7xx_hal_conf.h
@@ -17,7 +17,7 @@
 ..\obj\port.o: ..\USER\system_stm32f7xx.h
 ..\obj\port.o: ..\USER\stm32f7xx_hal_conf.h
 ..\obj\port.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-..\obj\port.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\port.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\port.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_rcc_ex.h
 ..\obj\port.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio.h
 ..\obj\port.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio_ex.h

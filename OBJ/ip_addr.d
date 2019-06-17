@@ -5,10 +5,10 @@
 ..\obj\ip_addr.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\ip_addr.o: ..\LWIP\arch/cc.h
 ..\obj\ip_addr.o: ..\LWIP\arch/cpu.h
-..\obj\ip_addr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\ip_addr.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\ip_addr.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\ip_addr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\ip_addr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\ip_addr.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\ip_addr.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\ip_addr.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\ip_addr.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\ip_addr.o: ..\USER\stm32f7xx_hal_conf.h

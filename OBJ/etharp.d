@@ -5,10 +5,10 @@
 ..\obj\etharp.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\etharp.o: ..\LWIP\arch/cc.h
 ..\obj\etharp.o: ..\LWIP\arch/cpu.h
-..\obj\etharp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\etharp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\etharp.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\etharp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\etharp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\etharp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\etharp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\etharp.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\etharp.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\etharp.o: ..\USER\stm32f7xx_hal_conf.h
@@ -105,4 +105,4 @@
 ..\obj\etharp.o: ..\LWIP\lwip-1.4.1\src\include\lwip/dhcp.h
 ..\obj\etharp.o: ..\LWIP\lwip-1.4.1\src\include\ipv4\lwip/autoip.h
 ..\obj\etharp.o: ..\LWIP\lwip-1.4.1\src\include\netif/etharp.h
-..\obj\etharp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\etharp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

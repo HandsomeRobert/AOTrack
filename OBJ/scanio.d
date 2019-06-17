@@ -2,8 +2,8 @@
 ..\obj\scanio.o: ..\COMMON\ScanIO.h
 ..\obj\scanio.o: ..\COMMON\HardwareList.h
 ..\obj\scanio.o: ..\EZXML\ezxml.h
-..\obj\scanio.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-..\obj\scanio.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+..\obj\scanio.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+..\obj\scanio.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 ..\obj\scanio.o: ..\FATFS\src\ff.h
 ..\obj\scanio.o: ..\FATFS\src\integer.h
 ..\obj\scanio.o: ..\FATFS\src\ffconf.h
@@ -12,7 +12,7 @@
 ..\obj\scanio.o: ..\USER\stm32f7xx.h
 ..\obj\scanio.o: ..\USER\stm32f767xx.h
 ..\obj\scanio.o: ..\CORE\core_cm7.h
-..\obj\scanio.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\scanio.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\scanio.o: ..\CORE\core_cmInstr.h
 ..\obj\scanio.o: ..\CORE\cmsis_armcc.h
 ..\obj\scanio.o: ..\CORE\core_cmFunc.h
@@ -23,7 +23,7 @@
 ..\obj\scanio.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_def.h
 ..\obj\scanio.o: ..\USER\stm32f7xx.h
 ..\obj\scanio.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-..\obj\scanio.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\scanio.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\scanio.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_rcc_ex.h
 ..\obj\scanio.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio.h
 ..\obj\scanio.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio_ex.h
@@ -85,4 +85,4 @@
 ..\obj\scanio.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_mdios.h
 ..\obj\scanio.o: ..\CORE\core_cm7.h
 ..\obj\scanio.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
-..\obj\scanio.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\scanio.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

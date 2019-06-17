@@ -6,10 +6,10 @@
 ..\obj\netdb.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\netdb.o: ..\LWIP\arch/cc.h
 ..\obj\netdb.o: ..\LWIP\arch/cpu.h
-..\obj\netdb.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\netdb.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\netdb.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\netdb.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\netdb.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\netdb.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\netdb.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\netdb.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\netdb.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\netdb.o: ..\USER\stm32f7xx_hal_conf.h

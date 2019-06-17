@@ -5,10 +5,10 @@
 ..\obj\inet_chksum.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\inet_chksum.o: ..\LWIP\arch/cc.h
 ..\obj\inet_chksum.o: ..\LWIP\arch/cpu.h
-..\obj\inet_chksum.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\inet_chksum.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\inet_chksum.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\inet_chksum.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\inet_chksum.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\inet_chksum.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\inet_chksum.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\inet_chksum.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\inet_chksum.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\inet_chksum.o: ..\USER\stm32f7xx_hal_conf.h
@@ -96,4 +96,4 @@
 ..\obj\inet_chksum.o: ..\LWIP\lwip-1.4.1\src\include\lwip/err.h
 ..\obj\inet_chksum.o: ..\LWIP\lwip-1.4.1\src\include\ipv4\lwip/ip_addr.h
 ..\obj\inet_chksum.o: ..\LWIP\lwip-1.4.1\src\include\lwip/def.h
-..\obj\inet_chksum.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\inet_chksum.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
