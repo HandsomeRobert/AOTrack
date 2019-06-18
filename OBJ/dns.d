@@ -5,10 +5,10 @@
 ..\obj\dns.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\dns.o: ..\LWIP\arch/cc.h
 ..\obj\dns.o: ..\LWIP\arch/cpu.h
-..\obj\dns.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\dns.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\dns.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\dns.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\dns.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\dns.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\dns.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\dns.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\dns.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\dns.o: ..\USER\stm32f7xx_hal_conf.h

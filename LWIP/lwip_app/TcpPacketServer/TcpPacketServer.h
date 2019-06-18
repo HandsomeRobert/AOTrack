@@ -40,7 +40,8 @@ struct PacketServerSession
 	byte ClientID;
 	struct netconn* NetConnRecv;
 	struct netconn* NetConnSend;
-	StcBufferElem BufferRecv[MaxBufferLength];							//Receive buffer area
+//	StcBufferElem BufferRecv[MaxBufferLength];							//Receive buffer area
+	byte* BufferRecvArea;																		//Receive  area
 	StcBufferElem BufferSend[MaxBufferLength];							//Send buffer area
 	//TransferProtocol, TransferMode, TransferPriority
 	

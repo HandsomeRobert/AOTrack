@@ -1,1 +1,3 @@
+OBJ/
 /OBJ
+OBJ/*.o *.crf *.dep *.map *.htm

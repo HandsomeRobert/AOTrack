@@ -145,10 +145,6 @@
 	为啥这个可以使用....xSemaphoreTake(OnLoadParametersFromPC, 1000) == pdTRUE
 	通信成功，串口助手发送字符'1'会重启板卡。
 目前参数加载，对象探测，跟踪，通信，接收到的数据处理，动作执行基本功能已走通
-<<<<<<< HEAD
-	Test Robert
-	
-=======
 	
 2019.5.6 
 	解决Bug1，TCP只能连接5次的问题，原因是使用netconn_close只是关闭了端口，未释放资源导致new netconn（应使用netconn_delete）的时候申请不到空间....，导致内存泄漏！！！
@@ -190,6 +186,12 @@
 	2. 发送速度太慢，BufferSend is full，数据无法及时的发送。Object Buffer也阻塞了，无法按时处理
 	3. 速度太慢，阻塞，
 	4. 相机触发ID无效。
+	
+209.6.18
+	1. May happen only two Client connect to STM32, just Restart the Xispek Software can solve it(Resume to three Clients).
+	2. Recv_timeout must be set larger to zero.
+	3. Successfully Use a whole area to store the receive data.
+
 
 耗时分析；
 	1. mymalloc(SRAMEX, 128) 分配内存时间为800us左右，myfree在70us左右，所以推荐不要去动态开辟内存！！！遵循：空间换时间！！！
@@ -203,7 +205,6 @@
 注意事项：
 	1. 
 
->>>>>>> 1a22b3f63fe6afdcdcd24e6b9917a5c988251c08
 Bug Report：
 XXXX1. 2019.3.14：(2019.5.6 Solved解决了,netconn_close改为netconn_delete即可)
 XXXXClient与STM32（TecpServer）多次连接&断开后，无法再次连接STM32了，第6次连接（单个client）时会出现报错：

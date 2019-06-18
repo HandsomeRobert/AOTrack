@@ -5,10 +5,10 @@
 ..\obj\stats.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\stats.o: ..\LWIP\arch/cc.h
 ..\obj\stats.o: ..\LWIP\arch/cpu.h
-..\obj\stats.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\stats.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\stats.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\stats.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\stats.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\stats.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\stats.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\stats.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\stats.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\stats.o: ..\USER\stm32f7xx_hal_conf.h

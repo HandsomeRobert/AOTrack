@@ -28,7 +28,7 @@ extern TaskHandle_t StartTask_Handler;
 extern TaskHandle_t ActionExecuteTask_Handler;
 
 //数据接收与处理任务，多SOCKET
-#define      DataTransferManage_TASK_PRIO   6
+#define      DataTransferManage_TASK_PRIO   7
 #define      DataTransferManage_STK_SIZE  256
 extern TaskHandle_t DataTransferManageTask_Handler;
 

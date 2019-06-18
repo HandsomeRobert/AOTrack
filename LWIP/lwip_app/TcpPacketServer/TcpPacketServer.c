@@ -20,7 +20,6 @@ int i_MTU = 1500;
 struct PacketServerSession Session[MaxClients];		//定义一个用于管理接收socket的session
 
 uint32_t tcp_server_recvbuf[TCP_SERVER_RX_BUFSIZE];	//TCP客户端接收数据缓冲区
-char *tcp_server_sendbuf="Apollo STM32F4/F7 NETCONN TCP Server send data\r\n";	
 bool SocketLinkFlag = false;//连接建立标志
 
 //添加资源到Session里
@@ -30,19 +29,16 @@ static void addSession(int clientID, int sessionID, struct netconn* netConnRecv,
 	Session[sessionID].ClientID = clientID;
 	Session[sessionID].NetConnRecv = netConnRecv;
 	Session[sessionID].NetConnSend = netConnSend;
-	
-	for(i = 0; i < MaxBufferLength; i++)
-	{
-		Session[sessionID].BufferRecv[i].pBufferData = mymalloc(SRAMEX, 128);
-		Session[sessionID].BufferRecv[i].IsBufferAlive = false;
-	}
+	Session[sessionID].NetConnRecv->recv_timeout = 2;//recv_timeout Cannot be set to 0
+
+	Session[sessionID].BufferRecvArea = mymalloc(SRAMEX, 1280);//10*128, 10 commands
+
 	for(i = 0; i < MaxBufferLength; i++)
 	{
 		Session[sessionID].BufferSend[i].pBufferData = mymalloc(SRAMEX, 128);
 		Session[sessionID].BufferSend[i].IsBufferAlive = false;
 	}
-
-//	
+	
 //	initQueue(&Session[sessionID].QueueRecv);//Initialing the Recvie buffer queue
 //	initQueue(&Session[sessionID].QueueSend);//Initialing the send buffer queue
 	printf("Session Client[%d] Add Successful\r\n",clientID);
@@ -237,9 +233,8 @@ static void TCPServerListenThread(void *arg)
 					netconn_delete(Session[i_cycle].NetConnSend);
 					for(j_cycle = 0; j_cycle<MaxBufferLength;j_cycle++)
 					{
-						myfree(SRAMEX, Session[i_cycle].BufferRecv[j_cycle].pBufferData);
+						myfree(SRAMEX, Session[i_cycle].BufferRecvArea);
 						myfree(SRAMEX, Session[i_cycle].BufferSend[j_cycle].pBufferData);
-						Session[i_cycle].BufferRecv[j_cycle].IsBufferAlive = false;
 						Session[i_cycle].BufferSend[j_cycle].IsBufferAlive = false;
 					}
 					printf("STM32控制器断开Client[XXX]的连接：======>%d", Session[i_cycle].ClientID);

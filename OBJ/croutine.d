@@ -1,7 +1,7 @@
 ..\obj\croutine.o: ..\FreeRTOS\croutine.c
 ..\obj\croutine.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\croutine.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\croutine.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\croutine.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\croutine.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\croutine.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\croutine.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\croutine.o: ..\USER\stm32f7xx_hal_conf.h
@@ -17,7 +17,7 @@
 ..\obj\croutine.o: ..\USER\system_stm32f7xx.h
 ..\obj\croutine.o: ..\USER\stm32f7xx_hal_conf.h
 ..\obj\croutine.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-..\obj\croutine.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\croutine.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\croutine.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_rcc_ex.h
 ..\obj\croutine.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio.h
 ..\obj\croutine.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio_ex.h

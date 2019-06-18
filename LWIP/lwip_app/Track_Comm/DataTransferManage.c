@@ -113,92 +113,72 @@ uint8_t DataTransferManageTask_init(void)
 
 static void DataTransferManage(void *arg)
 {
-	uint32_t data_len = 0;
+	uint16_t data_len = 0;
 	byte i, j;
 	err_t err;
 	int i_cycle;
 	struct netbuf *recvbuf;
 	struct pbuf *q;
-	byte* 	dataRecvBuffer;
-	byte* 	dataRecvBufferTemp;
-//	byte clientID;
+	
+	byte* 	dataRecvBufferTemp[MaxClients];
+	byte*   dataRecvBufferRange[MaxClients];
+	byte*   pByte;
+
 	Packet* pPacketTemp;
 	int timeCount = 0;
 	int timeCOuntFreeRTOS=0;
-	bool isDataIntegra = false;
-
-	dataRecvBuffer = (byte* )mymalloc(SRAMEX, 256);
 	
+	uint32_t recvBufferOverflowSize = 0;
+		
 	while(1)
 	{
 		//数据接收进程
-		if(ClientNum > 0)	//有client接入
+		if(ClientNum > 1)	//有client接入
 		{
 			timeCOuntFreeRTOS = xTaskGetTickCount();
 			timeCount = OverflowCount_TIM6*65536 + __HAL_TIM_GET_COUNTER(&TIM6_Handler);
+			
 			for(i_cycle = 0; i_cycle<ClientNum;i_cycle++)	
-			{	
+			{					
+				dataRecvBufferTemp[i_cycle] 	= Session[i_cycle].BufferRecvArea;
+				dataRecvBufferRange[i_cycle] 	= Session[i_cycle].BufferRecvArea + 2560;//Max adress Range
+				
 /*************接收数据处理****************************
-*****************************************************/
-				while(true)
-				{
-					if((netconn_recv(Session[i_cycle].NetConnRecv, &recvbuf)) == ERR_OK)  	//接收到数据
-					{						
-						taskENTER_CRITICAL();  //关中断	
-						data_len = recvbuf->p->tot_len;
-						dataRecvBufferTemp = dataRecvBuffer;
-						
-						for(q=recvbuf->p;q!=NULL;q=q->next)
+*****************************************************/			
+				if((netconn_recv(Session[i_cycle].NetConnRecv, &recvbuf)) == ERR_OK)  	//接收到数据
+				{						
+					taskENTER_CRITICAL();  //关中断	
+
+					data_len = recvbuf->p->tot_len;					
+					
+					for(q=recvbuf->p;q!=NULL;q=q->next)
+					{
+						//recvBufferOverflowSize =  - ;	//Data Overflow Size
+						if((dataRecvBufferTemp[i_cycle] + q->len) > dataRecvBufferRange[i_cycle])
 						{
-							memcpy(dataRecvBufferTemp, q->payload, q->len);
-							dataRecvBufferTemp = dataRecvBufferTemp + q->len;
-						}
-						q = NULL;
-//						dataRecvBufferTemp = NULL;
-						taskEXIT_CRITICAL();  //开中断
-						
-						if(*(int*)dataRecvBuffer == 0x47424B50)//确认报头
-						{
-							if(*(int*)(dataRecvBufferTemp-4) == 0x44454B50)//收到报尾
-							{
-								isDataIntegra = true;
-								break;
-							}
+							pByte = q->payload;
+							memcpy(dataRecvBufferTemp[i_cycle], pByte, q->len - (dataRecvBufferRange[i_cycle] - dataRecvBufferTemp[i_cycle]));  //cycle accpet the data to BufferRecvArea
+							pByte += (q->len - recvBufferOverflowSize);
+							dataRecvBufferTemp[i_cycle] = Session[i_cycle].BufferRecvArea;		//Return to the BufferArea Header
+							memcpy(dataRecvBufferTemp[i_cycle], pByte, dataRecvBufferTemp[i_cycle] + q->len - dataRecvBufferRange[i_cycle]);							
 						}
 						else
-							break;
-					}
-					else
-						break;					
-				}
-					
-/***********************入队***************************/
-				if(isDataIntegra)
-				{
-					isDataIntegra = false;
-					j = 0;
-					while(Session[i_cycle].BufferRecv[j].IsBufferAlive)
-					{
-						j++;
-						if(j > MaxBufferLength)
 						{
-							printf("BufferRecv is full , waiting to be free \r\n");
-							j = 0;
-							break;
-						}
+							memcpy(dataRecvBufferTemp[i_cycle], q->payload, q->len);
+							dataRecvBufferTemp[i_cycle] = dataRecvBufferTemp[i_cycle] + q->len;
+						}							
 					}
-					mymemcpy(Session[i_cycle].BufferRecv[j].pBufferData, dataRecvBuffer, data_len);
-					Session[i_cycle].BufferRecv[j].IsBufferAlive = true;
-					
-					printf("%s\r\n", dataRecvBuffer);  //通过串口发送接收到的数据	
-					
-					data_len=0;  //复制完成后data_len要清零。					
-					//myfree(SRAMEX, dataRecvBuffer);
-					dataRecvBuffer = NULL;
-					netbuf_delete(recvbuf);//一定要加上这一句!!!!不然会内存泄漏！！！
-					recvbuf = NULL;
+					q = NULL;	
+					pByte = NULL;
+					taskEXIT_CRITICAL();  //开中断
+				
+				printf("%s\r\n", Session[i_cycle].BufferRecvArea);  //通过串口发送接收到的数据	
+				data_len=0;  //复制完成后data_len要清零。	
+				netbuf_delete(recvbuf);//一定要加上这一句!!!!不然会内存泄漏！！！
+				recvbuf = NULL;		
 				}
-
+			
+							
 /******************Receive END************************
 *****************************************************/
 				

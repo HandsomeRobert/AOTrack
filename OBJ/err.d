@@ -6,10 +6,10 @@
 ..\obj\err.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\err.o: ..\LWIP\arch/cc.h
 ..\obj\err.o: ..\LWIP\arch/cpu.h
-..\obj\err.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\err.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\err.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\err.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\err.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\err.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\err.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\err.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\err.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\err.o: ..\USER\stm32f7xx_hal_conf.h

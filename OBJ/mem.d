@@ -5,10 +5,10 @@
 ..\obj\mem.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\mem.o: ..\LWIP\arch/cc.h
 ..\obj\mem.o: ..\LWIP\arch/cpu.h
-..\obj\mem.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\mem.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\mem.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\mem.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\mem.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\mem.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\mem.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\mem.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\mem.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\mem.o: ..\USER\stm32f7xx_hal_conf.h
@@ -101,4 +101,4 @@
 ..\obj\mem.o: ..\LWIP\lwip-1.4.1\src\include\lwip/stats.h
 ..\obj\mem.o: ..\LWIP\lwip-1.4.1\src\include\lwip/memp.h
 ..\obj\mem.o: ..\LWIP\lwip-1.4.1\src\include\lwip/memp_std.h
-..\obj\mem.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\mem.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

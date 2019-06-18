@@ -1,11 +1,11 @@
 ..\obj\exfuns.o: ..\FATFS\exfuns\exfuns.c
-..\obj\exfuns.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\exfuns.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\exfuns.o: ..\FATFS\exfuns\exfuns.h
 ..\obj\exfuns.o: ..\SYSTEM\sys\sys.h
 ..\obj\exfuns.o: ..\USER\stm32f7xx.h
 ..\obj\exfuns.o: ..\USER\stm32f767xx.h
 ..\obj\exfuns.o: ..\CORE\core_cm7.h
-..\obj\exfuns.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\exfuns.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\exfuns.o: ..\CORE\core_cmInstr.h
 ..\obj\exfuns.o: ..\CORE\cmsis_armcc.h
 ..\obj\exfuns.o: ..\CORE\core_cmFunc.h
@@ -16,7 +16,7 @@
 ..\obj\exfuns.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_def.h
 ..\obj\exfuns.o: ..\USER\stm32f7xx.h
 ..\obj\exfuns.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-..\obj\exfuns.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\exfuns.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\exfuns.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_rcc_ex.h
 ..\obj\exfuns.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio.h
 ..\obj\exfuns.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio_ex.h

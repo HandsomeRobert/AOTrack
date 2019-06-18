@@ -5,10 +5,10 @@
 ..\obj\memp.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\memp.o: ..\LWIP\arch/cc.h
 ..\obj\memp.o: ..\LWIP\arch/cpu.h
-..\obj\memp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\memp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\memp.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\memp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\memp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\memp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\memp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\memp.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\memp.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\memp.o: ..\USER\stm32f7xx_hal_conf.h
@@ -124,7 +124,7 @@
 ..\obj\memp.o: ..\LWIP\lwip-1.4.1\src\include\lwip/snmp.h
 ..\obj\memp.o: ..\LWIP\lwip-1.4.1\src\include\lwip/dns.h
 ..\obj\memp.o: ..\LWIP\lwip-1.4.1\src\include\netif/ppp_oe.h
-..\obj\memp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\memp.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\memp.o: ..\LWIP\lwip-1.4.1\src\include\lwip/memp_std.h
 ..\obj\memp.o: ..\LWIP\lwip-1.4.1\src\include\lwip/memp_std.h
 ..\obj\memp.o: ..\LWIP\lwip-1.4.1\src\include\lwip/memp_std.h

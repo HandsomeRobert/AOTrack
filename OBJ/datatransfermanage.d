@@ -1,8 +1,8 @@
 ..\obj\datatransfermanage.o: ..\LWIP\lwip_app\Track_Comm\DataTransferManage.c
 ..\obj\datatransfermanage.o: ..\LWIP\lwip_app\Track_Comm\DataTransferManage.h
 ..\obj\datatransfermanage.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\datatransfermanage.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\datatransfermanage.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\datatransfermanage.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\datatransfermanage.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\datatransfermanage.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\datatransfermanage.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\datatransfermanage.o: ..\USER\stm32f7xx_hal_conf.h
@@ -18,7 +18,7 @@
 ..\obj\datatransfermanage.o: ..\USER\system_stm32f7xx.h
 ..\obj\datatransfermanage.o: ..\USER\stm32f7xx_hal_conf.h
 ..\obj\datatransfermanage.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-..\obj\datatransfermanage.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\datatransfermanage.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\datatransfermanage.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_rcc_ex.h
 ..\obj\datatransfermanage.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio.h
 ..\obj\datatransfermanage.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal_gpio_ex.h
@@ -86,7 +86,7 @@
 ..\obj\datatransfermanage.o: ..\COMMON\TaskManage.h
 ..\obj\datatransfermanage.o: ..\FreeRTOS\include\task.h
 ..\obj\datatransfermanage.o: ..\FreeRTOS\include\list.h
-..\obj\datatransfermanage.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+..\obj\datatransfermanage.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 ..\obj\datatransfermanage.o: ..\TRACK\TCPProtocol.h
 ..\obj\datatransfermanage.o: ..\LWIP\lwip-1.4.1\src\include\lwip/lwip_sys.h
 ..\obj\datatransfermanage.o: ..\LWIP\lwip-1.4.1\src\include\lwip/opt.h
@@ -110,10 +110,10 @@
 ..\obj\datatransfermanage.o: ..\SYSTEM\sys\sys.h
 ..\obj\datatransfermanage.o: ..\CORE\core_cm7.h
 ..\obj\datatransfermanage.o: ..\LWIP\lwip_app\TcpPacketServer\TcpPacketServer.h
-..\obj\datatransfermanage.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-..\obj\datatransfermanage.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
-..\obj\datatransfermanage.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-..\obj\datatransfermanage.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+..\obj\datatransfermanage.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\datatransfermanage.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
+..\obj\datatransfermanage.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+..\obj\datatransfermanage.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 ..\obj\datatransfermanage.o: ..\SYSTEM\delay\delay.h
 ..\obj\datatransfermanage.o: ..\COMMON\SemaphoreManage.h
 ..\obj\datatransfermanage.o: ..\COMMON\TCPQueue.h

@@ -5,10 +5,10 @@
 ..\obj\sockets.o: ..\LWIP\lwip-1.4.1\src\include\lwip/arch.h
 ..\obj\sockets.o: ..\LWIP\arch/cc.h
 ..\obj\sockets.o: ..\LWIP\arch/cpu.h
-..\obj\sockets.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\sockets.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\obj\sockets.o: ..\FreeRTOS\include\FreeRTOS.h
-..\obj\sockets.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-..\obj\sockets.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\sockets.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\sockets.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\sockets.o: ..\FreeRTOS\include\FreeRTOSConfig.h
 ..\obj\sockets.o: ..\HALLIB\STM32F7xx_HAL_Driver\Inc\stm32f7xx_hal.h
 ..\obj\sockets.o: ..\USER\stm32f7xx_hal_conf.h
@@ -115,4 +115,4 @@
 ..\obj\sockets.o: ..\LWIP\lwip-1.4.1\src\include\lwip/api_msg.h
 ..\obj\sockets.o: ..\LWIP\lwip-1.4.1\src\include\lwip/netifapi.h
 ..\obj\sockets.o: ..\LWIP\lwip-1.4.1\src\include\lwip/timers.h
-..\obj\sockets.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+..\obj\sockets.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
