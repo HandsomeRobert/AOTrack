@@ -130,7 +130,7 @@ extern void lwip_pkt_handle(void);		//在lwip_comm.c里面定义
 //中断服务函数
 void ETH_IRQHandler(void)
 {
-    while(ETH_GetRxPktSize(ETH_Handler.RxDesc))   
+    if(ETH_GetRxPktSize(ETH_Handler.RxDesc))//Modify while loop to if.....have a try
     {
         lwip_pkt_handle();//处理以太网数据，即将数据提交给LWIP
     }

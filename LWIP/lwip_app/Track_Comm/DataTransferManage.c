@@ -26,8 +26,9 @@ void WriteDataToBufferSend(byte Session_i, byte* pData, byte data_len)
 		{
 			printf("Client[%d]==Session[%d].BufferSend is full , waiting to be free \r\n", Session[Session_i].ClientID, Session_i);
 			j = 0;
-			break;
+//////			break;
 		}
+	vTaskDelay(1);//Block 5ms to waiting to be free.
 	}
 	mymemcpy(Session[Session_i].BufferSend[j].pBufferData, pData, data_len);
 	Session[Session_i].BufferSend[j].IsBufferAlive = true;

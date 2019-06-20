@@ -27,35 +27,19 @@ Project File Date:  05/30/2019
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 3 (build 300)', folder: 'D:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'AOTrack'
-compiling DataProcess.c...
-..\TRACK\DataProcess.c(37): warning:  #177-D: variable "pInt" was declared but never referenced
-  	int* pInt;
-..\TRACK\DataProcess.c(38): warning:  #177-D: variable "pByte" was declared but never referenced
-  	byte* pByte;
-..\TRACK\DataProcess.c(39): warning:  #177-D: variable "lineID" was declared but never referenced
-  	static int lineID 	= 0;
-..\TRACK\DataProcess.c(40): warning:  #177-D: variable "actionID" was declared but never referenced
-  	static int actionID = 0;
-..\TRACK\DataProcess.c(41): warning:  #177-D: variable "objectID" was declared but never referenced
-  	static int objectID = 0;
-..\TRACK\DataProcess.c(42): warning:  #177-D: variable "moduleID" was declared but never referenced
-  	static int moduleID = 0;
-..\TRACK\DataProcess.c(43): warning:  #177-D: variable "encoder" was declared but never referenced
-  	static int encoder 	= 0;
-..\TRACK\DataProcess.c(44): warning:  #177-D: variable "dataSize" was declared but never referenced
-  	static int dataSize = 0;
-..\TRACK\DataProcess.c(45): warning:  #550-D: variable "timeCount" was set but never used
-  	int timeCount;
-..\TRACK\DataProcess.c(124): warning:  #177-D: function "PCGetConnectedClientIDs" was declared but never referenced
-  static void PCGetConnectedClientIDs(byte clientID, struct PacketServerSession session[], int clientNum)
-..\TRACK\DataProcess.c(138): warning:  #177-D: function "STM32GetPushResult" was declared but never referenced
-  static void STM32GetPushResult(int lineID, int objectID, int pushline, int priority)
-..\TRACK\DataProcess.c(169): warning:  #177-D: function "STM32SetTrackingMode" was declared but never referenced
-  static void STM32SetTrackingMode(int lineID, int mode, int interval)
-..\TRACK\DataProcess.c: 12 warnings, 0 errors
+compiling DataTransferManage.c...
+..\LWIP\lwip_app\Track_Comm\DataTransferManage.c(117): warning:  #550-D: variable "data_len" was set but never used
+  	uint16_t data_len = 0;
+..\LWIP\lwip_app\Track_Comm\DataTransferManage.c(118): warning:  #177-D: variable "i" was declared but never referenced
+  	byte i, j;
+..\LWIP\lwip_app\Track_Comm\DataTransferManage.c(129): warning:  #550-D: variable "timeCount" was set but never used
+  	int timeCount = 0;
+..\LWIP\lwip_app\Track_Comm\DataTransferManage.c(130): warning:  #550-D: variable "timeCOuntFreeRTOS" was set but never used
+  	int timeCOuntFreeRTOS=0;
+..\LWIP\lwip_app\Track_Comm\DataTransferManage.c: 4 warnings, 0 errors
 linking...
-Program Size: Code=125394 RO-data=177446 RW-data=776 ZI-data=31815000  
-"..\OBJ\AOTrack_Program.axf" - 0 Error(s), 12 Warning(s).
+Program Size: Code=124290 RO-data=177446 RW-data=784 ZI-data=31814992  
+"..\OBJ\AOTrack_Program.axf" - 0 Error(s), 4 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   D:\STM32Project\AOTrack(2019.6.18)\AOTrack\USER\RTE

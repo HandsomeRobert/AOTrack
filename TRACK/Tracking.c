@@ -146,28 +146,20 @@ static void TrackingThread(void *arg)
 //	uint16_t timeCount 			= 0;
 	static bool AddActiveFlag 		= false;	
 	static StctActionListItem objectTrackTemp ;				//跟踪数据暂存值
-//	static ModuleQueueItem* 	moduleQueueTemp;					//定义一个从队列中暂取数据的暂存值指针
-//	Packet* pPacket = mymalloc(SRAMEX, 256);					//分配一个暂存区
-	
-//	static __IO int64_t encoderNumber 		= 0;     		//编码器计数值
-//	static __IO int64_t encoder1Number 		= 0;				//编码器1计数值
-//	static __IO int64_t encoder2Number 		= 0;				//编码器2计数值
-	
-	static short triggerInterval 					= 0;				//两次触发间隔编码器数
-	static __IO int64_t LS1_EncoderNumTem = 0;				//光电1对应的上一次编码器值(暂存用于双触发保护)
-	static __IO int64_t LS2_EncoderNumTem = 0;				//光电2对应的上一次编码器值(暂存用于双触发保护)
-	static __IO int64_t LS3_EncoderNumTem = 0;				//光电3对应的上一次编码器值(暂存用于双触发保护)
-	static __IO int64_t LS4_EncoderNumTem = 0;				//光电4对应的上一次编码器值(暂存用于双触发保护)
-	
-	
+
+	static __IO uint64_t triggerInterval 	= 0;				//两次触发间隔编码器数
+	static __IO uint64_t LS1_EncoderNumTem = 0;				//光电1对应的上一次编码器值(暂存用于双触发保护)
+	static __IO uint64_t LS2_EncoderNumTem = 0;				//光电2对应的上一次编码器值(暂存用于双触发保护)
+	static __IO uint64_t LS3_EncoderNumTem = 0;				//光电3对应的上一次编码器值(暂存用于双触发保护)
+	static __IO uint64_t LS4_EncoderNumTem = 0;				//光电4对应的上一次编码器值(暂存用于双触发保护)	
 	
 	byte Module_i = 0, Action_i = 0;												//遍历控制变量
 	byte Object_i = 0, i_cycle 	= 0;
 	int data_len = 0;
-	static __IO int64_t encoderNumber 		= 0;     					// 编码器计数值
-	static __IO int64_t encoder1Number 		= 0;
-	static __IO int64_t encoder2Number 		= 0;
-	static __IO int64_t encoderDelivered 	= 0;	
+	static __IO uint64_t encoderNumber 		= 0;     					// 编码器计数值
+	static __IO uint64_t encoder1Number 		= 0;
+	static __IO uint64_t encoder2Number 		= 0;
+	static __IO uint64_t encoderDelivered 	= 0;	
 //	static bool isActionIn = false;
 	static ModuleQueueItem* moduleQueueTemp;						//定义一个往队列中填充数据的暂放指针
 	static ActionExecuteQueueItem* actionExecuteQueueTemp;
@@ -223,11 +215,12 @@ static void TrackingThread(void *arg)
 		TimeCountStart 	= OverflowCount_TIM6*0XFFFF +__HAL_TIM_GET_COUNTER(&TIM6_Handler);//0.7us
 		TimeCountStartRTOS = xTaskGetTickCount();
 		
-		if( ClientNum > 0)															//有检测程序Inspection连接
+		if( ClientNum > 1)															//有检测程序Inspection连接
 		{
 			encoder1Number = (OverflowCount_Encoder3*ENCODER_CNT_MAX) + __HAL_TIM_GET_COUNTER(&htimx_Encoder3);
 			encoder2Number = (OverflowCount_Encoder8*ENCODER_CNT_MAX) + __HAL_TIM_GET_COUNTER(&htimx_Encoder8);
 			
+////printf("EncoderNum:%lld \n", encoder1Number);
 			for(Module_i = 0;Module_i < Module_Count;Module_i++)											
 			{
 											
@@ -244,14 +237,7 @@ static void TrackingThread(void *arg)
 					{
 						/****光电1***/					
 						if((LightSignal_1 == ModuleConfig[Module_i].ModuleTrigger) && (TIM2CH1_CAPTURE_STA & 0X80))
-						{
-////							printf("==>Module[%d] Catch the Light111 Signals\n", Module_i);
-////							temp=TIM2CH1_CAPTURE_STA&0X3F;							//溢出次数
-////							temp*=0XFFFFFFFF;		 	    									//溢出时间总和  ******应该可以去掉
-////							temp+=TIM2CH1_CAPTURE_VAL;      						//得到总的高电平时间	
-////							printf("HIGH:%lld us\r\n",temp);						//打印总的高电平时间。
-////							printf("Using Encoder[%d], EncoderNumber is [%lld]\n", ModuleConfig[Module_i].Encoder, encoderNumber);
-////							
+						{					
 							TIM2CH1_CAPTURE_STA = 0;          								//光电1开启下一次捕获		
 							triggerInterval 		= encoderNumber - LS1_EncoderNumTem;
 							LS1_EncoderNumTem 	= encoderNumber;					//保存光电上一次编码器的触发值
@@ -260,13 +246,6 @@ static void TrackingThread(void *arg)
 						/****光电2***/					
 						else if((LightSignal_2 == ModuleConfig[Module_i].ModuleTrigger) && (TIM5CH1_CAPTURE_STA & 0X80))
 						{
-////							printf("==>Module[%d] Catch the Light222 \n", Module_i);
-////							temp=TIM5CH1_CAPTURE_STA&0X3F;							//溢出次数
-////							temp*=0XFFFFFFFF;		 	    									//溢出时间总和  ******应该可以去掉
-////							temp+=TIM5CH1_CAPTURE_VAL;      						//得到总的高电平时间	
-////							printf("HIGH:%lld us\r\n",temp);						//打印总的高电平时间。
-////							printf("Using Encoder[%d], EncoderNumber is [%lld]\n", ModuleConfig[Module_i].Encoder, encoderNumber);
-////							
 							TIM5CH1_CAPTURE_STA = 0;          								//光电1开启下一次捕获		
 							triggerInterval 		= encoderNumber - LS2_EncoderNumTem;
 							LS2_EncoderNumTem 	= encoderNumber;					//保存光电上一次编码器的触发值
@@ -289,6 +268,7 @@ static void TrackingThread(void *arg)
 										i_cycle  = 0;
 										for(i_cycle = 0;i_cycle <ClientNum; i_cycle++)//往所有连接的客户端都发送对象到来的消息
 										{
+											if(Session[i_cycle].ClientID != ClientServer)//不往主程序发
 											WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);	
 										}
 									
@@ -296,7 +276,7 @@ static void TrackingThread(void *arg)
 									}
 									else		//认为是一个全新的对象了，创建对象，并将目前对象所在跟踪段的动作加入对应的跟踪段列表（无论是否为第一个跟踪段都可以使用）
 									{
-										printf("Create A New Object, Delivered Object not comming in time. \n");
+////printf("Create A New Object, Delivered Object not comming in time. \n");
 										if(GlobalObjectCount > maxTrackingObjects - 1) GlobalObjectCount = 0;//缓冲大小为64，Count必须小于64，否则赋值给CreateObject会出错
 										GlobalObjectCount = CreateObject(GlobalObjectCount, Module_i, ModuleConfig[Module_i].Encoder, 1, encoderNumber, encoderNumber);
 										GlobalObjectCount++;
@@ -307,6 +287,7 @@ static void TrackingThread(void *arg)
 										i_cycle  = 0;
 										for(i_cycle = 0;i_cycle <ClientNum; i_cycle++)//往所有连接的客户端都发送对象到来的消息
 										{
+											if(Session[i_cycle].ClientID != ClientServer)//不往主程序发
 											WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);	
 										}	
 										
@@ -315,7 +296,7 @@ static void TrackingThread(void *arg)
 								}
 								else if(ModuleConfig[Module_i].CreateObjectFlag != true)//此跟踪段不允许创建对象
 								{
-									printf("Module[%d] not allowed to Create Object, Just Deliverd. \n", Module_i);
+////printf("Module[%d] not allowed to Create Object, Just Deliverd. \n", Module_i);
 									//系统初次启动编码器为0，可能无法创建兑现得转过一定编码器才会开始创建对象...
 									if(encoderNumber - moduleQueueTemp->DelieverdEncoderNum < ModuleConfig[Module_i].TrackingWindow)					//为传递过来的对象，仅将对象在此段的动作加入列表
 									{
@@ -325,6 +306,7 @@ static void TrackingThread(void *arg)
 										i_cycle  = 0;
 										for(i_cycle = 0;i_cycle <ClientNum; i_cycle++)//往所有连接的客户端都发送对象到来的消息
 										{
+											if(Session[i_cycle].ClientID != ClientServer)//不往主程序发
 											WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);	
 										}
 										
@@ -337,7 +319,7 @@ static void TrackingThread(void *arg)
 					/****跟踪段无光电&&只进行对象的传递*****/
 					else								
 					{
-printf("Module[%d] not have lightSensor, Just Deliverd. \n", Module_i);						
+////printf("Module[%d] not have lightSensor, Just Deliverd. \n", Module_i);						
 						//系统初次启动编码器为0，可能无法创建得先转过一定编码器才会开始创建对象...
 						if(encoderNumber - moduleQueueTemp->DelieverdEncoderNum < ModuleConfig[Module_i].TrackingWindow)					//为传递过来的对象，仅将对象在此段的动作加入列表
 						{
@@ -347,6 +329,7 @@ printf("Module[%d] not have lightSensor, Just Deliverd. \n", Module_i);
 							i_cycle  = 0;
 							for(i_cycle = 0;i_cycle <ClientNum; i_cycle++)//往所有连接的客户端都发送对象到来的消息
 							{
+								if(Session[i_cycle].ClientID != ClientServer)//不往主程序发
 								WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);	
 							}
 							
@@ -365,12 +348,7 @@ printf("Module[%d] not have lightSensor, Just Deliverd. \n", Module_i);
 						{
 							if(ModuleConfig[Module_i].CreateObjectFlag == true)	//允许创建对象
 							{
-//								printf("==>Module[%d] Catch the Light111 Signals Not by Delivered Object Pretty New. \n", Module_i);
-//								temp	= TIM2CH1_CAPTURE_STA&0X3F;							//溢出次数
-//								temp *= 0XFFFFFFFF;		 	    									//溢出时间总和  ******应该可以去掉
-//								temp += TIM2CH1_CAPTURE_VAL;      						//得到总的高电平时间	
-//								printf("HIGH:%lld us\r\n",temp);						//打印总的高电平时间。
-//								printf("Module[%d]==>Using Encoder[%d], EncoderNumber is [%lld]\n", Module_i, ModuleConfig[Module_i].Encoder, encoderNumber);
+//////printf("==>Module[%d] Catch the Light111 Signals Not by Delivered Object Pretty New. \n", Module_i);
 								TIM2CH1_CAPTURE_STA = 0;          								//光电1开启下一次捕获			
 								triggerInterval 		= encoderNumber - LS1_EncoderNumTem;
 								LS1_EncoderNumTem 	= encoderNumber;					//记录上次光电被触发的值
@@ -381,13 +359,7 @@ printf("Module[%d] not have lightSensor, Just Deliverd. \n", Module_i);
 						{						
 							if(ModuleConfig[Module_i].CreateObjectFlag == true)	//跟踪段允许创建对象
 							{
-//								printf("==>Module[%d] Catch the Light222 Signals Signals Not by Delivered Object Pretty New. \n", Module_i);
-//								temp=TIM5CH1_CAPTURE_STA&0X3F;							//溢出次数
-//								temp*=0XFFFFFFFF;		 	    									//溢出时间总和  ******应该可以去掉
-//								temp+=TIM5CH1_CAPTURE_VAL;      						//得到总的高电平时间	
-//								printf("HIGH:%lld us\r\n",temp);						//打印总的高电平时间。
-//								printf("Module[%d]==>Using Encoder[%d], EncoderNumber is [%lld]\n", Module_i, ModuleConfig[Module_i].Encoder, encoderNumber);
-
+//////printf("==>Module[%d] Catch the Light222 Signals Signals Not by Delivered Object Pretty New. \n", Module_i);
 								TIM5CH1_CAPTURE_STA = 0;          								//光电2开启下一次捕获	
 								triggerInterval 		= encoderNumber - LS2_EncoderNumTem;
 								LS2_EncoderNumTem 	= encoderNumber;					//记录上次光电被触发的值
@@ -399,7 +371,7 @@ printf("Module[%d] not have lightSensor, Just Deliverd. \n", Module_i);
 						{
 							AddActiveFlag = false;
 							
-printf("Module[%d] not delvered, ModuleQueue empty ,Create Pretty New \n", Module_i);
+////printf("Module[%d] not delvered, ModuleQueue empty ,Create Pretty New \n", Module_i);
 							if(triggerInterval >  ModuleConfig[Module_i].Debounce	&&
 							   triggerInterval > ModuleConfig[Module_i].DoubleTrigger)	//信号防抖和双触发保护
 							{
@@ -413,6 +385,7 @@ printf("Module[%d] not delvered, ModuleQueue empty ,Create Pretty New \n", Modul
 								i_cycle  = 0;
 								for(i_cycle = 0;i_cycle <ClientNum; i_cycle++)//往所有连接的客户端都发送对象到来的消息
 								{
+									if(Session[i_cycle].ClientID != ClientServer)//不往主程序发
 									WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);	
 								}
 								
@@ -447,13 +420,13 @@ printf("Module[%d] not delvered, ModuleQueue empty ,Create Pretty New \n", Modul
 							switch(ObjectInModuleList[Module_i][Action_i].ActionType)		//13us
 							{
 								case ActRequestMachineData:
-printf("Get into ActRequestMachineData\r\n");
+////printf("Get into ActRequestMachineData\r\n");
 									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;
 								testFlag = true;
 								break;
 								
 								case ActSetOutput					: 
-printf("Get into ActSetOutput\r\n");			
+////printf("Get into ActSetOutput\r\n");			
 									pTempSetOutput = (propActionSetOutput*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
 									actionExecuteQueueTemp->actionType  = Message_TrrigerOutput;
 									actionExecuteQueueTemp->pAction 		= pTempTriggerCamera;
@@ -466,7 +439,7 @@ printf("Get into ActSetOutput\r\n");
 								break;
 								
 								case ActObjectTakeOver		:
-printf("Get into ActObjectTakeOver\r\n");										
+////printf("Get into ActObjectTakeOver\r\n");										
 /*ConsumeTime:20us*/pTempObjectTakeOver = (propActionObjectTakeOver*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
 								  switch (ModuleConfig[pTempObjectTakeOver->DestinationModule].Encoder)
 									{
@@ -488,6 +461,7 @@ printf("Get into ActObjectTakeOver\r\n");
 									i_cycle = 0;
 									for(i_cycle = 0;i_cycle <ClientNum; i_cycle++)//往所有连接的客户端都发送对象到来的消息
 									{
+										if(Session[i_cycle].ClientID != ClientServer)//不往主程序发
 										WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);	
 									}
 								
@@ -496,7 +470,7 @@ printf("Get into ActObjectTakeOver\r\n");
 									break;
 								
 								case ActTriggerCamera			: 
-printf("Get into ActTriggerCamera\r\n");										
+////printf("Get into ActTriggerCamera\r\n");										
 /*ConsumeTime:32us*/pTempTriggerCamera = (propActionTriggerCamera*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
 									
 									actionExecuteQueueTemp->actionType  = Message_TrrigerCamera;
@@ -527,7 +501,7 @@ printf("Get into ActTriggerCamera\r\n");
 								break;
 								
 								case ActTriggerSensor			: /*ConsumeTime:938us*/
-printf("Get into ActTriggerSensor\r\n");	
+////printf("Get into ActTriggerSensor\r\n");	
 									pTempTriggerSensor = (propActionTriggerSensor*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
 									
 									actionExecuteQueueTemp->actionType  = Message_TrrigerSensor;
@@ -556,7 +530,6 @@ printf("Get into ActTriggerSensor\r\n");
 									break;
 								
 								case ActPushOut						: /*ConsumeTime:256us*/		
-printf("Get into ActPushOut\r\n");		
 									
 									pTempPushOut = (propActionPushOut*)ModuleConfig[Module_i].ActionInstanceConfig[ObjectInModuleList[Module_i][Action_i].ActionNumber].pActionConfig;
 									pPacket = CreateObjectDeletePacket(pPacket, 1, ObjectInModuleList[Module_i][Action_i].ObjectID, Module_i, encoderNumber);				
@@ -584,12 +557,13 @@ printf("Get into ActPushOut\r\n");
 										actionExecuteQueueTemp->actionType  = Message_TrrigerPush;
 										actionExecuteQueueTemp->pAction 		= pTempPushOut;
 										err = xQueueSend(ActionExecuteQueue, actionExecuteQueueTemp, 0);		
-//										xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerPush, 	 eSetValueWithOverwrite, NULL);//发送通知去触发剔除																							
+//									xTaskGenericNotify(ActionExecuteTask_Handler, Message_TrrigerPush, 	 eSetValueWithOverwrite, NULL);//发送通知去触发剔除																							
 									}
 									ObjectBuffer[Object_i].objectAliveFlag = false;									//释放被占有的对象
 																		
 									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;		//释放占有的动作
 									testFlag = true;
+printf("Get into ActPushOut\r\n");
 									break;
 								
 								default:break;

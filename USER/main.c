@@ -51,7 +51,7 @@ TaskHandle_t EncoderValueTask_Handler;
 void EncoderValue_task();
 ******/
 uint32_t Timer = 0;
-extern __IO int64_t EncoderNumber;
+extern __IO uint64_t EncoderNumber;
 
 /********************************************************************************
 ***********************************Ö÷Èë¿Ú****************************************

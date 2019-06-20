@@ -111,7 +111,7 @@ void ENCODER_TIM3_Init(void)
 //定时器3中断服务函数
 void TIM3_IRQHandler(void)
 {	
-	printf("Encoder Number Overflowed \n");
+////	printf("Encoder Number Overflowed \n");
 	if(__HAL_TIM_IS_TIM_COUNTING_DOWN(&htimx_Encoder3))
     OverflowCount_Encoder3--;       //向下计数溢出
   else
@@ -167,7 +167,7 @@ void ENCODER_TIM8_Init(void)
 //定时器8中断服务函数
 void TIM8_UP_TIM13_IRQHandler(void)
 {	
-	printf("Encoder Number Overflowed \n");
+////	printf("Encoder Number Overflowed \n");
 	if(__HAL_TIM_IS_TIM_COUNTING_DOWN(&htimx_Encoder8))
     OverflowCount_Encoder8--;       //向下计数溢出
   else

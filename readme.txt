@@ -191,8 +191,16 @@
 	1. May happen only two Client connect to STM32, just Restart the Xispek Software can solve it(Resume to three Clients).
 	2. Recv_timeout must be set larger to zero.
 	3. Successfully Use a whole area to store the receive data.
-
-
+ADD:
+	1. the reason why cannot create new Object is triggerInteval is used short, but value too Large, overflow to -XXX, so 
+	   triggerInterval >  ModuleConfig[Module_i].Debounce failed. And Cannot Create New Object!!!!!!
+	   Add ActionExecute will cause Damage Bug after Create 8 Objects
+2019.6.20
+	1. error: After Normal Create 51 Object, the program will be lost in ETH_IRQHandler, go into while() dead cycle!!!
+       the Reason result in DataTransferManage.c where use break to jump out  "while(Session[Session_i].BufferSend[j].IsBufferAlive)"
+		Oh, it lost again(After Create 456 Object...)......
+	2. "while(ETH_GetRxPktSize(ETH_Handler.RxDesc))"==>Modify while loop to if Temporarily.....have a try, Create Object seems normally...
+		At Present, Not Find Bug....Maybe exist.
 ºÄÊ±·ÖÎö£»
 	1. mymalloc(SRAMEX, 128) ·ÖÅäÄÚ´æÊ±¼äÎª800us×óÓÒ£¬myfreeÔÚ70us×óÓÒ£¬ËùÒÔÍÆ¼ö²»ÒªÈ¥¶¯Ì¬¿ª±ÙÄÚ´æ£¡£¡£¡×ñÑ­£º¿Õ¼ä»»Ê±¼ä£¡£¡£¡
 	2. netconn_writeºÄÊ±³¤£¬´ó¸ÅÎª2356us-->5023us
@@ -207,25 +215,4 @@
 
 Bug Report£º
 XXXX1. 2019.3.14£º(2019.5.6 Solved½â¾öÁË,netconn_close¸ÄÎªnetconn_delete¼´¿É)
-XXXXClientÓëSTM32£¨TecpServer£©¶à´ÎÁ¬½Ó&¶Ï¿ªºó£¬ÎÞ·¨ÔÙ´ÎÁ¬½ÓSTM32ÁË£¬µÚ6´ÎÁ¬½Ó£¨µ¥¸öclient£©Ê±»á³öÏÖ±¨´í£º
-XXXX	Ö÷»ú192.168.66.10Á¬½ÓÉÏ·þÎñÆ÷,Ö÷»ú¶Ë¿ÚºÅÎª:49534
-XXXX	Assertion "netconn_connect: invalid conn" failed at line 197 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
-XXXX	TCP_Server Connect Failed!!!
-XXXX	Assertion "netconn_write: invalid conn" failed at line 605 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
-XXXX	Send data Failed,Please check it in DataTransferManage.c 
-XXXX	
-XXXXµÚÁù´ÎÁ¬½Óºó¶Ï¿ªÊ±Ò²±¨´í£¬ÎªAssertion "netconn_writAssertion "netconn_close: invalid conn" failed at line 668 in ..\LWIP\lwip-1.4.1\src\api\api_lib.c
-XXXX£¡£¡£¡²Â²âÊÇµÚÁù´ÎÁ¬½ÓÊ±£¬Session[i]	µÄNetConnSend Ã»ÓÐ±»´´½¨£¬¼´·ÃÎÊÁË²»´æÔÚµÄNetConnSend¶Ë¿Úµ¼ÖÂµÄ´íÎó¡£	
-XXXX£¡£¡ÖÁÓÚÎªÊ²Ã´µÚ6´ÎÖ®ºó¾Í²»ÄÜÔÙÁ¬ÉÏPCµÄTCP ServerÁË£¬ÓÐ´ýÌ½Ë÷¡£¡£¡£¡£
-	2. forÑ­»·É¨ÃèNetconn[]Êý×é»áÉ¨Ãèµ½²»´æÔÚµÄNETCONN£¬µ«ÎÒºÃÏñÉèÁËÒ»¸öÒÆÎ»buffer½«´ËÎÊÌâ½â¾öÁË£¬yes,ÎÒ¿ÉÕæ°ôÑ½
-	3. emmm....µçÄÔ¶ËÁ¬½ÓTCP NETCONNÊ¹ÓÃ´®¿Úµ÷Ê½Èí¼þÎÞ·¨¿ìËÙ·¢ËÍÊý¾Ý£¬Ò²¾ÍÊÇËµÎÞ·¨ÍêÕû·¢ËÍÊý¾Ý£¬µÃ¼Ó¸öBufferÀ´»º³å...ÏÈ·¢µ½BufferÔÙÓÉNETCONNÈ¥µ÷ÓÃº¯ÊýÈ¥·¢ËÍÊý¾Ý....
-
-	4. µ±±àÂëÆ÷ÊýÖµÒç³öÊ±¿ÉÄÜ³öÏÖBUG£¬¼´ËùÓÐ¸ú×Ù¶ÎµÄ²Î¿¼Éè¼Æ ¿ÉÄÜ¶¼»á³ö´í.....
-XXXX	Solved,Ö±½ÓÓÃÁ½¸öÊýÏà¼õ£¬µÃµ½µÄ¾ÍÊÇÁ½ÕßµÄ¾àÀë£¬Èç0-65534 = 2
-	5. EncoderNumber>Æä¸ø¶¨ÖµÊÇ¿ÉÄÜµ¼ÖÂ´íÎó£¬»áÇåÁã+¶¨Ê±Æ÷Òç³ö´ÎÊý*65536ËùÒÔ»áµ¼ÖÂ´íÎó²úÉú£¬±ê¼ÇÒ»ÏÂ¡£
-	6. BUG==>Êý¾Ý½ÓÊÕÔÚÔËÐÐÒ»¶ÎÊ±¼äºó»á×èÈû....×èÈûÔÚlan8720.cµÄ152ÐÐ£¬fframeLength=((DMARxDesc->Status&ETH_DMARXDESC_FL)>>ETH_DMARXDESC_FRAME_LENGTHSHIFT);
-	7. BUG==>XispekVisionÁ¬½ÓSTM32£¬¼ÓÈëÈë¶Ó²Ù×÷ºó»áÍùÍâ·¢112£¬²»ÕýÈ·¡£È¥µôÈë¶Ó²Ù×÷ºó£¬½ÓÊÕÒ»¶ÎÊ±¼äµÄÕï¶Ï½çÃæ·¢ËÍµÄÊý¾Ýºó»áËÀ»ú¡£¡£¡£
-8. printfº¯ÊýºÜºÄÊ±£¬²âÊÔÐÔÄÜÊ±°Ñprinrfº¯ÊýÈ¥µô¡£¡£¡£
-9.·¢ÏÖÊý¾Ý½ÓÊÕ²»ÍêÕûSession[sessionID].BufferRecv[i]Æ¬¶Î½ÓÊÕPKBG XXX PKED£¬²¢²»»áÒ»´ÎÐÔ´æÈëµ¥¸öBufferRecv[i],
-  ÁíÍâ£¬Òç³öÊ±»á½«ÖµÒç³öµ½ÆäËüÄÚ´æ¿Õ¼ä£¨±ÈÈç»áÒç³öµ½Session[i].SendBuffer[j]¾Í»áµ¼ÖÂÒâÍâµÄÍùÍâÂÒ·¢ËÍÊý¾Ý£¬´óBUGGGGG£©,Èç¹ûDataProcess²»¼°Ê±´¦ÀíRecvBuffer,
-  ²¢ÊÍ·ÅIsBufferAlive£¬¾Í»áµ¼ÖÂBufferÒç³öµ½ÆäËüÎ»ÖÃ£¡£¡£¡
+XXXXClientÓëSTM32£¨TecpServer£©¶à´ÎÁ¬½Ó&¶Ï¿ªºó£ 
