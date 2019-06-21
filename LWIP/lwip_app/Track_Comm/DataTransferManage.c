@@ -173,7 +173,7 @@ static void DataTransferManage(void *arg)
 					pByte = NULL;
 					taskEXIT_CRITICAL();  //开中断
 				
-				printf("%s\r\n", Session[i_cycle].BufferRecvArea);  //通过串口发送接收到的数据	
+//////				printf("%s\r\n", Session[i_cycle].BufferRecvArea);  //通过串口发送接收到的数据	
 				data_len=0;  //复制完成后data_len要清零。	
 				netbuf_delete(recvbuf);//一定要加上这一句!!!!不然会内存泄漏！！！
 				recvbuf = NULL;		

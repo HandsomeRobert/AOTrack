@@ -201,6 +201,9 @@ ADD:
 		Oh, it lost again(After Create 456 Object...)......
 	2. "while(ETH_GetRxPktSize(ETH_Handler.RxDesc))"==>Modify while loop to if Temporarily.....have a try, Create Object seems normally...
 		At Present, Not Find Bug....Maybe exist.
+2019.6.21
+	1. Add ActionExecute to Program...Runtime Test, Can Stablly create object and trigger action...(test one night with 59550 Object)
+	   But not finish the Receive DataProcess
 耗时分析；
 	1. mymalloc(SRAMEX, 128) 分配内存时间为800us左右，myfree在70us左右，所以推荐不要去动态开辟内存！！！遵循：空间换时间！！！
 	2. netconn_write耗时长，大概为2356us-->5023us

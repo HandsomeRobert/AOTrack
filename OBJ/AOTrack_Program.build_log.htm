@@ -27,19 +27,14 @@ Project File Date:  05/30/2019
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 3 (build 300)', folder: 'D:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'AOTrack'
-compiling DataTransferManage.c...
-..\LWIP\lwip_app\Track_Comm\DataTransferManage.c(117): warning:  #550-D: variable "data_len" was set but never used
-  	uint16_t data_len = 0;
-..\LWIP\lwip_app\Track_Comm\DataTransferManage.c(118): warning:  #177-D: variable "i" was declared but never referenced
-  	byte i, j;
-..\LWIP\lwip_app\Track_Comm\DataTransferManage.c(129): warning:  #550-D: variable "timeCount" was set but never used
-  	int timeCount = 0;
-..\LWIP\lwip_app\Track_Comm\DataTransferManage.c(130): warning:  #550-D: variable "timeCOuntFreeRTOS" was set but never used
-  	int timeCOuntFreeRTOS=0;
-..\LWIP\lwip_app\Track_Comm\DataTransferManage.c: 4 warnings, 0 errors
+compiling ActionExecute.c...
+..\TRACK\ActionExecute.c(199): warning:  #188-D: enumerated type mixed with another type
+  					HAL_GPIO_WritePin(
+PIOH, delayActionBuffer[i].PinID, delayActionBuffer[i].IOOutput);//由于目前所有输出都使用的GPIOH，所以不传入GPIO引脚
+..\TRACK\ActionExecute.c: 1 warning, 0 errors
 linking...
-Program Size: Code=124290 RO-data=177446 RW-data=784 ZI-data=31814992  
-"..\OBJ\AOTrack_Program.axf" - 0 Error(s), 4 Warning(s).
+Program Size: Code=124994 RO-data=177446 RW-data=784 ZI-data=31814992  
+"..\OBJ\AOTrack_Program.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   D:\STM32Project\AOTrack(2019.6.18)\AOTrack\USER\RTE
