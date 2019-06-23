@@ -18,6 +18,9 @@ bool StopServerListen;
 int i_MTU = 1500;
 
 struct PacketServerSession Session[MaxClients];		//定义一个用于管理接收socket的session
+byte* PHead[MaxClients];//Receive Data Head
+byte* PTail[MaxClients];//Receive Data Tail(End)
+byte* RecvAreaRange[MaxClients];
 
 uint32_t tcp_server_recvbuf[TCP_SERVER_RX_BUFSIZE];	//TCP客户端接收数据缓冲区
 bool SocketLinkFlag = false;//连接建立标志
@@ -31,8 +34,11 @@ static void addSession(int clientID, int sessionID, struct netconn* netConnRecv,
 	Session[sessionID].NetConnSend = netConnSend;
 	Session[sessionID].NetConnRecv->recv_timeout = 2;//recv_timeout Cannot be set to 0
 
-	Session[sessionID].BufferRecvArea = mymalloc(SRAMEX, 1280);//10*128, 10 commands
-
+	Session[sessionID].BufferRecvArea = mymalloc(SRAMEX, RecvAreaDataSize);//10*128, 10 commands
+	PHead[sessionID]  = Session[sessionID].BufferRecvArea;//Initial pHead
+	PTail[sessionID] = Session[sessionID].BufferRecvArea;//initial PTail
+	RecvAreaRange[sessionID] = Session[sessionID].BufferRecvArea + RecvAreaDataSize;
+	
 	for(i = 0; i < MaxBufferLength; i++)
 	{
 		Session[sessionID].BufferSend[i].pBufferData = mymalloc(SRAMEX, 128);
@@ -83,7 +89,6 @@ static void TCPServerListenThread(void *arg)
 	byte* 	dataRecvBuffer;
 	byte* 	dataRecvBufferTemp;
 	struct pbuf *q;
-	int* pInt;
 	byte clientID = 0;//从PC获取到的ClientID
 	
 	err_t err,recv_err,err_SendNetConn;

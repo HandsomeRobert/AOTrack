@@ -27,14 +27,23 @@ Project File Date:  05/30/2019
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 3 (build 300)', folder: 'D:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'AOTrack'
-compiling ActionExecute.c...
-..\TRACK\ActionExecute.c(199): warning:  #188-D: enumerated type mixed with another type
-  					HAL_GPIO_WritePin(
-PIOH, delayActionBuffer[i].PinID, delayActionBuffer[i].IOOutput);//由于目前所有输出都使用的GPIOH，所以不传入GPIO引脚
-..\TRACK\ActionExecute.c: 1 warning, 0 errors
+compiling DataProcess.c...
+..\TRACK\DataProcess.c(35): warning:  #177-D: variable "j" was declared but never referenced
+  	byte i=0 ,j=0;
+..\TRACK\DataProcess.c(38): warning:  #177-D: variable "pByte" was declared but never referenced
+  	byte* pByte;
+..\TRACK\DataProcess.c(39): warning:  #550-D: variable "packetID" was set but never used
+  	static int packetID 	= 0;
+..\TRACK\DataProcess.c(40): warning:  #550-D: variable "packetType" was set but never used
+  	static int packetType 	= 0;
+..\TRACK\DataProcess.c(41): warning:  #550-D: variable "packetDataSize" was set but never used
+  	static int packetDataSize 	= 0;
+..\TRACK\DataProcess.c(48): warning:  #550-D: variable "timeCount" was set but never used
+  	int timeCount;
+..\TRACK\DataProcess.c: 6 warnings, 0 errors
 linking...
-Program Size: Code=124994 RO-data=177446 RW-data=784 ZI-data=31814992  
-"..\OBJ\AOTrack_Program.axf" - 0 Error(s), 1 Warning(s).
+Program Size: Code=125714 RO-data=177606 RW-data=796 ZI-data=31815076  
+"..\OBJ\AOTrack_Program.axf" - 0 Error(s), 6 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   D:\STM32Project\AOTrack(2019.6.18)\AOTrack\USER\RTE

@@ -114,16 +114,9 @@ uint8_t DataTransferManageTask_init(void)
 
 static void DataTransferManage(void *arg)
 {
-	uint16_t data_len = 0;
 	byte i, j;
 	err_t err;
 	int i_cycle;
-	struct netbuf *recvbuf;
-	struct pbuf *q;
-	
-	byte* 	dataRecvBufferTemp[MaxClients];
-	byte*   dataRecvBufferRange[MaxClients];
-	byte*   pByte;
 
 	Packet* pPacketTemp;
 	int timeCount = 0;
@@ -134,55 +127,13 @@ static void DataTransferManage(void *arg)
 	while(1)
 	{
 		//数据接收进程
-		if(ClientNum > 1)	//有client接入
+		if(ClientNum > 0)	//有client接入
 		{
 			timeCOuntFreeRTOS = xTaskGetTickCount();
 			timeCount = OverflowCount_TIM6*65536 + __HAL_TIM_GET_COUNTER(&TIM6_Handler);
 			
 			for(i_cycle = 0; i_cycle<ClientNum;i_cycle++)	
-			{					
-				dataRecvBufferTemp[i_cycle] 	= Session[i_cycle].BufferRecvArea;
-				dataRecvBufferRange[i_cycle] 	= Session[i_cycle].BufferRecvArea + 2560;//Max adress Range
-				
-/*************接收数据处理****************************
-*****************************************************/			
-				if((netconn_recv(Session[i_cycle].NetConnRecv, &recvbuf)) == ERR_OK)  	//接收到数据
-				{						
-					taskENTER_CRITICAL();  //关中断	
-
-					data_len = recvbuf->p->tot_len;					
-					
-					for(q=recvbuf->p;q!=NULL;q=q->next)
-					{
-						//recvBufferOverflowSize =  - ;	//Data Overflow Size
-						if((dataRecvBufferTemp[i_cycle] + q->len) > dataRecvBufferRange[i_cycle])
-						{
-							pByte = q->payload;
-							memcpy(dataRecvBufferTemp[i_cycle], pByte, q->len - (dataRecvBufferRange[i_cycle] - dataRecvBufferTemp[i_cycle]));  //cycle accpet the data to BufferRecvArea
-							pByte += (q->len - recvBufferOverflowSize);
-							dataRecvBufferTemp[i_cycle] = Session[i_cycle].BufferRecvArea;		//Return to the BufferArea Header
-							memcpy(dataRecvBufferTemp[i_cycle], pByte, dataRecvBufferTemp[i_cycle] + q->len - dataRecvBufferRange[i_cycle]);							
-						}
-						else
-						{
-							memcpy(dataRecvBufferTemp[i_cycle], q->payload, q->len);
-							dataRecvBufferTemp[i_cycle] = dataRecvBufferTemp[i_cycle] + q->len;
-						}							
-					}
-					q = NULL;	
-					pByte = NULL;
-					taskEXIT_CRITICAL();  //开中断
-				
-//////				printf("%s\r\n", Session[i_cycle].BufferRecvArea);  //通过串口发送接收到的数据	
-				data_len=0;  //复制完成后data_len要清零。	
-				netbuf_delete(recvbuf);//一定要加上这一句!!!!不然会内存泄漏！！！
-				recvbuf = NULL;		
-				}
-			
-							
-/******************Receive END************************
-*****************************************************/
-				
+			{								
 /*************发送数据处理****************************/
 				for(j = 0;j<MaxBufferLength;j++)
 				{

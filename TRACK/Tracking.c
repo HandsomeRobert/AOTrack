@@ -215,7 +215,7 @@ static void TrackingThread(void *arg)
 		TimeCountStart 	= OverflowCount_TIM6*0XFFFF +__HAL_TIM_GET_COUNTER(&TIM6_Handler);//0.7us
 		TimeCountStartRTOS = xTaskGetTickCount();
 		
-		if( ClientNum > 1)															//有检测程序Inspection连接
+		if( ClientNum > 0)															//有检测程序Inspection连接
 		{
 			encoder1Number = (OverflowCount_Encoder3*ENCODER_CNT_MAX) + __HAL_TIM_GET_COUNTER(&htimx_Encoder3);
 			encoder2Number = (OverflowCount_Encoder8*ENCODER_CNT_MAX) + __HAL_TIM_GET_COUNTER(&htimx_Encoder8);

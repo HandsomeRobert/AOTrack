@@ -24,7 +24,8 @@
 //#define TCP_SERVER_PORT			6666	//定义tcp server的端口
 #define LWIP_SEND_DATA			0X80	//定义有数据发送
 
-#define TCP_Server_RX_BUFSIZE 1500
+//#define TCP_Server_RX_BUFSIZE 1500
+#define RecvAreaDataSize 			2560
 
 #define MaxClients  		8						//最大允许多少个Client接入
 #define MaxBufferLength 10
@@ -63,6 +64,9 @@ extern TaskHandle_t TCPSERVERTask_Handler;
 extern uint32_t tcp_server_recvbuf[TCP_SERVER_RX_BUFSIZE];	//TCP客户端接收数据缓冲区
 
 extern bool SocketLinkFlag;	//是否有连接建立标志
+extern byte* PHead[MaxClients];//Receive Data Head
+extern byte* PTail[MaxClients];//Receive Data Tail(End)
+extern byte* RecvAreaRange[MaxClients];//数据存储范围
 
 uint8_t TCPServerListenCycleTask_init(void);		//TCP服务器初始化(创建TCP服务器线程)
 #endif

@@ -36,16 +36,26 @@ static void DataProcessThread(void *arg)
 //	byte err = 0;
 	int* pInt;
 	byte* pByte;
-	static int lineID 	= 0;
+	static int packetID 	= 0;
+	static int packetType 	= 0;
+	static int packetDataSize 	= 0;
 	static int actionID = 0;
+	static int lineID 	= 0;
 	static int objectID = 0;
 	static int moduleID = 0;
 	static int encoder 	= 0;
-	static int dataSize = 0;
+	static int commandDataSize = 0;
 	int timeCount;
 	
-	int* pRecvData = (int*)mymalloc(SRAMEX, TCP_Queue_MAXBUFSIZE);		//从PC来的完整数据包
-	byte* pData 	 = (byte*)mymalloc(SRAMEX, TCP_Queue_MAXBUFSIZE);		//从PC传来的信息
+	bool isGetCompletePacket = false;
+	int packetSize = 0;
+	struct pbuf *q;
+	struct netbuf *recvbuf;
+	int singleData_len = 0;
+	int addData_len = 0;
+	int existSize = 0;
+	
+	byte* pCommandData 	= (byte*)mymalloc(SRAMEX, 128);		//从PC传来的信息
 	
 	while(1)
 	{
@@ -53,62 +63,111 @@ static void DataProcessThread(void *arg)
 		
 		for(i = 0;i < ClientNum;i++)
 		{
-			for(j = 0;j < MaxBufferLength;j++)
+			
+/*************接收数据处理****************************
+*****************************************************/			
+			if((netconn_recv(Session[i].NetConnRecv, &recvbuf)) == ERR_OK)  	//接收到数据
+			{						
+				taskENTER_CRITICAL();  //关中断	
+
+				singleData_len = recvbuf->p->tot_len;					
+				addData_len = addData_len + singleData_len;
+				
+				if(PTail[i] + singleData_len > RecvAreaRange[i])
+				{
+					existSize = PTail[i] - PHead[i];
+					mymemcpy(Session[i].BufferRecvArea, PHead[i], existSize);
+					PHead[i] = Session[i].BufferRecvArea;
+					PTail[i] = Session[i].BufferRecvArea + existSize;
+					
+					for(q=recvbuf->p;q!=NULL;q=q->next)
+					{
+						mymemcpy(PTail[i], q->payload, q->len);
+						PTail[i] = PTail[i] + q->len;
+					}
+				}
+				else
+				{
+					for(q=recvbuf->p;q!=NULL;q=q->next)
+					{
+						mymemcpy(PTail[i], q->payload, q->len);
+					}
+					PTail[i] = PTail[i] + singleData_len;//Move Tail Pointer
+				}
+					
+				q = NULL;	
+				taskEXIT_CRITICAL();  //开中断
+				netbuf_delete(recvbuf);//一定要加上这一句!!!!不然会内存泄漏！！！
+				recvbuf = NULL;							
+										
+				if(addData_len > PACKET_HEADER_SIZE || addData_len == PACKET_HEADER_SIZE)// Receive a Full Packet Head
+				{
+					packetSize = *(int*)(PHead[i] + 12) + PACKET_HEADER_SIZE + 4;//4 is EndWord size
+					
+					if((PTail[i] - PHead[i]) > packetSize - 1)//-1 is used to Avoid "=="Situation Happens
+					{
+						isGetCompletePacket = true;
+						
+						pInt 			= (int*)PHead[i];
+						PHead[i] = PHead[i] + packetSize;
+						addData_len = addData_len - packetSize;//Get Reamin DataSize
+					}
+				}
+			}
+
+			
+			if(isGetCompletePacket)
 			{
-////				if(Session[i].BufferRecv[j].IsBufferAlive)
-////				{
-///////*Test*Test*/	if((byte)*Session[i].BufferRecv[j].pBufferData == '1') xSemaphoreGive(OnSysRestart);		//用于测试数据接收
-////					pInt 			= (int*)Session[i].BufferRecv[j].pBufferData;
-////					if((*pInt) == 0x47424B50)//确认数据是否有效包含报头
-////					{
-////						pInt++;//跳过报头
-////						lineID 		= *pInt++;
-////						actionID 	= *pInt++;
-////						objectID 	= *pInt++;
-////						moduleID 	= *pInt++;
-////						encoder 	= *pInt++;
-////						dataSize 	= *pInt++;
-////						
-////						pByte = (byte*)pInt;
-////						pData = pByte;							//去除包头后的实际数据
-////						
-////						switch(actionID)						//来自PC的控制命令
-////						{	//System
-////							case PCCmdActionHeartBeat: 		break;
-////							case PCCmdActionWarmRestart: 	break;
-////							case PCCmdActionColdRestart: 		xSemaphoreGive(OnSysRestart);							break;
-////							case PCCmdActionReconfiguration: 		break;//xSemaphoreGive(OnLoadParametersFromPC);
-////							case PCCmdActionStartIOLive: 	break;
-////							case PCCmdActionGetConnectedClientID: PCGetConnectedClientIDs(0, Session, ClientNum);break;
-////							case PCCmdActionErrorMessage: break;
-////							case PCCmdActionErrorAcknowledge: break;
-////							//Tracking
-////							case PCCmdActionObjectRunIn: break;
-////							case PCCmdActionObjectRunOut: break;
-////							case PCCmdActionObjectDelete: break;
-////							case PCCmdActionTriggerCamera: break;
-////							case PCCmdActionTriggerIOSensor: break;
-////							case PCCmdActionGetMachineData: break;
-////							case PCCmdActionSetPushResult: STM32GetPushResult(lineID, objectID, moduleID, encoder);break;//
-////							case PCCmdActionSetUserResult: break;
-////							case PCCmdActionStartTracking: break;
-////							case PCCmdActionObjectFallDown: break;
-////							//Automation
-////							case PCCmdActionSetPLCVariable: break;
-////							case PCCmdActionStartControl: break;
-////							//Diagnostics
-////							case PCCmdActionSetTrackingMode: STM32SetTrackingMode(lineID, objectID, moduleID);break;
-////							case PCCmdActionObjectPosition: break;
-////							case PCCmdActionObjectWidth: break;
-////							case PCCmdActionRequestModuleInfo: break;
-////							case PCCmdActionRequestPLCInfo: break;
-////							case PCCmdActionTrackingDummy: break;
-////							
-////						}
-////					}
-////					
-////					Session[i].BufferRecv[j].IsBufferAlive = false; //处理完了要释放标记为false未使用状态
-////				}
+				isGetCompletePacket = false;
+
+				if((*pInt) == 0x47424B50)//确认数据是否有效包含报头
+				{
+					pInt++;//跳过报头
+					packetID 		= *pInt++;
+					packetType 		= *pInt++;	
+					packetDataSize 		= *pInt++;
+					actionID 	= *pInt++;
+					lineID 	= *pInt++;
+					objectID 	= *pInt++;
+					moduleID 	= *pInt++;
+					encoder 	= *pInt++;
+					commandDataSize 	= *pInt++;
+					mymemcpy(pCommandData, pInt, commandDataSize);
+				
+					switch(actionID)						//来自PC的控制命令
+					{	//System
+						case PCCmdActionHeartBeat: 		break;
+						case PCCmdActionWarmRestart: 	break;
+						case PCCmdActionColdRestart: 		xSemaphoreGive(OnSysRestart);							break;
+						case PCCmdActionReconfiguration: 		break;//xSemaphoreGive(OnLoadParametersFromPC);
+						case PCCmdActionStartIOLive: 	break;
+						case PCCmdActionGetConnectedClientID: PCGetConnectedClientIDs(0, Session, ClientNum);break;
+						case PCCmdActionErrorMessage: break;
+						case PCCmdActionErrorAcknowledge: break;
+						//Tracking
+						case PCCmdActionObjectRunIn: break;
+						case PCCmdActionObjectRunOut: break;
+						case PCCmdActionObjectDelete: break;
+						case PCCmdActionTriggerCamera: break;
+						case PCCmdActionTriggerIOSensor: break;
+						case PCCmdActionGetMachineData: break;
+						case PCCmdActionSetPushResult: STM32GetPushResult(lineID, objectID, moduleID, encoder);break;//
+						case PCCmdActionSetUserResult: break;
+						case PCCmdActionStartTracking: break;
+						case PCCmdActionObjectFallDown: break;
+						//Automation
+						case PCCmdActionSetPLCVariable: break;
+						case PCCmdActionStartControl: break;
+						//Diagnostics
+						case PCCmdActionSetTrackingMode: STM32SetTrackingMode(lineID, objectID, moduleID);break;
+						case PCCmdActionObjectPosition: break;
+						case PCCmdActionObjectWidth: break;
+						case PCCmdActionRequestModuleInfo: break;
+						case PCCmdActionRequestPLCInfo: break;
+						case PCCmdActionTrackingDummy: break;
+						
+					}
+				}			
 			}
 		}
 			
