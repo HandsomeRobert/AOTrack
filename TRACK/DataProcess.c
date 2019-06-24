@@ -65,7 +65,8 @@ static void DataProcessThread(void *arg)
 		{
 			
 /*************接收数据处理****************************
-*****************************************************/			
+*****************************************************/	
+			/*****store the buffer to PHead and PTail******/			
 			if((netconn_recv(Session[i].NetConnRecv, &recvbuf)) == ERR_OK)  	//接收到数据
 			{						
 				taskENTER_CRITICAL();  //关中断	
@@ -77,6 +78,7 @@ static void DataProcessThread(void *arg)
 				{
 					existSize = PTail[i] - PHead[i];
 					mymemcpy(Session[i].BufferRecvArea, PHead[i], existSize);
+					//mymemset(PHead[i], 0, existSize);	//clear the Copied Area					
 					PHead[i] = Session[i].BufferRecvArea;
 					PTail[i] = Session[i].BufferRecvArea + existSize;
 					
@@ -91,27 +93,30 @@ static void DataProcessThread(void *arg)
 					for(q=recvbuf->p;q!=NULL;q=q->next)
 					{
 						mymemcpy(PTail[i], q->payload, q->len);
-					}
-					PTail[i] = PTail[i] + singleData_len;//Move Tail Pointer
+						PTail[i] = PTail[i] + q->len;					//Move Tail Pointer
+					}					
 				}
 					
 				q = NULL;	
 				taskEXIT_CRITICAL();  //开中断
 				netbuf_delete(recvbuf);//一定要加上这一句!!!!不然会内存泄漏！！！
 				recvbuf = NULL;							
-										
-				if(addData_len > PACKET_HEADER_SIZE || addData_len == PACKET_HEADER_SIZE)// Receive a Full Packet Head
+			}	
+			
+			
+			/****Process the Receive Buffer******/
+			if(addData_len > PACKET_HEADER_SIZE || addData_len == PACKET_HEADER_SIZE)// Receive a Full Packet Head
+			{
+				packetSize = *(int*)(PHead[i] + 12) + PACKET_HEADER_SIZE + 4;//4 is EndWord size
+				existSize = PTail[i] - PHead[i];
+				
+				if(existSize > packetSize || existSize==packetSize)//>=
 				{
-					packetSize = *(int*)(PHead[i] + 12) + PACKET_HEADER_SIZE + 4;//4 is EndWord size
+					isGetCompletePacket = true;
 					
-					if((PTail[i] - PHead[i]) > packetSize - 1)//-1 is used to Avoid "=="Situation Happens
-					{
-						isGetCompletePacket = true;
-						
-						pInt 			= (int*)PHead[i];
-						PHead[i] = PHead[i] + packetSize;
-						addData_len = addData_len - packetSize;//Get Reamin DataSize
-					}
+					pInt 			= (int*)PHead[i];
+					PHead[i] = PHead[i] + packetSize;
+					addData_len = addData_len - packetSize;//Get Reamin DataSize
 				}
 			}
 
@@ -120,7 +125,7 @@ static void DataProcessThread(void *arg)
 			{
 				isGetCompletePacket = false;
 
-				if((*pInt) == 0x47424B50)//确认数据是否有效包含报头
+				if((*pInt) == 0x47424B50 && *(pInt+packetSize/4) == 0x44454B50)//确认数据是否有效包含报头
 				{
 					pInt++;//跳过报头
 					packetID 		= *pInt++;
@@ -132,7 +137,8 @@ static void DataProcessThread(void *arg)
 					moduleID 	= *pInt++;
 					encoder 	= *pInt++;
 					commandDataSize 	= *pInt++;
-					mymemcpy(pCommandData, pInt, commandDataSize);
+					if(commandDataSize > 0)// check whether Command have Data
+						mymemcpy(pCommandData, pInt, commandDataSize);////////////////////////////////////Receive Data Not acquired Complete, result in commandDataSize overflow read, A very large value!!!
 				
 					switch(actionID)						//来自PC的控制命令
 					{	//System
@@ -167,7 +173,7 @@ static void DataProcessThread(void *arg)
 						case PCCmdActionTrackingDummy: break;
 						
 					}
-				}			
+				}
 			}
 		}
 			
@@ -176,7 +182,7 @@ static void DataProcessThread(void *arg)
 //////		{
 //////			printf("DataProcess Thread Time ==>%d \n", timeCount);//106us
 //////		}
-		vTaskDelay(10);
+		vTaskDelay(1);
 	}																					
 }
 
