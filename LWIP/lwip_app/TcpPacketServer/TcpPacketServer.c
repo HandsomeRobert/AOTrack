@@ -114,7 +114,10 @@ static void TCPServerListenThread(void *arg)
 			err = netconn_accept(ServerConn,&netConnRecvTemp);  //接收连接请求,扫描是否有连接，利用ServerConn监听，
 																							//有连接请求则创建一个新的连接，存到NetConn数组里，用于建立多个Socket通道通信
 			if (err == ERR_OK)    //处理新连接的数据
-			{	
+			{
+				//Suspend the DataProcess Task to confirm the data Consistent
+				vTaskSuspend(DataProcessTask_Handler);
+				
 				netconn_getaddr(netConnRecvTemp,&ipaddr,&port,0); //获取远端IP地址和端口号
 				remot_addr[3] = (uint8_t)(ipaddr.addr >> 24); 
 				remot_addr[2] = (uint8_t)(ipaddr.addr >> 16);
@@ -220,6 +223,8 @@ static void TCPServerListenThread(void *arg)
 //////				}
 //////			}			
 //////			WriteDataToBufferSend(i_cycle, (byte*)pPacket, data_len);
+			
+			vTaskResume(DataProcessTask_Handler);
 			}					
 		}			
 	

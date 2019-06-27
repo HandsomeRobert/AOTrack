@@ -209,6 +209,9 @@ ADD:
 2019.6.23
 	1. if Receive Data is Complete, present DataProcess method is useful, however we test the receive data is not complete, so sad...
 	do a mark, and try to solve this(1.Try receive Complete 2.Ignore the not complete Packet...)
+2019.6.27
+	1. Back college Ultimate version 
+	2. while communicate with xispek software Data Cannot be acquire complete, will lose some data .
 
 耗时分析；
 	1. mymalloc(SRAMEX, 128) 分配内存时间为800us左右，myfree在70us左右，所以推荐不要去动态开辟内存！！！遵循：空间换时间！！！

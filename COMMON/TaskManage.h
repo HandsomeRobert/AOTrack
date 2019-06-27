@@ -29,17 +29,17 @@ extern TaskHandle_t ActionExecuteTask_Handler;
 
 //数据接收与处理任务，多SOCKET
 #define      DataTransferManage_TASK_PRIO   7
-#define      DataTransferManage_STK_SIZE  256
+#define      DataTransferManage_STK_SIZE  512
 extern TaskHandle_t DataTransferManageTask_Handler;
 
 //接收数据处理命令
 #define      DataProcess_TASK_PRIO      		6
-#define      DataProcess_STK_SIZE       	256
+#define      DataProcess_STK_SIZE       	512
 extern TaskHandle_t DataProcessTask_Handler;
 
 //Tracking 任务优先级与堆栈大小
 #define TRACKING_TASK_PRIO									5		
-#define TRACKING_STK_SIZE									256
+#define TRACKING_STK_SIZE									512
 extern TaskHandle_t TrackingThread_Handler;
 
 //TCPServer服务端任务优先级与堆栈大小

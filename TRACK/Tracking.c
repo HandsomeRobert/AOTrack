@@ -563,7 +563,7 @@ static void TrackingThread(void *arg)
 																		
 									ObjectInModuleList[Module_i][Action_i].IsActionAlive = false;		//释放占有的动作
 									testFlag = true;
-printf("Get into ActPushOut\r\n");
+//////printf("Get into ActPushOut\r\n");
 									break;
 								
 								default:break;

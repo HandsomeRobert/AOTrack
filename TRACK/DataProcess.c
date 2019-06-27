@@ -52,8 +52,9 @@ static void DataProcessThread(void *arg)
 	struct pbuf *q;
 	struct netbuf *recvbuf;
 	int singleData_len = 0;
-	int addData_len = 0;
 	int existSize = 0;
+	
+//	bool dataWait = true;
 	
 	byte* pCommandData 	= (byte*)mymalloc(SRAMEX, 128);		//从PC传来的信息
 	
@@ -72,13 +73,11 @@ static void DataProcessThread(void *arg)
 				taskENTER_CRITICAL();  //关中断	
 
 				singleData_len = recvbuf->p->tot_len;					
-				addData_len = addData_len + singleData_len;
 				
 				if(PTail[i] + singleData_len > RecvAreaRange[i])
 				{
 					existSize = PTail[i] - PHead[i];
-					mymemcpy(Session[i].BufferRecvArea, PHead[i], existSize);
-					//mymemset(PHead[i], 0, existSize);	//clear the Copied Area					
+					mymemcpy(Session[i].BufferRecvArea, PHead[i], existSize);			
 					PHead[i] = Session[i].BufferRecvArea;
 					PTail[i] = Session[i].BufferRecvArea + existSize;
 					
@@ -103,23 +102,25 @@ static void DataProcessThread(void *arg)
 				recvbuf = NULL;							
 			}	
 			
-			
+			existSize = PTail[i] - PHead[i];
 			/****Process the Receive Buffer******/
-			if(addData_len > PACKET_HEADER_SIZE || addData_len == PACKET_HEADER_SIZE)// Receive a Full Packet Head
+			if(existSize > PACKET_HEADER_SIZE || existSize == PACKET_HEADER_SIZE)// Receive a Full Packet Head
 			{
 				packetSize = *(int*)(PHead[i] + 12) + PACKET_HEADER_SIZE + 4;//4 is EndWord size
-				existSize = PTail[i] - PHead[i];
-				
+	
+/*Test*/			if(packetSize != 44)
+								q = NULL;
+
 				if(existSize > packetSize || existSize==packetSize)//>=
 				{
 					isGetCompletePacket = true;
 					
 					pInt 			= (int*)PHead[i];
 					PHead[i] = PHead[i] + packetSize;
-					addData_len = addData_len - packetSize;//Get Reamin DataSize
 				}
 			}
 
+	
 			
 			if(isGetCompletePacket)
 			{
@@ -137,8 +138,8 @@ static void DataProcessThread(void *arg)
 					moduleID 	= *pInt++;
 					encoder 	= *pInt++;
 					commandDataSize 	= *pInt++;
-					if(commandDataSize > 0)// check whether Command have Data
-						mymemcpy(pCommandData, pInt, commandDataSize);////////////////////////////////////Receive Data Not acquired Complete, result in commandDataSize overflow read, A very large value!!!
+//////					if(commandDataSize > 0)// check whether Command have Data
+//////						mymemcpy(pCommandData, pInt, commandDataSize);////////////////////////////////////Receive Data Not acquired Complete, result in commandDataSize overflow read, A very large value!!!
 				
 					switch(actionID)						//来自PC的控制命令
 					{	//System
@@ -171,12 +172,12 @@ static void DataProcessThread(void *arg)
 						case PCCmdActionRequestModuleInfo: break;
 						case PCCmdActionRequestPLCInfo: break;
 						case PCCmdActionTrackingDummy: break;
-						
+						default:break;					
 					}
 				}
 			}
 		}
-			
+		
 //////		timeCount	= __HAL_TIM_GET_COUNTER(&TIM6_Handler) - timeCount;
 //////		if(timeCount > 100)
 //////		{
